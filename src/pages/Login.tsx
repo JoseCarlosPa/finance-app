@@ -49,7 +49,7 @@ const Login = () => {
                   <div className="text-sm font-bold text-gray-700 tracking-wide">Correo electronico</div>
                   <input
                     className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
-                    type="" placeholder="joseph@gmail.com"/>
+                    type="email" placeholder="joseph@gmail.com" required/>
                 </div>
                 <div className="mt-8">
                   <div className="flex justify-between items-center">
@@ -65,7 +65,7 @@ const Login = () => {
                   </div>
                   <input
                     className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
-                    type="" placeholder="Enter your password"/>
+                    type="password" placeholder="Ingresa tu contraseña" required/>
                 </div>
                 <div className="mt-10">
                   <button className="bg-indigo-500 text-gray-100 p-4 w-full rounded-full tracking-wide

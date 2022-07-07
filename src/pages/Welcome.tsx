@@ -1,6 +1,8 @@
 import React from 'react';
 import Header from "../components/Welcome/Header";
 import HeroHome from "../components/Welcome/HeroHome";
+import Features from "../components/Welcome/Features";
+import Footer from "../components/Welcome/Footer";
 
 
 const Welcome = () => {
@@ -9,7 +11,9 @@ const Welcome = () => {
       <Header/>
       <main className="flex-grow">
         <HeroHome />
+        <Features />
       </main>
+      <Footer />
     </div>
   );
 

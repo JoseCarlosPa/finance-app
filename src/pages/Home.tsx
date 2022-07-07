@@ -1,18 +1,16 @@
-import React, {useCallback} from 'react';
-import {getAuth,signOut} from "firebase/auth";
+import React from 'react';
+import NavBar from "../components/Dashboard/NavBar";
 
 const Home = () =>{
 
-  const auth = getAuth()
 
-  const handleOnClick = useCallback(()=>{
-    return signOut(auth)
-  },[auth])
 
   return (
-    <div>
-    <p>HOME</p>
-      <button onClick={handleOnClick}>Sign Out</button>
+    <div className="min-h-screen flex flex-row bg-gray-100">
+      <NavBar />
+      <div className="m-8">
+        CONTENIDO
+      </div>
     </div>
   );
 }

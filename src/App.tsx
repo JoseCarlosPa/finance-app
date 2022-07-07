@@ -7,6 +7,7 @@ import AuthRoute from "./components/AuthRoute";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Welcome from "./pages/Welcome";
+import SingUp from "./pages/SingUp";
 
 initializeApp(config.firebaseConfig)
 
@@ -22,6 +23,7 @@ const App = () => {
         }>
         </Route>
         <Route path="/login" element={<Login/>}></Route>
+        <Route path="/singUp" element={<SingUp/>}></Route>
 
       </Routes>
     </BrowserRouter>

@@ -6,11 +6,12 @@ interface ToolsCardProps {
   description: string;
   icon: ReactElement<any, any>;
   link: string;
+  className?: string;
 }
 
-const ToolsCard = ({title,description,icon,link}:ToolsCardProps) => {
+const ToolsCard = ({title,description,icon,link,className}:ToolsCardProps) => {
   return (
-    <a href={link} className="hover:scale-105 duration-300">
+    <a href={link} className={`hover:scale-105 duration-300 ${className}`}>
     <div className="flex w-full">
       <div className="w-full px-3 mb-6 lg:mb-0 lg:flex-none">
         <div className="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">

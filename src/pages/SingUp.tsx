@@ -1,18 +1,19 @@
 import React, {useCallback, useState} from 'react'
 import {Link, useNavigate} from "react-router-dom";
 import {Reply} from "heroicons-react";
-import {getAuth, GoogleAuthProvider, signInWithPopup} from "firebase/auth";
+import {getAuth, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithPopup} from "firebase/auth";
 
 const SingUp = ()=>{
 
   const auth = getAuth()
   const navigate = useNavigate()
   const [authing, setAuthing] = useState(false)
+  const [email, setEmail] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
 
   const signInWithGoogle = async () => {
     setAuthing(true)
     signInWithPopup(auth, new GoogleAuthProvider()).then(response => {
-      console.log(response.user.uid)
       navigate('/home')
     }).catch(error => {
       console.error(error)
@@ -20,10 +21,20 @@ const SingUp = ()=>{
     })
   }
 
-
   const handleOnClick = useCallback(() => {
     return signInWithGoogle()
-  }, [signInWithGoogle])
+  }, [])
+
+  const handleRegister = useCallback((event:any) => {
+    event.preventDefault()
+    createUserWithEmailAndPassword(auth,email,password).then((userCredential) => {
+      const user = userCredential.user
+      navigate('/home')
+    }).catch((error)=>{
+      console.error(error)
+    })
+
+  },[auth, email, navigate, password])
 
   return(
     <div>
@@ -42,12 +53,15 @@ const SingUp = ()=>{
                     xl:text-bold">Registrate</h2>
 
             <div className="mt-12">
-              <form>
+              <form onSubmit={handleRegister}>
                 <div>
                   <div className="text-sm font-bold text-gray-700 tracking-wide">Correo electronico</div>
                   <input
                     className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
-                    type="email" placeholder="joseph@gmail.com" required/>
+                    type="email"
+                    placeholder="joseph@gmail.com"
+                    onChange={(event) => setEmail(event.target.value)}
+                    required/>
                 </div>
                 <div className="mt-8">
                   <div className="flex justify-between items-center">
@@ -57,7 +71,11 @@ const SingUp = ()=>{
                   </div>
                   <input
                     className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
-                    type="password" placeholder="Ingresa tu contraseña" required/>
+                    type="password"
+                    placeholder="Ingresa tu contraseña"
+                    min="6"
+                    onChange={(event) => setPassword(event.target.value)}
+                    required/>
                 </div>
                 <div className="mt-10">
                   <button className="bg-indigo-500 text-gray-100 p-4 w-full rounded-full tracking-wide
@@ -65,7 +83,7 @@ const SingUp = ()=>{
                                 shadow-lg">
                     Registrarse
                   </button>
-                  <button disabled={authing} onClick={handleOnClick} className="mt-3 bg-gray-50 text-blue-700 p-4 w-full rounded-full tracking-wide
+                  <button type="submit" disabled={authing} onClick={handleOnClick} className="mt-3 bg-gray-50 text-blue-700 p-4 w-full rounded-full tracking-wide
                                 font-semibold font-display focus:outline-none focus:shadow-outline hover:bg-indigo-200 hover:text-white
                                 shadow-lg">
                     <div className="flex flex-row justify-center items-center">

@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react';
-import {getAuth, GoogleAuthProvider, signInWithPopup} from "firebase/auth";
+import {getAuth, GoogleAuthProvider, signInWithPopup,signInWithEmailAndPassword} from "firebase/auth";
 import {useNavigate} from "react-router-dom";
 import {Reply} from 'heroicons-react'
 import { Link } from 'react-router-dom';
@@ -10,11 +10,13 @@ const Login = () => {
   const auth = getAuth()
   const navigate = useNavigate()
   const [authing, setAuthing] = useState(false)
+  const [error, setError] = useState<boolean>(false)
+  const [email, setEmail] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
 
   const signInWithGoogle = async () => {
     setAuthing(true)
     signInWithPopup(auth, new GoogleAuthProvider()).then(response => {
-      console.log(response.user.uid)
       navigate('/home')
     }).catch(error => {
       console.error(error)
@@ -22,10 +24,20 @@ const Login = () => {
     })
   }
 
-
   const handleOnClick = useCallback(() => {
     return signInWithGoogle()
-  }, [signInWithGoogle])
+  }, [])
+
+  const handleLogin = useCallback((event:any) => {
+    event.preventDefault()
+    signInWithEmailAndPassword(auth,email,password).then((userCredential) => {
+      const user = userCredential.user
+      navigate('/home')
+    }).catch((error)=>{
+      setError(true)
+    })
+
+  },[auth, email, navigate, password])
 
   return (
     <div>
@@ -44,12 +56,15 @@ const Login = () => {
                     xl:text-bold">Inicia Sesion</h2>
 
             <div className="mt-12">
-              <form>
+              <form onSubmit={handleLogin}>
                 <div>
                   <div className="text-sm font-bold text-gray-700 tracking-wide">Correo electronico</div>
                   <input
                     className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
-                    type="email" placeholder="joseph@gmail.com" required/>
+                    type="email"
+                    placeholder="joseph@gmail.com"
+                    onChange={(event) => setEmail(event.target.value)}
+                    required/>
                 </div>
                 <div className="mt-8">
                   <div className="flex justify-between items-center">
@@ -65,19 +80,22 @@ const Login = () => {
                   </div>
                   <input
                     className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
-                    type="password" placeholder="Ingresa tu contraseña" required/>
+                    type="password"
+                    placeholder="Ingresa tu contraseña"
+                    onChange={(event) => setPassword(event.target.value)}
+                    required/>
                 </div>
                 <div className="mt-10">
-                  <button className="bg-indigo-500 text-gray-100 p-4 w-full rounded-full tracking-wide
+                  <button type="submit" className="bg-indigo-500 text-gray-100 p-4 w-full rounded-full tracking-wide
                                 font-semibold font-display focus:outline-none focus:shadow-outline hover:bg-indigo-600
                                 shadow-lg">
                     Iniciar Sesion
                   </button>
-                  <button disabled={authing} onClick={handleOnClick} className="mt-3 bg-gray-50 text-blue-700 p-4 w-full rounded-full tracking-wide
+                  <button type="button" disabled={authing} onClick={handleOnClick} className="mt-3 bg-gray-50 text-blue-700 p-4 w-full rounded-full tracking-wide
                                 font-semibold font-display focus:outline-none focus:shadow-outline hover:bg-indigo-200 hover:text-white
                                 shadow-lg">
                     <div className="flex flex-row justify-center items-center">
-                      <p>Inicia con Google </p>
+                      <div>Inicia con Google </div>
                       <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg"
                            className="ml-4 ">
                         <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
@@ -96,6 +114,10 @@ const Login = () => {
 
                 </div>
               </form>
+              <div className="mt-4 w-full flex justify-center items-center">
+                {error && <span className="text-red-500">No encontramos ningun registro con esas credenciales</span>}
+              </div>
+
               <div className="mt-12 text-sm font-display font-semibold text-gray-700 text-center">
                 ¿Aun no tienes una cuenta? <a className="cursor-pointer text-indigo-600 hover:text-indigo-800"
                                               href="/singUp">Registrate</a>

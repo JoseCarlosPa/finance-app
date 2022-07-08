@@ -78,16 +78,16 @@ const SingUp = ()=>{
                     required/>
                 </div>
                 <div className="mt-10">
-                  <button className="bg-indigo-500 text-gray-100 p-4 w-full rounded-full tracking-wide
+                  <button type="submit" className="bg-indigo-500 text-gray-100 p-4 w-full rounded-full tracking-wide
                                 font-semibold font-display focus:outline-none focus:shadow-outline hover:bg-indigo-600
                                 shadow-lg">
                     Registrarse
                   </button>
-                  <button type="submit" disabled={authing} onClick={handleOnClick} className="mt-3 bg-gray-50 text-blue-700 p-4 w-full rounded-full tracking-wide
+                  <button type="button" disabled={authing} onClick={handleOnClick} className="mt-3 bg-gray-50 text-blue-700 p-4 w-full rounded-full tracking-wide
                                 font-semibold font-display focus:outline-none focus:shadow-outline hover:bg-indigo-200 hover:text-white
                                 shadow-lg">
                     <div className="flex flex-row justify-center items-center">
-                      <p>Registrate con Google </p>
+                      <div>Registrate con Google </div>
                       <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg"
                            className="ml-4 ">
                         <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">

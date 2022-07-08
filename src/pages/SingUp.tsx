@@ -59,7 +59,7 @@ const SingUp = ()=>{
                   <input
                     className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
                     type="email"
-                    placeholder="joseph@gmail.com"
+                    placeholder="Ejemplo: example@gmail.com"
                     onChange={(event) => setEmail(event.target.value)}
                     required/>
                 </div>

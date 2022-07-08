@@ -62,7 +62,7 @@ const Login = () => {
                   <input
                     className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
                     type="email"
-                    placeholder="joseph@gmail.com"
+                    placeholder="Ejemplo: example@gmail.com"
                     onChange={(event) => setEmail(event.target.value)}
                     required/>
                 </div>
@@ -72,7 +72,7 @@ const Login = () => {
                       Contraseña
                     </div>
                     <div>
-                      <a className="text-xs font-display font-semibold text-indigo-600 hover:text-indigo-800
+                      <a href="/recovery" className="text-xs font-display font-semibold text-indigo-600 hover:text-indigo-800
                                         cursor-pointer">
                         ¿Olvidaste la contraseñea?
                       </a>

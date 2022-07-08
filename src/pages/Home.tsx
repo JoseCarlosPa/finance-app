@@ -9,7 +9,7 @@ const Home = () =>{
       <div className="col-span-2">
         <NavBar />
       </div>
-      <div className="col-span-10 m-8">
+      <div className="col-span-10 ml-16 mr-8 my-8">
         <Outlet />
       </div>
     </div>

@@ -16,7 +16,11 @@ const Navigation = () => {
         <Route path="/login" element={<Login/>}/>
         <Route path="/singUp" element={<SingUp/>}/>
         <Route path="/home/*" element={<AuthRoute> <Home/></AuthRoute>}>
-          <Route path="tools" element={<IndexTools/>}/>
+          <Route path="herramientas/*" element={<IndexTools/>}>
+            <Route path="calculo-bonos" element={<IndexTools/>}/>
+            <Route path="valor-futuro" element={<IndexTools/>}/>
+
+          </Route>
         </Route>
         <Route path="*" element={<div>No existe esa pagina</div>}/>
       </Routes>

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import { getAuth,onAuthStateChanged } from 'firebase/auth'
 import {useNavigate} from "react-router-dom";
+import Loading from "./Loading";
 
 const AuthRoute = (props: any) =>{
 
@@ -25,7 +26,7 @@ const AuthRoute = (props: any) =>{
   })
 
   if(loading){
-    return <p>Cargando...</p>
+    return <Loading />
   }
 
   return (<>{children}</>);

@@ -14,7 +14,7 @@ const Tools = () => {
         />
         <ToolsCard
           title={'Valor Futuro'}
-          description={'Podremos calcular el valor de una inversion en base a la taza'}
+          description={'Podremos calcular el valor de una inversion en base a la taza, el periodo y el valor de la inversion'}
           icon={<TrendingUp className="text-white" width="64" height="64" />}
           link={'/home/valor-futuro'}
         />
@@ -22,7 +22,7 @@ const Tools = () => {
           title={'Valor presente'}
           description={'Podremos calcular el valor que nesecitamos invertir para obtener el valor de una inversion'}
           icon={<ClipboardList className="text-white" width="64" height="64" />}
-          link={'/home/herramientas/calculo-bonos'}
+          link={'/home/valor-presente'}
         />
 
       </div>

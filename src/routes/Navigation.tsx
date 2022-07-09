@@ -9,6 +9,7 @@ import Tools from "../pages/Tools";
 import Recovery from "../pages/Recovery";
 import Certificates from "../components/Tools/Certificates/Certificates";
 import FutureValue from "../components/Tools/FutureValue/FutureValue";
+import PresentValue from "../components/Tools/PresentValue/PresentValue";
 
 const Navigation = () => {
   return (
@@ -22,6 +23,7 @@ const Navigation = () => {
         <Route path="/home/*" element={<AuthRoute> <Home/></AuthRoute>}>
           <Route path="calculo-de-bonos" element={<Certificates/>}/>
           <Route path="valor-futuro" element={<FutureValue/>}></Route>
+          <Route path="valor-presente" element={<PresentValue/>}></Route>
           <Route path="herramientas" element={<Tools/>}></Route>
         </Route>
         <Route path="*" element={<div>No existe esa pagina</div>}/>

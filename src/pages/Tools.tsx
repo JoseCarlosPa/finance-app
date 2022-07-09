@@ -16,7 +16,7 @@ const Tools = () => {
           title={'Valor Futuro'}
           description={'Podremos calcular el valor de una inversion en base a la taza'}
           icon={<TrendingUp className="text-white" width="64" height="64" />}
-          link={'/home/herramientas/valor-futuro'}
+          link={'/home/valor-futuro'}
         />
         <ToolsCard
           title={'Valor presente'}

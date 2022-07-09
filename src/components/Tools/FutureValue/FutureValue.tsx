@@ -1,36 +1,34 @@
 import React, {useCallback, useState} from 'react'
+import Process from "../FutureValue/Process";
 import {QuestionMarkCircleOutline, Reply} from "heroicons-react";
-import Process from "./Process";
 
-const Certificates = () => {
-
+const FutureValue = () => {
   const [period, setPeriod] = useState<number>(0)
-  const [cupon, setCupon] = useState<number>(0)
-  const [rate, setRate] = useState<number>(0)
   const [value, setValue] = useState<number>(0)
+  const [rate, setRate] = useState<number>(0)
 
   const handleCalculate = useCallback(()=>{
-    if(period !== 0 && cupon !== 0  && rate !== 0 && value !== 0){
-      return Number(((cupon * ((1 - (1 / Math.pow((1 + (rate / 100)),period))) / (rate / 100))) + (value / Math.pow((1 + (rate / 100)), period))).toFixed(4)).toLocaleString()
+    if(period !== 0  && rate !== 0 && value !== 0){
+      return Number((value*(Math.pow((1+rate/100),period))).toFixed(4)).toLocaleString()
     }
     return 0
-  },[cupon, period, rate, value])
+  },[ period, rate, value])
 
   const handleProcess = useCallback(()=>{
-    if(period !== 0 && cupon !== 0  && rate !== 0 && value !== 0){
-      return <Process period={period} value={value} cupon={cupon} rate={rate} />
+    if(period !== 0  && rate !== 0 && value !== 0){
+      return <Process period={period} value={value} rate={rate} />
     }
 
     return
-  },[cupon, period, rate, value])
+  },[ period, rate, value])
 
   return (
     <>
       <div className="flex flex-row items-center">
         <a href="/home/herramientas"><Reply width="36" height="36"/></a>
-        <h1 className="ml-12">Calculo de Bonos</h1>
+        <h1 className="ml-12">Valor Futuro</h1>
       </div>
-      <div className="grid grid-cols-4 gap-x-3">
+      <div className="grid grid-cols-3 gap-x-3">
         <div>
           <label className="block text-gray-700 text-sm font-bold mb-2">Periodo (Años) <QuestionMarkCircleOutline width="12" height="12"  /></label>
           <div className="flex flex-row">
@@ -44,14 +42,14 @@ const Certificates = () => {
           </div>
         </div>
         <div>
-          <label className="block text-gray-700 text-sm font-bold mb-2">Valor del cupon (MXN) <QuestionMarkCircleOutline width="12" height="12" /></label>
+          <label className="block text-gray-700 text-sm font-bold mb-2">Valor presente (MXN) <QuestionMarkCircleOutline width="12" height="12" /></label>
           <div className="flex flex-row">
             <input
               type="number"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Ejemplo: 80"
               step="0.01"
-              onChange={(e) => setCupon(Number(e.target.value))}
+              onChange={(e) => setValue(Number(e.target.value))}
             ></input>
           </div>
         </div>
@@ -67,24 +65,14 @@ const Certificates = () => {
             ></input>
           </div>
         </div>
-        <div>
-          <label className="block text-gray-700 text-sm font-bold mb-2">Valor Nominal (MXN) <QuestionMarkCircleOutline width="12" height="12" /></label>
-          <div className="flex flex-row">
-            <input
-              type="number"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="Ejemplo: 10"
-              step="0.01"
-              onChange={(e) => setValue(Number(e.target.value))}
-            ></input>
-          </div>
-        </div>
       </div>
       <div className="flex flex-row mt-4 border-2 rounded border-green-500 w-52 py-3 px-4">
-      $ {handleCalculate()}
+        $ {handleCalculate()}
       </div>
-      <div className="mt-4">{handleProcess()}</div>
+      <div className="mt-4">
+        {handleProcess()}
+      </div>
     </>
   )
 }
-export default React.memo(Certificates)
+export default React.memo(FutureValue)

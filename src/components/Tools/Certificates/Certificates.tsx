@@ -1,5 +1,6 @@
 import React, {useCallback, useState} from 'react'
 import {QuestionMarkCircleOutline, Reply} from "heroicons-react";
+import Process from "./Process";
 
 const Certificates = () => {
 
@@ -10,10 +11,17 @@ const Certificates = () => {
 
   const handleCalculate = useCallback(()=>{
     if(period !== 0 && cupon !== 0  && rate !== 0 && value !== 0){
-      return ((cupon * ((1 - (1 / (1 + (rate / 100)))) / (rate / 100))) + (value / Math.pow((1 + (rate / 100)), period))).toFixed(4)
+      return ((cupon * ((1 - (1 / Math.pow((1 + (rate / 100)),period))) / (rate / 100))) + (value / Math.pow((1 + (rate / 100)), period))).toFixed(4)
+    }
+    return 0
+  },[cupon, period, rate, value])
+
+  const handleProcess = useCallback(()=>{
+    if(period !== 0 && cupon !== 0  && rate !== 0 && value !== 0){
+      return <Process period={period} value={value} cupon={cupon} rate={rate} />
     }
 
-    return 0
+    return
   },[cupon, period, rate, value])
 
   return (
@@ -75,6 +83,7 @@ const Certificates = () => {
       <div className="flex flex-row mt-4 border-2 rounded border-green-500 w-52 py-3 px-4">
       $ {handleCalculate()}
       </div>
+      <div className="mt-4">{handleProcess()}</div>
     </>
 
 

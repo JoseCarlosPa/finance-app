@@ -7,7 +7,7 @@ import SingUp from "../pages/SingUp";
 import Home from "../pages/Home";
 import Tools from "../pages/Tools";
 import Recovery from "../pages/Recovery";
-import Certificates from "../components/Tools/Certificates";
+import Certificates from "../components/Tools/Certificates/Certificates";
 
 const Navigation = () => {
   return (

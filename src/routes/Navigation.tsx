@@ -5,8 +5,9 @@ import AuthRoute from "../components/AuthRoute";
 import Login from "../pages/Login";
 import SingUp from "../pages/SingUp";
 import Home from "../pages/Home";
-import IndexTools from "../components/Tools/IndexTools";
+import Tools from "../pages/Tools";
 import Recovery from "../pages/Recovery";
+import Certificates from "../components/Tools/Certificates";
 
 const Navigation = () => {
   return (
@@ -18,10 +19,8 @@ const Navigation = () => {
         <Route path="/singUp" element={<SingUp/>}/>
         <Route path="/recovery" element={<Recovery/>}/>
         <Route path="/home/*" element={<AuthRoute> <Home/></AuthRoute>}>
-          <Route path="herramientas/*" element={<IndexTools/>}>
-            <Route path="calculo-bonos" element={<IndexTools/>}/>
-            <Route path="valor-futuro" element={<IndexTools/>}/>
-          </Route>
+          <Route path="calculo-de-bonos" element={<Certificates/>}/>
+          <Route path="herramientas" element={<Tools/>}></Route>
         </Route>
         <Route path="*" element={<div>No existe esa pagina</div>}/>
       </Routes>

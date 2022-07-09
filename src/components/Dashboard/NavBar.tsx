@@ -34,7 +34,7 @@ const NavBar = () =>{
 
       <div className="items-center block w-auto max-h-screen overflow-auto h-sidenav grow basis-full">
         <ul className="flex flex-col pl-0 mb-0">
-          <li className="mt-0.5 w-full">
+          <li className="mt-0.5 w-full hover:scale-105 duration-300">
             <a
               className="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap rounded-lg  px-4 font-semibold text-slate-700 transition-colors"
               href="/home">
@@ -46,7 +46,7 @@ const NavBar = () =>{
             </a>
           </li>
 
-          <li className="mt-0.5 w-full">
+          <li className="mt-0.5 w-full hover:scale-105 duration-300">
             <a
               className="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
               href="./pages/tables.html">
@@ -58,7 +58,7 @@ const NavBar = () =>{
             </a>
           </li>
 
-          <li className="mt-0.5 w-full">
+          <li className="mt-0.5 w-full hover:scale-105 duration-300">
             <a
               className="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
               href="./pages/billing.html">
@@ -70,7 +70,7 @@ const NavBar = () =>{
             </a>
           </li>
 
-          <li className="mt-0.5 w-full">
+          <li className="mt-0.5 w-full hover:scale-105 duration-300">
             <a
               className="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
               href="./pages/virtual-reality.html">
@@ -82,7 +82,7 @@ const NavBar = () =>{
             </a>
           </li>
 
-          <li className="mt-0.5 w-full">
+          <li className="mt-0.5 w-full hover:scale-105 duration-300">
             <a
               className="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
               href="/home/herramientas">
@@ -114,7 +114,7 @@ const NavBar = () =>{
             <h6 className="pl-6 ml-2 font-bold leading-tight uppercase text-size-xs opacity-60">Account pages</h6>
           </li>
 
-          <li className="mt-0.5 w-full">
+          <li className="mt-0.5 w-full hover:scale-105 duration-300">
             <a
               className="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
               href="./pages/profile.html">
@@ -125,7 +125,7 @@ const NavBar = () =>{
               <span className="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Perfil</span>
             </a>
           </li>
-          <li className="mt-0.5 w-full">
+          <li className="mt-0.5 w-full hover:scale-105 duration-300">
             <div className="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors cursor-pointer" onClick={handleOnClick}>
               <div
                 className="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">

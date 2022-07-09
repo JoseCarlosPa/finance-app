@@ -1,8 +1,8 @@
 import React from 'react'
-import ToolsCard from "../Cards/ToolsCard";
+import ToolsCard from "../components/Cards/ToolsCard";
 import {ClipboardList, ColorSwatch, OfficeBuilding, TrendingUp} from "heroicons-react";
 
-const IndexTools = () => {
+const Tools = () => {
   return (
     <div className="flex flex-col">
       <div className="flex grid grid-cols-3">
@@ -10,7 +10,7 @@ const IndexTools = () => {
           title={'Bonos'}
           description={'Podremos calcular el valor de un bono en base al valor nominal, la taza el periodo y el valor del cupon'}
           icon={<ColorSwatch className="text-white" width="64" height="64" />}
-          link={'/home/herramientas/calculo-bonos'}
+          link={'/home/calculo-de-bonos'}
         />
         <ToolsCard
           title={'Valor Futuro'}
@@ -40,4 +40,4 @@ const IndexTools = () => {
   )
 }
 
-export default React.memo(IndexTools)
+export default React.memo(Tools)

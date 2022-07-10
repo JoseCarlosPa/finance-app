@@ -15,3 +15,5 @@ npm-debug.log
 # IDE
 /.idea
 .idea
+
+/src/config/config.ts

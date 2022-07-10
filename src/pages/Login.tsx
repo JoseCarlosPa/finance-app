@@ -5,6 +5,8 @@ import {Reply} from 'heroicons-react'
 import { Link } from 'react-router-dom';
 import {db} from "../App";
 import {collection,addDoc,getDocs} from 'firebase/firestore'
+import {useSetRecoilState} from "recoil";
+import {UserEmail} from "../store/recoil/User";
 
 const Login = () => {
 
@@ -15,6 +17,7 @@ const Login = () => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const userCollectionsRef = collection(db,'users')
+  const setUser = useSetRecoilState(UserEmail)
 
   const signInWithGoogle = async () => {
     setAuthing(true)
@@ -42,6 +45,7 @@ const Login = () => {
     event.preventDefault()
     signInWithEmailAndPassword(auth,email,password).then((userCredential) => {
       const user = userCredential.user
+      setUser(user.email)
       navigate('/home/dashboard')
     }).catch((error)=>{
       setError(true)

@@ -1,33 +1,39 @@
 import React, {useCallback} from 'react'
-import {getAuth, signOut} from "firebase/auth";
-import {Cash, CreditCard, CurrencyDollar, Home, LogoutOutline, User} from "heroicons-react";
+import {getAuth, onAuthStateChanged, signOut} from "firebase/auth";
+import {Cash, CreditCard, CurrencyDollar, Home, LogoutOutline, StatusOnline, User} from "heroicons-react";
 import logo from '../../logo.png'
+import {useRecoilState} from "recoil";
+import {UserEmail} from "../../store/recoil/User";
 
 const NavBar = () =>{
 
   const auth = getAuth()
+  const [userEmail,setUserEmail] = useRecoilState(UserEmail)
 
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setUserEmail(user.email)
+    }
+  });
 
   const handleOnClick = useCallback(()=>{
     return signOut(auth)
   },[auth])
 
-
-
-
-
-
   return(
     <aside className="max-w-62.5 ease-nav-brand z-990 fixed inset-y-0 my-4 ml-4 block w-full -translate-x-full flex-wrap items-center justify-between overflow-y-auto rounded-2xl border-0 bg-white p-0 antialiased shadow-lg transition-transform duration-200 xl:left-0 xl:translate-x-0 xl:bg-transparent">
       <div className="h-19.5">
-        <i className="absolute top-0 right-0 hidden p-4 opacity-50 cursor-pointer fas fa-times text-slate-400 xl:hidden"
-           sidenav-close></i>
-        <a className="block px-8 py-6 m-0 text-size-sm whitespace-nowrap text-slate-700" href="javascript:;"
+        <i className="absolute top-0 right-0 hidden p-4 opacity-50 cursor-pointer fas fa-times text-slate-400 xl:hidden"></i>
+        <a className="block px-8 py-6 m-0 text-size-sm whitespace-nowrap text-slate-700" href="#"
            target="_blank">
           <img src={logo}
                className="inline h-full max-w-full transition-all duration-200 ease-nav-brand max-h-8" alt="main_logo"/>
           <span className="ml-1 font-semibold transition-all duration-200 ease-nav-brand">Finance App</span>
         </a>
+      </div>
+      <div className="flex flex-row justify-center items-center">
+        <StatusOnline className="text-green-400 -mt-1" width="20" height="20" />
+        <span className="ml-2 transition-all duration-200 text-xs -mt-2">{userEmail}</span>
       </div>
 
       <hr className="h-px mt-0 bg-transparent bg-gradient-horizontal-dark"/>
@@ -90,8 +96,8 @@ const NavBar = () =>{
                 className="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
                 <svg width="12px" height="12px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg">
                   <title>settings</title>
-                  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                    <g transform="translate(-2020.000000, -442.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                  <g stroke="none"  fill="none">
+                    <g transform="translate(-2020.000000, -442.000000)" fill="#FFFFFF">
                       <g transform="translate(1716.000000, 291.000000)">
                         <g transform="translate(304.000000, 151.000000)">
                           <polygon className="fill-slate-800 opacity-60"

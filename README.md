@@ -23,7 +23,7 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
-
+[![[open-source]][open-source]][open-source-url]
 
 
 <!-- PROJECT LOGO -->
@@ -251,3 +251,5 @@ Use this space to list resources you find helpful and would like to give credit 
 [React-url]: https://reactjs.org/
 [Tailwindcss]: https://img.shields.io/badge/Tailwind-20232A?style=for-the-badge&logo=Tailwindcss&logoColor=61DAFB
 [Tailwindcss-url]: https://tailwindcss.com/
+[open-source]: https://img.shields.io/badge/OpenSource-green?style=for-the-badge
+[open-source-url]:https://opensource.com/

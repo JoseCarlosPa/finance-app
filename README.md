@@ -105,6 +105,8 @@ This section should list any major frameworks/libraries used to bootstrap your p
 
 * [![React][React.js]][React-url]
 * [![Tailwindcss][Tailwindcss]][Tailwindcss-url]
+* [![firebase][firebase]][firebase-url]
+
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -252,3 +254,5 @@ Use this space to list resources you find helpful and would like to give credit 
 [Tailwindcss-url]: https://tailwindcss.com/
 [open-source]: https://img.shields.io/badge/OpenSource-green?style=for-the-badge
 [open-source-url]:https://opensource.com/
+[firebase]: https://img.shields.io/badge/firebase-20232A?style=for-the-badge&logo=firebase&logoColor=fbc861
+[firebase-url]: https://firebase.google.com/

@@ -3,7 +3,8 @@ import {getAuth, GoogleAuthProvider, signInWithPopup,signInWithEmailAndPassword}
 import {useNavigate} from "react-router-dom";
 import {Reply} from 'heroicons-react'
 import { Link } from 'react-router-dom';
-
+import {db} from "../App";
+import {collection,addDoc,getDocs} from 'firebase/firestore'
 
 const Login = () => {
 
@@ -13,11 +14,20 @@ const Login = () => {
   const [error, setError] = useState<boolean>(false)
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
+  const userCollectionsRef = collection(db,'users')
 
   const signInWithGoogle = async () => {
     setAuthing(true)
-    signInWithPopup(auth, new GoogleAuthProvider()).then(response => {
-      navigate('/home/dashboard')
+    signInWithPopup(auth, new GoogleAuthProvider()).then(async userCredential => {
+      const user = userCredential.user
+      const data = await getDocs(userCollectionsRef)
+      const emails = data.docs.map((doc)=>({...doc.data()}))
+      if(emails.find(email => email.email === user.email)){
+        navigate('/home')
+      }else{
+        await addDoc(userCollectionsRef, {id: user.uid, email: user.email})
+        navigate('/home')
+      }
     }).catch(error => {
       console.error(error)
       setAuthing(false)

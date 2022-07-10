@@ -2,19 +2,31 @@ import React, {useCallback, useState} from 'react'
 import {Link, useNavigate} from "react-router-dom";
 import {Reply} from "heroicons-react";
 import {getAuth, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithPopup} from "firebase/auth";
-
+import {db} from "../App";
+import {collection, addDoc, getDocs} from 'firebase/firestore'
 const SingUp = ()=>{
 
   const auth = getAuth()
   const navigate = useNavigate()
   const [authing, setAuthing] = useState(false)
   const [email, setEmail] = useState<string>('')
+  const [error, setError] = useState<boolean>(false)
+  const [errorMssg,setErrorMssg] = useState<string>('')
   const [password, setPassword] = useState<string>('')
+  const userCollectionsRef = collection(db,'users')
 
   const signInWithGoogle = async () => {
     setAuthing(true)
-    signInWithPopup(auth, new GoogleAuthProvider()).then(response => {
-      navigate('/home')
+    signInWithPopup(auth, new GoogleAuthProvider()).then(async userCredential => {
+      const user = userCredential.user
+      const data = await getDocs(userCollectionsRef)
+      const emails = data.docs.map((doc)=>({...doc.data()}))
+      if(emails.find(email => email.email === user.email)){
+        navigate('/home')
+      }else{
+        await addDoc(userCollectionsRef, {id: user.uid, email: user.email})
+        navigate('/home')
+      }
     }).catch(error => {
       console.error(error)
       setAuthing(false)
@@ -27,14 +39,16 @@ const SingUp = ()=>{
 
   const handleRegister = useCallback((event:any) => {
     event.preventDefault()
-    createUserWithEmailAndPassword(auth,email,password).then((userCredential) => {
+    createUserWithEmailAndPassword(auth,email,password).then(async (userCredential) => {
       const user = userCredential.user
+      await addDoc(userCollectionsRef, {id: user.uid, email: user.email})
       navigate('/home')
     }).catch((error)=>{
-      console.error(error)
+      setError(true)
+      setErrorMssg(error.message)
     })
 
-  },[auth, email, navigate, password])
+  },[auth, email, navigate, password, userCollectionsRef])
 
   return(
     <div>
@@ -106,6 +120,9 @@ const SingUp = ()=>{
 
                 </div>
               </form>
+              <div className="mt-4 w-full flex justify-center items-center">
+                {error && <span className="text-red-500">{errorMssg}</span>}
+              </div>
               <div className="mt-12 text-sm font-display font-semibold text-gray-700 text-center">
                 ¿Ya  tienes una cuenta? <a className="cursor-pointer text-indigo-600 hover:text-indigo-800"
                                               href="/login">Inicia Sesion</a>

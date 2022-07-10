@@ -37,7 +37,7 @@ const NavBar = () =>{
           <li className="mt-0.5 w-full hover:scale-105 duration-300">
             <a
               className="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap rounded-lg  px-4 font-semibold text-slate-700 transition-colors"
-              href="/home">
+              href="/home/dashboard">
               <div
                 className="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
                 <Home />
@@ -49,7 +49,7 @@ const NavBar = () =>{
           <li className="mt-0.5 w-full hover:scale-105 duration-300">
             <a
               className="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
-              href="./pages/tables.html">
+              href="/home/tarjetas">
               <div
                 className="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
                 <CreditCard />
@@ -73,7 +73,7 @@ const NavBar = () =>{
           <li className="mt-0.5 w-full hover:scale-105 duration-300">
             <a
               className="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
-              href="./pages/virtual-reality.html">
+              href="/home/gastos">
               <div
                 className="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">
                 <CurrencyDollar />
@@ -111,7 +111,7 @@ const NavBar = () =>{
           </li>
 
           <li className="w-full mt-4">
-            <h6 className="pl-6 ml-2 font-bold leading-tight uppercase text-size-xs opacity-60">Account pages</h6>
+            <h6 className="pl-6 ml-2 font-bold leading-tight uppercase text-size-xs opacity-60">Paginas de tu Cuenta</h6>
           </li>
 
           <li className="mt-0.5 w-full hover:scale-105 duration-300">

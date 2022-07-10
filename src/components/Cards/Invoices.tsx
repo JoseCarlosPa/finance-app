@@ -8,13 +8,14 @@ const Invoices = () => {
         <div className="p-4 pb-0 mb-0 bg-white border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
           <div className="flex flex-wrap -mx-3">
             <div className="flex items-center flex-none w-1/2 max-w-full px-3">
-              <h6 className="mb-0">Invoices</h6>
+              <h6 className="mb-0">Gastos</h6>
             </div>
             <div className="flex-none w-1/2 max-w-full px-3 text-right">
+              <a href="/home/gastos">
               <button
-                className="inline-block px-8 py-2 mb-0 font-bold text-center uppercase align-middle transition-all bg-transparent border border-solid rounded-lg shadow-none cursor-pointer leading-pro ease-soft-in text-size-xs bg-150 active:opacity-85 hover:scale-102 tracking-tight-soft bg-x-25 border-fuchsia-500 text-fuchsia-500 hover:opacity-75">View
-                All
+                className="inline-block px-8 py-2 mb-0 font-bold text-center uppercase align-middle transition-all bg-transparent border border-solid rounded-lg shadow-none cursor-pointer leading-pro ease-soft-in text-size-xs bg-150 active:opacity-85 hover:scale-102 tracking-tight-soft bg-x-25 border-fuchsia-500 text-fuchsia-500 hover:opacity-75">Ver mas
               </button>
+              </a>
             </div>
           </div>
         </div>
@@ -28,9 +29,6 @@ const Invoices = () => {
               </div>
               <div className="flex items-center leading-normal text-size-sm">
                 $180
-                <button
-                  className="inline-block px-0 py-3 mb-0 ml-6 font-bold leading-normal text-center uppercase align-middle transition-all bg-transparent border-0 rounded-lg shadow-none cursor-pointer ease-soft-in bg-150 text-size-sm active:opacity-85 hover:scale-102 tracking-tight-soft bg-x-25 text-slate-700">
-                  <i className="mr-1 fas fa-file-pdf text-size-lg"></i> PDF</button>
               </div>
             </li>
             <li
@@ -42,9 +40,6 @@ const Invoices = () => {
               </div>
               <div className="flex items-center leading-normal text-size-sm">
                 $250
-                <button
-                  className="inline-block px-0 py-3 mb-0 ml-6 font-bold leading-normal text-center uppercase align-middle transition-all bg-transparent border-0 rounded-lg shadow-none cursor-pointer ease-soft-in bg-150 text-size-sm active:opacity-85 hover:scale-102 tracking-tight-soft bg-x-25 text-slate-700">
-                  <i className="mr-1 fas fa-file-pdf text-size-lg"></i> PDF</button>
               </div>
             </li>
             <li
@@ -55,9 +50,6 @@ const Invoices = () => {
               </div>
               <div className="flex items-center leading-normal text-size-sm">
                 $560
-                <button
-                  className="inline-block px-0 py-3 mb-0 ml-6 font-bold leading-normal text-center uppercase align-middle transition-all bg-transparent border-0 rounded-lg shadow-none cursor-pointer ease-soft-in bg-150 text-size-sm active:opacity-85 hover:scale-102 tracking-tight-soft bg-x-25 text-slate-700">
-                  <i className="mr-1 fas fa-file-pdf text-size-lg"></i> PDF</button>
               </div>
             </li>
             <li
@@ -68,9 +60,7 @@ const Invoices = () => {
               </div>
               <div className="flex items-center leading-normal text-size-sm">
                 $120
-                <button
-                  className="inline-block px-0 py-3 mb-0 ml-6 font-bold leading-normal text-center uppercase align-middle transition-all bg-transparent border-0 rounded-lg shadow-none cursor-pointer ease-soft-in bg-150 text-size-sm active:opacity-85 hover:scale-102 tracking-tight-soft bg-x-25 text-slate-700">
-                  <i className="mr-1 fas fa-file-pdf text-size-lg"></i> PDF</button>
+
               </div>
             </li>
             <li
@@ -81,9 +71,7 @@ const Invoices = () => {
               </div>
               <div className="flex items-center leading-normal text-size-sm">
                 $300
-                <button
-                  className="inline-block px-0 py-3 mb-0 ml-6 font-bold leading-normal text-center uppercase align-middle transition-all bg-transparent border-0 rounded-lg shadow-none cursor-pointer ease-soft-in bg-150 text-size-sm active:opacity-85 hover:scale-102 tracking-tight-soft bg-x-25 text-slate-700">
-                  <i className="mr-1 fas fa-file-pdf text-size-lg"></i> PDF</button>
+
               </div>
             </li>
           </ul>

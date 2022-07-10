@@ -1,11 +1,15 @@
 import React from 'react'
 import ToolsCard from "../components/Cards/ToolsCard";
-import {ClipboardList, ColorSwatch, OfficeBuilding, TrendingUp} from "heroicons-react";
+import {ClipboardList, ColorSwatch, OfficeBuilding, Reply, TrendingUp} from "heroicons-react";
 
 const Tools = () => {
   return (
     <div className="flex flex-col">
-      <div className="flex grid grid-cols-3">
+      <div className="flex flex-row items-center">
+        <a href="/home/dashboard"><Reply width="36" height="36"/></a>
+        <h1 className="ml-12">Herramientas</h1>
+      </div>
+      <div className="flex grid grid-cols-3 mt-4">
         <ToolsCard
           title={'Bonos'}
           description={'Podremos calcular el valor de un bono en base al valor nominal, la taza el periodo y el valor del cupon'}

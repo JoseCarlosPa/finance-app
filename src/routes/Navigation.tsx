@@ -10,6 +10,9 @@ import Recovery from "../pages/Recovery";
 import Certificates from "../components/Tools/Certificates/Certificates";
 import FutureValue from "../components/Tools/FutureValue/FutureValue";
 import PresentValue from "../components/Tools/PresentValue/PresentValue";
+import Bills from "../pages/Bills";
+import CreditCards from "../pages/CreditCards";
+import Dashboard from "../components/Dashboard/Dashboard";
 
 const Navigation = () => {
   return (
@@ -21,10 +24,13 @@ const Navigation = () => {
         <Route path="/singUp" element={<SingUp/>}/>
         <Route path="/recovery" element={<Recovery/>}/>
         <Route path="/home/*" element={<AuthRoute> <Home/></AuthRoute>}>
+          <Route path="dashboard" element={<Dashboard/>}></Route>
           <Route path="calculo-de-bonos" element={<Certificates/>}/>
           <Route path="valor-futuro" element={<FutureValue/>}></Route>
           <Route path="valor-presente" element={<PresentValue/>}></Route>
           <Route path="herramientas" element={<Tools/>}></Route>
+          <Route path="gastos" element={<Bills/>}></Route>
+          <Route path="tarjetas" element={<CreditCards/>}></Route>
         </Route>
         <Route path="*" element={<div>No existe esa pagina</div>}/>
       </Routes>

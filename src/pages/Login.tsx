@@ -17,7 +17,7 @@ const Login = () => {
   const signInWithGoogle = async () => {
     setAuthing(true)
     signInWithPopup(auth, new GoogleAuthProvider()).then(response => {
-      navigate('/home')
+      navigate('/home/dashboard')
     }).catch(error => {
       console.error(error)
       setAuthing(false)
@@ -32,7 +32,7 @@ const Login = () => {
     event.preventDefault()
     signInWithEmailAndPassword(auth,email,password).then((userCredential) => {
       const user = userCredential.user
-      navigate('/home')
+      navigate('/home/dashboard')
     }).catch((error)=>{
       setError(true)
     })

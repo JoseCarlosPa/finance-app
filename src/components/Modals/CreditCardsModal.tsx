@@ -3,6 +3,8 @@ import {CreditCard, X} from "heroicons-react";
 import {collection, doc, setDoc,addDoc} from "firebase/firestore";
 import {db} from "../../App";
 import {getAuth} from "firebase/auth";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
 
 interface CreditCardsModalProps {
   open: boolean
@@ -11,6 +13,8 @@ interface CreditCardsModalProps {
 
 const CreditCardsModal = ({open, setHidden}: CreditCardsModalProps) => {
   const auth = getAuth()
+  const MySwal = withReactContent(Swal)
+
   const show = () => {
     if (open) {
       return ''
@@ -45,9 +49,20 @@ const CreditCardsModal = ({open, setHidden}: CreditCardsModalProps) => {
       await addDoc(creditCardsRef,creditCards)
 
       setHidden(false)
+      MySwal.fire('Exito!',
+        'Tu tarjeta fue guardada con exito!',
+        'success').then(() => {
+      })
+
     }catch (error){
       console.error(error)
     }
+
+    event.target.name.value =''
+    event.target.bank.value = ''
+    event.target.card_number.value = ''
+    event.target.max_balance.value = ''
+    event.target.used_balance.value = ''
 
   }, [])
 

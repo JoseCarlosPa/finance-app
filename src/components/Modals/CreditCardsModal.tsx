@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react'
 import {CreditCard, X} from "heroicons-react";
-import {addDoc, collection, doc, getDocs, setDoc} from "firebase/firestore";
+import {doc, setDoc} from "firebase/firestore";
 import {db} from "../../App";
 import {getAuth} from "firebase/auth";
 
@@ -26,7 +26,6 @@ const CreditCardsModal = ({open, setHidden}: CreditCardsModalProps) => {
   const handleSubmit = useCallback(async (event:any) => {
     event.preventDefault()
     const user = auth.currentUser
-    console.log('ACTIVE',user)
     // Add to the user the credit card
     try{
       if(user === null){
@@ -101,16 +100,16 @@ const CreditCardsModal = ({open, setHidden}: CreditCardsModalProps) => {
                 </div>
               </div>
 
-              <div className="flex grid grid-cols-4 gap-2 ">
-                <div className="col-span-2 flex flex-col">
+              <div className="flex grid grid-cols-3 gap-2 ">
+                <div className="col-span-1 flex flex-col">
                   <label className="text-gray-700 text-sm font-bold mb-2 mt-4">
-                    Numero de tarjeta
+                    Ultimos 4 digitos de la tarjeta
                   </label>
                   <input
                     name="card_number"
                     required
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="card_number" type="tel" placeholder="*** **** ****"/>
+                    id="card_number" type="tel" max="4" min="0" placeholder="*** **** ****"/>
 
                 </div>
                 <div className="col-span-1 flex flex-col">

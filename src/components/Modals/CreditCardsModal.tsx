@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react'
 import {CreditCard, X} from "heroicons-react";
-import {doc, setDoc} from "firebase/firestore";
+import {collection, doc, setDoc,addDoc} from "firebase/firestore";
 import {db} from "../../App";
 import {getAuth} from "firebase/auth";
 
@@ -31,7 +31,6 @@ const CreditCardsModal = ({open, setHidden}: CreditCardsModalProps) => {
       if(user === null){
         return
       }
-      const path:string = 'users/' + user.uid
 
       const creditCards = {
         name: event.target.name.value,
@@ -41,10 +40,10 @@ const CreditCardsModal = ({open, setHidden}: CreditCardsModalProps) => {
         used_balance: event.target.used_balance.value,
 
       }
+      // create a new collection and save the credit card
+      const creditCardsRef = collection(db,'users',user.uid,'credit_cards')
+      await addDoc(creditCardsRef,creditCards)
 
-      const pathRef = doc(db,'users',user.uid)
-
-      await setDoc(pathRef, {creditCards},{merge:true})
       setHidden(false)
     }catch (error){
       console.error(error)

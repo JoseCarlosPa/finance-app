@@ -1,20 +1,11 @@
 import React, {useCallback} from 'react'
-import {getAuth, onAuthStateChanged, signOut} from "firebase/auth";
+import {getAuth, signOut} from "firebase/auth";
 import {Cash, CreditCard, CurrencyDollar, Home, LogoutOutline, StatusOnline, User} from "heroicons-react";
 import logo from '../../logo.png'
-import {useRecoilState} from "recoil";
-import {UserEmail} from "../../store/recoil/User";
 
 const NavBar = () =>{
 
   const auth = getAuth()
-  const [userEmail,setUserEmail] = useRecoilState(UserEmail)
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setUserEmail(user.email)
-    }
-  });
 
   const handleOnClick = useCallback(()=>{
     return signOut(auth)
@@ -31,9 +22,8 @@ const NavBar = () =>{
           <span className="ml-1 font-semibold transition-all duration-200 ease-nav-brand">Finance App</span>
         </a>
       </div>
-      <div className="flex flex-row justify-center items-center">
+      <div className="flex flex-row justify-start items-center ml-10">
         <StatusOnline className="text-green-400 -mt-1" width="20" height="20" />
-        <span className="ml-2 transition-all duration-200 text-xs -mt-2">{userEmail}</span>
       </div>
 
       <hr className="h-px mt-0 bg-transparent bg-gradient-horizontal-dark"/>

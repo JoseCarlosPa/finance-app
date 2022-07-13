@@ -3,7 +3,7 @@ import {Link, useNavigate} from "react-router-dom";
 import {Reply} from "heroicons-react";
 import {getAuth, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithPopup} from "firebase/auth";
 import {db} from "../App";
-import {collection, addDoc, getDocs} from 'firebase/firestore'
+import {collection, getDocs,doc, setDoc} from 'firebase/firestore'
 const SingUp = ()=>{
 
   const auth = getAuth()
@@ -24,7 +24,7 @@ const SingUp = ()=>{
       if(emails.find(email => email.email === user.email)){
         navigate('/home')
       }else{
-        await addDoc(userCollectionsRef, {id: user.uid, email: user.email})
+        await setDoc(doc(db,'users',user.uid),{id: user.uid, email: user.email})
         navigate('/home')
       }
     }).catch(error => {
@@ -41,7 +41,7 @@ const SingUp = ()=>{
     event.preventDefault()
     createUserWithEmailAndPassword(auth,email,password).then(async (userCredential) => {
       const user = userCredential.user
-      await addDoc(userCollectionsRef, {id: user.uid, email: user.email})
+      await setDoc(doc(db,'users',user.uid),{id: user.uid, email: user.email})
       navigate('/home')
     }).catch((error)=>{
       setError(true)

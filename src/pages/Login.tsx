@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 import {Reply} from 'heroicons-react'
 import { Link } from 'react-router-dom';
 import {db} from "../App";
-import {collection,addDoc,getDocs} from 'firebase/firestore'
+import {collection, getDocs, setDoc, doc} from 'firebase/firestore'
 import {useSetRecoilState} from "recoil";
 import {UserEmail} from "../store/recoil/User";
 
@@ -28,7 +28,7 @@ const Login = () => {
       if(emails.find(email => email.email === user.email)){
         navigate('/home')
       }else{
-        await addDoc(userCollectionsRef, {id: user.uid, email: user.email})
+        await setDoc(doc(db,'users',user.uid),{id: user.uid, email: user.email})
         navigate('/home')
       }
     }).catch(error => {

@@ -133,7 +133,7 @@ const CreditCardsModal = ({open, setHidden,setCards,cards}: CreditCardsModalProp
                     name="card_number"
                     required
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="card_number" type="number" max="4" min="0" placeholder="****"/>
+                    id="card_number" type="number" max="9999" min="0" placeholder="****"/>
 
                 </div>
                 <div className="col-span-1 flex flex-col">
@@ -144,7 +144,7 @@ const CreditCardsModal = ({open, setHidden,setCards,cards}: CreditCardsModalProp
                     required
                     name="max_balance"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="max" type="number" min="0" placeholder="Ejemplo: 20,000"/>
+                    id="max" type="number" min="0" placeholder="Ejemplo: 20,000" step="0.01"/>
 
                 </div>
                 <div className="col-span-1 flex flex-col">
@@ -155,7 +155,7 @@ const CreditCardsModal = ({open, setHidden,setCards,cards}: CreditCardsModalProp
                     required
                     name="used_balance"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="used" type="number" placeholder="Ejemplo: 3,750.54"/>
+                    id="used" type="number" step="0.01" placeholder="Ejemplo: 3,750.54"/>
 
                 </div>
               </div>

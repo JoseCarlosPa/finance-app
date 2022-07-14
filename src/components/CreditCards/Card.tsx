@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react'
 import {singleCard} from "../../pages/CreditCards";
-import {Trash} from "heroicons-react";
+import {Pencil, Trash} from "heroicons-react";
 import Swal from "sweetalert2";
 import {deleteDoc, doc} from "firebase/firestore";
 import {db} from "../../App";
@@ -65,11 +65,12 @@ const Card = ({card,setCards}:CardProps) =>{
               </div>
               <div>
                 <p className="mb-0 leading-normal text-white text-size-sm opacity-80">Banco</p>
-                <h6 className="mb-0 text-white text-xs">{card.bank}</h6>
+                <h6 className="mb-0 text-white ">{card.bank}</h6>
               </div>
             </div>
             <div className="flex items-end justify-end w-1/5 ml-auto">
-              <Trash  className="text-red-500 cursor-pointer" width="26" height="26" onClick={handleDelete}/>
+              <Pencil className="text-yellow-100 cursor-pointer" width="26" height="26" onClick={handleDelete}/>
+              <Trash  className="text-red-600 cursor-pointer" width="26" height="26" onClick={handleDelete}/>
             </div>
           </div>
         </div>

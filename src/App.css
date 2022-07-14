@@ -2432,6 +2432,10 @@ h6 {
   color: rgb(234 6 6 / var(--tw-text-opacity));
 }
 
+.text-yellow-100 {
+  --tw-text-opacity: 1;
+  color: rgb(250, 238, 14);
+}
 .text-lime-500 {
   --tw-text-opacity: 1;
   color: rgb(130 214 22 / var(--tw-text-opacity));

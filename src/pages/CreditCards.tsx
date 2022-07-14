@@ -56,21 +56,37 @@ const CreditCards = () => {
   const renderCards = useCallback(() => {
     return (
       cards.map((card, index) => {
-        return (<div className="flex grid grid-cols-6 mb-4" key={index}>
+        return (<div className="flex grid grid-cols-6 mb-4 gap-2" key={index}>
           <div className="col-span-2">
             <Card card={card} setCards={setCards}/>
           </div>
-          <div className="flex flex-col col-span-2">
-            <div className="flex items-center justify-center">
-              <span className="mr-2 font-semibold leading-tight text-size-xs">{(Number(card.used_balance)*100)/Number(card.max_balance)}%</span>
-              <div>
-                <div className="text-size-xs h-0.75 w-30 m-0 flex overflow-visible rounded-lg bg-gray-200">
-                  <div
-                    className="duration-600 ease-soft bg-gradient-cyan -mt-0.38 -ml-px flex h-1.5 w-3/5 flex-col justify-center overflow-hidden whitespace-nowrap rounded bg-fuchsia-500 text-center text-white transition-all"
-                    role="progressbar" aria-valuenow={60} aria-valuemin={0} aria-valuemax={100}/>
+          <div className="flex flex-col col-span-2 ">
+            <div className="flex flex-row w-full justify-center rounded-md" style={{border: '1px solid gray'}}>
+              <div className="flex flex-col text-center">
+                <div className="flex flex-row">
+                  <div className="flex flex-col text-center p-2 ">
+                    <p>Monto Maximo</p>
+                    <p>$ {Number(card.max_balance).toLocaleString()}</p>
+                  </div>
+                  <div className="flex flex-col text-center p-2">
+                    <p>Monto Usado</p>
+                    <p>$ {Number(card.used_balance).toLocaleString()}</p>
+                  </div>
                 </div>
+                <p>Sobrante:</p>
+                <p>$ {Number((Number(card.max_balance)-Number(card.used_balance)).toFixed(2)).toLocaleString()}</p>
+              </div>
+
+            </div>
+            <div className=" flex flex-col items-center justify-center items-center">
+              <span
+                className="mr-2 font-semibold leading-tight text-size-xs">{((Number(card.used_balance) * 100) / Number(card.max_balance)).toFixed(2)}%</span>
+              <div className="w-full h-4 mb-4 bg-gray-200 rounded-full dark:bg-gray-700">
+                <div className="h-4 bg-blue-600 rounded-full bg-gradient-fuchsia"
+                     style={{width: `${(Number(card.used_balance) * 100) / Number(card.max_balance)}%`}}></div>
               </div>
             </div>
+
           </div>
         </div>)
       })

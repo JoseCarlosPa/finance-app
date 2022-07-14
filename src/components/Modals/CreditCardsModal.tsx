@@ -48,24 +48,18 @@ const CreditCardsModal = ({open, setHidden,setCards,cards}: CreditCardsModalProp
 
       }
       const creditCardsRef = collection(db,'users',user.uid,'credit_cards')
-      await addDoc(creditCardsRef,creditCards)
-
-      const localCard = {
-        id: creditCardsRef.id,
-        name: event.target.name.value,
-        bank: event.target.bank.value,
-        card_number: event.target.card_number.value,
-        max_balance: event.target.max_balance.value,
-        used_balance: event.target.used_balance.value,
-
-      }
-
-      setHidden(false)
-      setCards([...cards,localCard])
-
-      MySwal.fire('Exito!',
-        'Tu tarjeta fue guardada con exito!',
-        'success').then(() => {
+      await addDoc(creditCardsRef,creditCards).then((doc:any)=>{
+        setHidden(false)
+        const localCard = {
+          id:doc.id,
+          name: event.target.name.value,
+          bank: event.target.bank.value,
+          card_number: event.target.card_number.value,
+          max_balance: event.target.max_balance.value,
+          used_balance: event.target.used_balance.value,
+        }
+        setCards((cards) => [...cards,localCard])
+        MySwal.fire('Exito!', 'Tu tarjeta fue guardada con exito!', 'success')
       })
 
     }catch (error){
@@ -89,10 +83,8 @@ const CreditCardsModal = ({open, setHidden,setCards,cards}: CreditCardsModalProp
       className={` transition justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ml-64 ${show()}`}
     >
       <div className="relative w-full my-6 mx-auto max-w-3xl">
-        {/*content*/}
         <form onSubmit={handleSubmit}
           className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-          {/*header*/}
           <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
             <h3 className="text-3xl font-semibold">
               Nueva Tarjeta <CreditCard/>
@@ -141,7 +133,7 @@ const CreditCardsModal = ({open, setHidden,setCards,cards}: CreditCardsModalProp
                     name="card_number"
                     required
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="card_number" type="tel" max="4" min="0" placeholder="*** **** ****"/>
+                    id="card_number" type="number" max="4" min="0" placeholder="****"/>
 
                 </div>
                 <div className="col-span-1 flex flex-col">

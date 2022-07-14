@@ -4,7 +4,7 @@ import CreditCardsModal from "../components/Modals/CreditCardsModal";
 import {collection, query, getDocs} from "firebase/firestore";
 import {db} from "../App";
 import {getAuth} from "firebase/auth";
-import Card from "../components/Cards/Card";
+import Card from "../components/CreditCards/Card";
 
 export type singleCard = {
   id: string
@@ -31,10 +31,9 @@ const CreditCards = () => {
     setCards([])
     const creditCardsArray = query(collection(db, "users", user.uid, "credit_cards"));
     const querySnapshot = await getDocs(creditCardsArray);
-    console.log(querySnapshot)
     querySnapshot.forEach((doc) => {
       const isCard = {
-        id:doc.id,
+        id: doc.id,
         name: doc.data().name,
         bank: doc.data().bank,
         card_number: doc.data().card_number,
@@ -54,18 +53,29 @@ const CreditCards = () => {
   }, [getCreditCards])
 
 
- const renderCards = useCallback(() => {
-   console.log('CARDS',cards)
-   return(
-     cards.map((card, index) => {
-       return(<div className="flex grid grid-cols-6 mb-4" key={index}>
-         <div className="col-span-2" >
-           <Card card={card} setCards={setCards} />
-         </div>
-       </div>)
-     })
-   )
- },[cards])
+  const renderCards = useCallback(() => {
+    return (
+      cards.map((card, index) => {
+        return (<div className="flex grid grid-cols-6 mb-4" key={index}>
+          <div className="col-span-2">
+            <Card card={card} setCards={setCards}/>
+          </div>
+          <div className="flex flex-col col-span-2">
+            <div className="flex items-center justify-center">
+              <span className="mr-2 font-semibold leading-tight text-size-xs">{(Number(card.used_balance)*100)/Number(card.max_balance)}%</span>
+              <div>
+                <div className="text-size-xs h-0.75 w-30 m-0 flex overflow-visible rounded-lg bg-gray-200">
+                  <div
+                    className="duration-600 ease-soft bg-gradient-cyan -mt-0.38 -ml-px flex h-1.5 w-3/5 flex-col justify-center overflow-hidden whitespace-nowrap rounded bg-fuchsia-500 text-center text-white transition-all"
+                    role="progressbar" aria-valuenow={60} aria-valuemin={0} aria-valuemax={100}/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>)
+      })
+    )
+  }, [cards])
 
   const handleOnClick = useCallback(() => {
     setOpenModal(true)

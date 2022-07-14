@@ -5,9 +5,9 @@ import {collection, query, getDocs} from "firebase/firestore";
 import {db} from "../App";
 import {getAuth} from "firebase/auth";
 import Card from "../components/Cards/Card";
-import Swal from "sweetalert2";
 
 export type singleCard = {
+  id: string
   name: string
   bank: string
   card_number: string
@@ -15,6 +15,8 @@ export type singleCard = {
   used_balance: string
 
 }
+
+
 const CreditCards = () => {
 
   const [cards, setCards] = useState<singleCard[]>([])
@@ -29,8 +31,10 @@ const CreditCards = () => {
     setCards([])
     const creditCardsArray = query(collection(db, "users", user.uid, "credit_cards"));
     const querySnapshot = await getDocs(creditCardsArray);
+    console.log(querySnapshot)
     querySnapshot.forEach((doc) => {
       const isCard = {
+        id:doc.id,
         name: doc.data().name,
         bank: doc.data().bank,
         card_number: doc.data().card_number,
@@ -49,32 +53,23 @@ const CreditCards = () => {
     })
   }, [getCreditCards])
 
-  const handleDelete = useCallback(()=>{
 
-    Swal.fire({
-      title: 'Estas seguro que deseas eliminar esta tarjeta?',
-      text: "No podras recuperar la informacion!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, eliminalo!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-
-        Swal.fire(
-          'Eliminado!',
-          'Tu tajeta fue eliminada con exito.',
-          'success'
-        )
-      }
-    })
-  },[])
-
+ const renderCards = useCallback(() => {
+   console.log('CARDS',cards)
+   return(
+     cards.map((card, index) => {
+       return(<div className="flex grid grid-cols-6 mb-4" key={index}>
+         <div className="col-span-2" >
+           <Card card={card} setCards={setCards} />
+         </div>
+       </div>)
+     })
+   )
+ },[cards])
 
   const handleOnClick = useCallback(() => {
     setOpenModal(true)
-  }, [])
+  }, [cards])
 
   return (
     <>
@@ -82,7 +77,7 @@ const CreditCards = () => {
         <a href="/home/dashboard"><Reply width="36" height="36"/></a>
         <h1 className="ml-12">Tarjetas</h1>
       </div>
-      <CreditCardsModal open={openModal} setHidden={setOpenModal}/>
+      <CreditCardsModal open={openModal} setHidden={setOpenModal} setCards={setCards} cards={cards}/>
 
       {cards.length <= 0 ?
         (<div className="flex justify-center items-center h-screen -my-40">
@@ -102,13 +97,9 @@ const CreditCards = () => {
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 onClick={handleOnClick}>+ Agregar tarjeta <CreditCard/></button>
             </div>
-            {cards.map((card, index) => {
-              return(<div className="flex grid grid-cols-6 mb-4">
-                <div className="col-span-2" onClick={handleDelete}>
-                  <Card card={card} />
-                </div>
-              </div>)
-            })}
+            <div>
+              {renderCards()}
+            </div>
           </div>
         )
       }

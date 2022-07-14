@@ -1,12 +1,52 @@
-import React from 'react'
+import React, {useCallback} from 'react'
 import {singleCard} from "../../pages/CreditCards";
 import {Trash} from "heroicons-react";
+import Swal from "sweetalert2";
+import {deleteDoc, doc} from "firebase/firestore";
+import {db} from "../../App";
+import {getAuth} from "firebase/auth";
 
 type CardProps = {
   card: singleCard
+  setCards:  React.Dispatch<React.SetStateAction<singleCard[]>>
 }
 
-const Card = ({card}:CardProps) =>{
+const Card = ({card,setCards}:CardProps) =>{
+
+  const auth = getAuth()
+
+
+  const handleDelete = useCallback(()=>{
+    const user = auth.currentUser
+    if (user === null) {
+      return
+    }
+    Swal.fire({
+      title: 'Estas seguro que deseas eliminar esta tarjeta?',
+      text: "No podras recuperar la informacion!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, eliminalo!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+
+        await deleteDoc(doc(db, "users",user.uid,"credit_cards",card.id))
+        setCards(current =>
+          current.filter(arr => {
+            return arr.id !==card.id ;
+          }))
+        Swal.fire(
+          'Eliminado!',
+          'Tu tajeta fue eliminada con exito.',
+          'success'
+        )
+      }
+    })
+  },[auth.currentUser, card.id])
+
+
   return (
     <div
       className="relative flex flex-col min-w-0 break-words bg-transparent border-0 border-transparent border-solid shadow-xl rounded-2xl bg-clip-border">
@@ -29,7 +69,7 @@ const Card = ({card}:CardProps) =>{
               </div>
             </div>
             <div className="flex items-end justify-end w-1/5 ml-auto">
-              <Trash  className="text-red-500 cursor-pointer" width="26" height="26"/>
+              <Trash  className="text-red-500 cursor-pointer" width="26" height="26" onClick={handleDelete}/>
             </div>
           </div>
         </div>

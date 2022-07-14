@@ -1,17 +1,20 @@
 import React, {useCallback} from 'react'
 import {CreditCard, X} from "heroicons-react";
-import {collection, doc, setDoc,addDoc} from "firebase/firestore";
+import {collection,addDoc} from "firebase/firestore";
 import {db} from "../../App";
 import {getAuth} from "firebase/auth";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import {singleCard} from "../../pages/CreditCards";
 
 interface CreditCardsModalProps {
   open: boolean
   setHidden: (isOpen: boolean) => void
+  setCards: React.Dispatch<React.SetStateAction<singleCard[]>>
+  cards: singleCard[]
 }
 
-const CreditCardsModal = ({open, setHidden}: CreditCardsModalProps) => {
+const CreditCardsModal = ({open, setHidden,setCards,cards}: CreditCardsModalProps) => {
   const auth = getAuth()
   const MySwal = withReactContent(Swal)
 
@@ -44,11 +47,22 @@ const CreditCardsModal = ({open, setHidden}: CreditCardsModalProps) => {
         used_balance: event.target.used_balance.value,
 
       }
-      // create a new collection and save the credit card
       const creditCardsRef = collection(db,'users',user.uid,'credit_cards')
       await addDoc(creditCardsRef,creditCards)
 
+      const localCard = {
+        id: creditCardsRef.id,
+        name: event.target.name.value,
+        bank: event.target.bank.value,
+        card_number: event.target.card_number.value,
+        max_balance: event.target.max_balance.value,
+        used_balance: event.target.used_balance.value,
+
+      }
+
       setHidden(false)
+      setCards([...cards,localCard])
+
       MySwal.fire('Exito!',
         'Tu tarjeta fue guardada con exito!',
         'success').then(() => {

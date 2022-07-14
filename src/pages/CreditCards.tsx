@@ -1,15 +1,80 @@
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {CreditCard, Reply} from "heroicons-react";
 import CreditCardsModal from "../components/Modals/CreditCardsModal";
+import {collection, query, getDocs} from "firebase/firestore";
+import {db} from "../App";
+import {getAuth} from "firebase/auth";
+import Card from "../components/Cards/Card";
+import Swal from "sweetalert2";
 
+export type singleCard = {
+  name: string
+  bank: string
+  card_number: string
+  max_balance: string
+  used_balance: string
+
+}
 const CreditCards = () => {
 
-  const [cards, setCards] = useState<string[]>([])
+  const [cards, setCards] = useState<singleCard[]>([])
   const [openModal, setOpenModal] = useState<boolean>(false)
+  const auth = getAuth()
+
+  const getCreditCards = useCallback(async () => {
+    const user = auth.currentUser
+    if (user === null) {
+      return
+    }
+    setCards([])
+    const creditCardsArray = query(collection(db, "users", user.uid, "credit_cards"));
+    const querySnapshot = await getDocs(creditCardsArray);
+    querySnapshot.forEach((doc) => {
+      const isCard = {
+        name: doc.data().name,
+        bank: doc.data().bank,
+        card_number: doc.data().card_number,
+        max_balance: doc.data().max_balance,
+        used_balance: doc.data().used_balance,
+
+      }
+      setCards(cards => [...cards, isCard])
+    });
+  }, [auth.currentUser])
+
+
+  useEffect(() => {
+    return (() => {
+      getCreditCards()
+    })
+  }, [getCreditCards])
+
+  const handleDelete = useCallback(()=>{
+
+    Swal.fire({
+      title: 'Estas seguro que deseas eliminar esta tarjeta?',
+      text: "No podras recuperar la informacion!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, eliminalo!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+        Swal.fire(
+          'Eliminado!',
+          'Tu tajeta fue eliminada con exito.',
+          'success'
+        )
+      }
+    })
+  },[])
+
 
   const handleOnClick = useCallback(() => {
     setOpenModal(true)
-  },[])
+  }, [])
 
   return (
     <>
@@ -19,16 +84,33 @@ const CreditCards = () => {
       </div>
       <CreditCardsModal open={openModal} setHidden={setOpenModal}/>
 
-      {cards.length <= 0 &&
-        <div className="flex justify-center items-center h-screen -my-40">
+      {cards.length <= 0 ?
+        (<div className="flex justify-center items-center h-screen -my-40">
           <div className="flex flex-col">
             <h3>¡Parece que aun no tienes niguna tarjeta registrada!</h3>
             <div className="flex flex-row justify-center">
               <p>Para agregar una tarjeta, haz click en el boton de abajo</p>
             </div>
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onClick={handleOnClick}>+ Agregar tarjeta <CreditCard /></button>
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              onClick={handleOnClick}>+ Agregar tarjeta <CreditCard/></button>
           </div>
-        </div>
+        </div>) : (
+          <div className="flex flex-col">
+            <div className="flex flex-row justify-end">
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                onClick={handleOnClick}>+ Agregar tarjeta <CreditCard/></button>
+            </div>
+            {cards.map((card, index) => {
+              return(<div className="flex grid grid-cols-6 mb-4">
+                <div className="col-span-2" onClick={handleDelete}>
+                  <Card card={card} />
+                </div>
+              </div>)
+            })}
+          </div>
+        )
       }
 
     </>

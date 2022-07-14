@@ -55,7 +55,11 @@ const CreditCardsModal = ({open, setHidden}: CreditCardsModalProps) => {
       })
 
     }catch (error){
-      console.error(error)
+      setHidden(false)
+      MySwal.fire('ERROR!',
+        `${error}`,
+        'error').then(() => {
+      })
     }
 
     event.target.name.value =''

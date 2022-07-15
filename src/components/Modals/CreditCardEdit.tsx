@@ -1,21 +1,42 @@
-import React, {useCallback} from 'react'
+import React, {useCallback, useEffect, useState} from "react";
+import {singleCard} from "../../pages/CreditCards";
 import {CreditCard, X} from "heroicons-react";
-import {collection,addDoc} from "firebase/firestore";
+import {updateDoc, doc} from "firebase/firestore";
 import {db} from "../../App";
 import {getAuth} from "firebase/auth";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import {singleCard} from "../../pages/CreditCards";
 
-interface CreditCardsModalProps {
+
+type CreditCardEditProps = {
   open: boolean
   setHidden: (isOpen: boolean) => void
-  setCards: React.Dispatch<React.SetStateAction<singleCard[]>>
+  card: singleCard
 }
 
-const CreditCardsModal = ({open, setHidden,setCards}: CreditCardsModalProps) => {
+const CreditCardEdit = ({open,setHidden,card}:CreditCardEditProps) =>{
   const auth = getAuth()
   const MySwal = withReactContent(Swal)
+
+
+  const [name,setName] = useState(card.name)
+  const [bank,setBank] = useState(card.bank)
+  const [cardNumber,setCardNumber] = useState(card.card_number)
+  const [maxBalance,setMaxBalance] = useState(card.max_balance)
+  const [usedBalance,setUsedBalance] = useState(card.used_balance)
+
+  useEffect(()=>{
+
+      console.log('CARD USEFE',card.name)
+
+      setName(card.name)
+      setBank(card.bank)
+      setCardNumber(card.card_number)
+      setMaxBalance(card.max_balance)
+      setUsedBalance(card.used_balance)
+
+  },[card])
+
 
   const show = () => {
     if (open) {
@@ -28,7 +49,23 @@ const CreditCardsModal = ({open, setHidden,setCards}: CreditCardsModalProps) => 
   const handleClose = () => {
     setHidden(false)
   }
-  
+
+  const handleName = useCallback ((event:any) => {
+    setName(event.target.value)
+  },[name])
+
+  const handleMaxBalance = useCallback ((event:any) => {
+    setMaxBalance(event.target.value)
+  },[maxBalance])
+
+  const handleUsedBalance = useCallback ((event:any) => {
+    setUsedBalance(event.target.value)
+  },[usedBalance])
+
+  const handleCardNumber = useCallback ((event:any) => {
+    setCardNumber(event.target.value)
+  },[cardNumber])
+
   const handleSubmit = useCallback(async (event:any) => {
     event.preventDefault()
     const user = auth.currentUser
@@ -38,26 +75,17 @@ const CreditCardsModal = ({open, setHidden,setCards}: CreditCardsModalProps) => 
       }
 
       const creditCards = {
-        name: event.target.name.value,
-        bank: event.target.bank.value,
-        card_number: event.target.card_number.value,
-        max_balance: event.target.max_balance.value,
-        used_balance: event.target.used_balance.value,
-
+        id: card.id,
+        name: name,
+        bank: bank,
+        card_number: cardNumber,
+        max_balance: maxBalance,
+        used_balance: usedBalance,
       }
-      const creditCardsRef = collection(db,'users',user.uid,'credit_cards')
-      await addDoc(creditCardsRef,creditCards).then((doc:any)=>{
+      const creditCardsRef = doc(db,'users',user.uid,'credit_cards',card.id)
+      await updateDoc(creditCardsRef,creditCards).then((doc:any)=>{
         setHidden(false)
-        const localCard = {
-          id:doc.id,
-          name: event.target.name.value,
-          bank: event.target.bank.value,
-          card_number: event.target.card_number.value,
-          max_balance: event.target.max_balance.value,
-          used_balance: event.target.used_balance.value,
-        }
-        setCards((cards) => [...cards,localCard])
-        MySwal.fire('Exito!', 'Tu tarjeta fue guardada con exito!', 'success')
+        MySwal.fire('Exito!', 'Tu tarjeta fue editada con exito!', 'success')
       })
 
     }catch (error){
@@ -68,24 +96,16 @@ const CreditCardsModal = ({open, setHidden,setCards}: CreditCardsModalProps) => 
       })
     }
 
-    event.target.name.value =''
-    event.target.bank.value = ''
-    event.target.card_number.value = ''
-    event.target.max_balance.value = ''
-    event.target.used_balance.value = ''
+  }, [MySwal, auth.currentUser, bank, card.id, cardNumber, maxBalance, name, setHidden, usedBalance])
 
-  }, [])
-
-  return (
-    <div
-      className={` transition justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ml-64 ${show()}`}
-    >
+  return(
+    <div className={`transition justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ml-64 ${show()}`}>
       <div className="relative w-full my-6 mx-auto max-w-3xl">
         <form onSubmit={handleSubmit}
-          className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+              className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
           <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
             <h3 className="text-3xl font-semibold">
-              Nueva Tarjeta <CreditCard/>
+              Editar Tarjeta {card.name} <CreditCard/>
             </h3>
             <button
               className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
@@ -100,9 +120,11 @@ const CreditCardsModal = ({open, setHidden,setCards}: CreditCardsModalProps) => 
               <div className="flex grid grid-cols-2 gap-2">
                 <div>
                   <label className="text-gray-700 text-sm font-bold mb-2">
-                    Nombre de la tarjeta
+                    Nombre de la tarjeta {name}
                   </label>
                   <input
+                    value={name}
+                    onChange={handleName}
                     className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     id="name" type="text" placeholder="Ejemplo: Juan Díaz" name="name" required/>
                 </div>
@@ -128,6 +150,8 @@ const CreditCardsModal = ({open, setHidden,setCards}: CreditCardsModalProps) => 
                     Ultimos 4 digitos de la tarjeta
                   </label>
                   <input
+                    value={cardNumber}
+                    onChange={handleCardNumber}
                     name="card_number"
                     required
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -139,6 +163,8 @@ const CreditCardsModal = ({open, setHidden,setCards}: CreditCardsModalProps) => 
                     Saldo Maximo
                   </label>
                   <input
+                    value={maxBalance}
+                    onChange={handleMaxBalance}
                     required
                     name="max_balance"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -150,11 +176,12 @@ const CreditCardsModal = ({open, setHidden,setCards}: CreditCardsModalProps) => 
                     Saldo Usado
                   </label>
                   <input
+                    value={usedBalance}
+                    onChange={handleUsedBalance}
                     required
                     name="used_balance"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     id="used" type="number" step="0.01" placeholder="Ejemplo: 3,750.54"/>
-
                 </div>
               </div>
             </div>
@@ -180,4 +207,5 @@ const CreditCardsModal = ({open, setHidden,setCards}: CreditCardsModalProps) => 
     </div>
   )
 }
-export default React.memo(CreditCardsModal)
+
+export default React.memo(CreditCardEdit)

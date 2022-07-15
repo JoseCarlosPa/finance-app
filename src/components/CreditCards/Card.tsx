@@ -9,9 +9,12 @@ import {getAuth} from "firebase/auth";
 type CardProps = {
   card: singleCard
   setCards:  React.Dispatch<React.SetStateAction<singleCard[]>>
+  setEditCard:   React.Dispatch<React.SetStateAction<singleCard>>
+  setOpenEditModal:  React.Dispatch<React.SetStateAction<boolean>>
+
 }
 
-const Card = ({card,setCards}:CardProps) =>{
+const Card = ({card,setCards,setEditCard,setOpenEditModal}:CardProps) =>{
 
   const auth = getAuth()
 
@@ -26,8 +29,8 @@ const Card = ({card,setCards}:CardProps) =>{
       text: "No podras recuperar la informacion!",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#e12525',
+      cancelButtonColor: '#d3d3d3',
       confirmButtonText: 'Si, eliminalo!'
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -45,6 +48,11 @@ const Card = ({card,setCards}:CardProps) =>{
       }
     })
   },[auth.currentUser, card.id])
+
+  const handleEdit = useCallback(()=>{
+    setOpenEditModal(true)
+    setEditCard(card)
+  },[card, setEditCard])
 
 
   return (
@@ -69,7 +77,7 @@ const Card = ({card,setCards}:CardProps) =>{
               </div>
             </div>
             <div className="flex items-end justify-end w-1/5 ml-auto">
-              <Pencil className="text-yellow-100 cursor-pointer" width="26" height="26" onClick={handleDelete}/>
+              <Pencil className="text-yellow-100 cursor-pointer" width="26" height="26" onClick={handleEdit}/>
               <Trash  className="text-red-600 cursor-pointer" width="26" height="26" onClick={handleDelete}/>
             </div>
           </div>

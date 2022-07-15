@@ -20,6 +20,7 @@ const CreditCardEdit = ({open,setHidden,card}:CreditCardEditProps) =>{
 
 
   const [name,setName] = useState(card.name)
+  const [cutDate,setCutDate] = useState(card.cut_date)
   const [bank,setBank] = useState(card.bank)
   const [cardNumber,setCardNumber] = useState(card.card_number)
   const [maxBalance,setMaxBalance] = useState(card.max_balance)
@@ -31,6 +32,7 @@ const CreditCardEdit = ({open,setHidden,card}:CreditCardEditProps) =>{
       setCardNumber(card.card_number)
       setMaxBalance(card.max_balance)
       setUsedBalance(card.used_balance)
+      setCutDate(card.cut_date)
 
   },[card])
 
@@ -63,6 +65,10 @@ const CreditCardEdit = ({open,setHidden,card}:CreditCardEditProps) =>{
     setCardNumber(event.target.value)
   },[cardNumber])
 
+  const handleCutDate = useCallback ((event:any) => {
+    setCutDate(event.target.value)
+  },[cutDate])
+
   const handleSubmit = useCallback(async (event:any) => {
     event.preventDefault()
     const user = auth.currentUser
@@ -78,6 +84,7 @@ const CreditCardEdit = ({open,setHidden,card}:CreditCardEditProps) =>{
         card_number: cardNumber,
         max_balance: maxBalance,
         used_balance: usedBalance,
+        cut_date: cutDate,
       }
       const creditCardsRef = doc(db,'users',user.uid,'credit_cards',card.id)
       await updateDoc(creditCardsRef,creditCards).then((doc:any)=>{
@@ -180,6 +187,18 @@ const CreditCardEdit = ({open,setHidden,card}:CreditCardEditProps) =>{
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     id="used" type="number" step="0.01" placeholder="Ejemplo: 3,750.54"/>
                 </div>
+              </div>
+              <div className="flex flex-row mt-4">
+                <label className="text-gray-700 text-sm font-bold mb-2 mt-4">
+                  Fecha de corte (Dia del mes)
+                </label>
+                <input
+                  value={cutDate}
+                  onChange={handleCutDate}
+                  required
+                  name="cut_date"
+                  className="ml-4 shadow appearance-none border rounded w-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="cut_date" type="number" min="0" placeholder="12" step="0.01"/>
               </div>
             </div>
           </div>

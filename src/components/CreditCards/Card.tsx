@@ -57,8 +57,8 @@ const Card = ({card,setCards,setEditCard,setOpenEditModal}:CardProps) =>{
 
   return (
     <div
-      className="relative flex flex-col min-w-0 break-words bg-transparent border-0 border-transparent border-solid shadow-xl rounded-2xl bg-clip-border">
-      <div className="relative overflow-hidden rounded-2xl">
+      className="h-full relative flex flex-col min-w-0 break-words bg-transparent border-0 border-transparent border-solid shadow-xl rounded-2xl bg-clip-border">
+      <div className="relative overflow-hidden rounded-2xl h-full">
                     <span
                       className="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-gradient-dark-gray opacity-80"></span>
         <div className="relative z-10 flex-auto p-4">

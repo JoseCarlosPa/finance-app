@@ -43,6 +43,7 @@ const CreditCardsModal = ({open, setHidden,setCards}: CreditCardsModalProps) => 
         card_number: event.target.card_number.value,
         max_balance: event.target.max_balance.value,
         used_balance: event.target.used_balance.value,
+        cut_date: event.target.cut_date.value,
 
       }
       const creditCardsRef = collection(db,'users',user.uid,'credit_cards')
@@ -55,6 +56,7 @@ const CreditCardsModal = ({open, setHidden,setCards}: CreditCardsModalProps) => 
           card_number: event.target.card_number.value,
           max_balance: event.target.max_balance.value,
           used_balance: event.target.used_balance.value,
+          cut_date: event.target.cut_date.value,
         }
         setCards((cards) => [...cards,localCard])
         MySwal.fire('Exito!', 'Tu tarjeta fue guardada con exito!', 'success')
@@ -73,6 +75,7 @@ const CreditCardsModal = ({open, setHidden,setCards}: CreditCardsModalProps) => 
     event.target.card_number.value = ''
     event.target.max_balance.value = ''
     event.target.used_balance.value = ''
+    event.target.cut_date.value = ''
 
   }, [])
 
@@ -156,6 +159,16 @@ const CreditCardsModal = ({open, setHidden,setCards}: CreditCardsModalProps) => 
                     id="used" type="number" step="0.01" placeholder="Ejemplo: 3,750.54"/>
 
                 </div>
+              </div>
+              <div className="flex flex-row mt-4">
+                <label className="text-gray-700 text-sm font-bold mb-2 mt-4">
+                  Fecha de corte (Dia del mes)
+                </label>
+                <input
+                  required
+                  name="cut_date"
+                  className="ml-4 shadow appearance-none border rounded w-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="cut_date" type="number" min="0" placeholder="12" step="0.01"/>
               </div>
             </div>
           </div>

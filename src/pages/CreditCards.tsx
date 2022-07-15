@@ -1,12 +1,13 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import {CreditCard, Reply} from "heroicons-react";
+import {Cash, CreditCard, CurrencyDollar, Reply} from "heroicons-react";
 import CreditCardsModal from "../components/Modals/CreditCardsModal";
-import {collection, query, getDocs,orderBy} from "firebase/firestore";
+import {collection, query, getDocs, orderBy} from "firebase/firestore";
 import {db} from "../App";
 import {getAuth} from "firebase/auth";
 import Card from "../components/CreditCards/Card";
 import CreditCardEdit from "../components/Modals/CreditCardEdit";
 import Incomes from "../components/Cards/Incomes";
+import RenderCards from "../components/CreditCards/RenderCards";
 
 export type singleCard = {
   id: string
@@ -15,6 +16,7 @@ export type singleCard = {
   card_number: string
   max_balance: string
   used_balance: string
+  cut_date: string
 }
 
 const CreditCards = () => {
@@ -22,8 +24,17 @@ const CreditCards = () => {
   const [cards, setCards] = useState<singleCard[]>([])
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [openEditModal, setOpenEditModal] = useState<boolean>(false)
-  const [editCard, setEditCard] = useState<singleCard>({id:'',name:'',bank:'',card_number:'',max_balance:'',used_balance:''})
+  const [editCard, setEditCard] = useState<singleCard>({
+    id: '',
+    name: '',
+    bank: '',
+    card_number: '',
+    max_balance: '',
+    used_balance: '',
+    cut_date: ''
+  })
   const [abailableBalance, setAbailableBalance] = useState<number>(0)
+  const [debt, setDebt] = useState<number>(0)
 
   const auth = getAuth()
 
@@ -33,7 +44,7 @@ const CreditCards = () => {
       return
     }
     setCards([])
-    const creditCardsArray = query(collection(db, "users", user.uid, "credit_cards"),orderBy('name','asc'))
+    const creditCardsArray = query(collection(db, "users", user.uid, "credit_cards"), orderBy('name', 'asc'))
     const querySnapshot = await getDocs(creditCardsArray);
     querySnapshot.forEach((doc) => {
       const isCard = {
@@ -43,6 +54,7 @@ const CreditCards = () => {
         card_number: doc.data().card_number,
         max_balance: doc.data().max_balance,
         used_balance: doc.data().used_balance,
+        cut_date: doc.data().cut_date
 
       }
       setCards(cards => [...cards, isCard])
@@ -56,51 +68,13 @@ const CreditCards = () => {
     })
   }, [getCreditCards])
 
-  useEffect(()=>{
+  useEffect(() => {
     setAbailableBalance(0)
+    setDebt(0)
     cards.forEach((card) => {
-      setAbailableBalance(abailableBalance =>  abailableBalance + (Number(card.max_balance)-Number(card.used_balance)))
+      setAbailableBalance(abailableBalance => abailableBalance + (Number(card.max_balance) - Number(card.used_balance)))
+      setDebt(debt => debt + (Number(card.used_balance)))
     })
-  },[cards])
-
-  const renderCards = useCallback(() => {
-    return (
-      cards.map((card, index) => {
-        return (<div className="flex grid grid-cols-6 mb-4 gap-2" key={index}>
-          <div className="col-span-2">
-            <Card card={card} setCards={setCards} setEditCard={setEditCard} setOpenEditModal={setOpenEditModal}/>
-          </div>
-          <div className="flex flex-col col-span-2 ">
-            <div className="flex flex-row w-full justify-center rounded-md" style={{border: '1px solid gray'}}>
-              <div className="flex flex-col text-center">
-                <div className="flex flex-row">
-                  <div className="flex flex-col text-center p-2 ">
-                    <p>Monto Maximo</p>
-                    <p>$ {Number(card.max_balance).toLocaleString()}</p>
-                  </div>
-                  <div className="flex flex-col text-center p-2">
-                    <p>Monto Usado</p>
-                    <p>$ {Number(card.used_balance).toLocaleString()}</p>
-                  </div>
-                </div>
-                <p>Sobrante:</p>
-                <p>$ {Number((Number(card.max_balance)-Number(card.used_balance)).toFixed(2)).toLocaleString()}</p>
-              </div>
-
-            </div>
-            <div className=" flex flex-col items-center justify-center items-center">
-              <span
-                className="mr-2 font-semibold leading-tight text-size-xs">{((Number(card.used_balance) * 100) / Number(card.max_balance)).toFixed(2)}%</span>
-              <div className="w-full h-4 mb-4 bg-gray-200 rounded-full dark:bg-gray-700">
-                <div className="h-4 bg-blue-600 rounded-full bg-gradient-fuchsia"
-                     style={{width: `${(Number(card.used_balance) * 100) / Number(card.max_balance)}%`}}></div>
-              </div>
-            </div>
-
-          </div>
-        </div>)
-      })
-    )
   }, [cards])
 
   const handleOnClick = useCallback(() => {
@@ -113,16 +87,9 @@ const CreditCards = () => {
         <a href="/home/dashboard"><Reply width="36" height="36"/></a>
         <h1 className="ml-12">Tarjetas</h1>
       </div>
-      <div className="flex flex-row justify-end">
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          onClick={handleOnClick}>+ Agregar tarjeta <CreditCard/></button>
-      </div>
-      <div className="flex flex-row justify-center items-center w-96 mb-4">
-        <Incomes abailableBalance={abailableBalance}/>
-      </div>
-      <CreditCardsModal open={openModal} setHidden={setOpenModal} setCards={setCards} />
-      <CreditCardEdit open={openEditModal} setHidden={setOpenEditModal} card={editCard}  />
+
+      <CreditCardsModal open={openModal} setHidden={setOpenModal} setCards={setCards}/>
+      <CreditCardEdit open={openEditModal} setHidden={setOpenEditModal} card={editCard}/>
       {cards.length <= 0 ?
         (<div className="flex justify-center items-center h-screen -my-40">
           <div className="flex flex-col">
@@ -136,14 +103,23 @@ const CreditCards = () => {
           </div>
         </div>) : (
           <div className="flex flex-col">
-
+            <div className="flex flex-row justify-end">
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                onClick={handleOnClick}>+ Agregar tarjeta <CreditCard/></button>
+            </div>
+            <div className="flex grid grid-cols-6 justify-center items-center mb-4">
+              <Incomes total={abailableBalance} icon={<Cash className="text-white" width="32" height="32"/>}
+                       title={'Disponible'} subtitle={'Sobrante total'}/>
+              <Incomes total={debt} icon={<CurrencyDollar className="text-white" width="32" height="32"/>}
+                       title={'Deuda'} subtitle={'Duedo total'}/>
+            </div>
             <div>
-              {renderCards()}
+              <RenderCards cards={cards} setCards={setCards} setEditCard={setEditCard} setOpenEditModal={setOpenEditModal}/>
             </div>
           </div>
         )
       }
-
     </>
   );
 }

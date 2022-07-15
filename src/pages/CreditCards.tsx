@@ -112,7 +112,7 @@ const CreditCards = () => {
               <Incomes total={abailableBalance} icon={<Cash className="text-white" width="32" height="32"/>}
                        title={'Disponible'} subtitle={'Sobrante total'}/>
               <Incomes total={debt} icon={<CurrencyDollar className="text-white" width="32" height="32"/>}
-                       title={'Deuda'} subtitle={'Duedo total'}/>
+                       title={'Deuda'} subtitle={'Dueda total'}/>
             </div>
             <div>
               <RenderCards cards={cards} setCards={setCards} setEditCard={setEditCard} setOpenEditModal={setOpenEditModal}/>

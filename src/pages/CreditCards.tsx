@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import {Cash, CreditCard, CurrencyDollar, Reply} from "heroicons-react";
+import {Cash, ChartSquareBar, CreditCard, CurrencyDollar, Reply} from "heroicons-react";
 import CreditCardsModal from "../components/Modals/CreditCardsModal";
 import {collection, query, getDocs, orderBy} from "firebase/firestore";
 import {db} from "../App";
@@ -33,7 +33,7 @@ const CreditCards = () => {
     used_balance: '',
     cut_date: ''
   })
-  const [abailableBalance, setAbailableBalance] = useState<number>(0)
+  const [availableBalance, setAvailableBalance] = useState<number>(0)
   const [debt, setDebt] = useState<number>(0)
 
   const auth = getAuth()
@@ -69,10 +69,10 @@ const CreditCards = () => {
   }, [getCreditCards])
 
   useEffect(() => {
-    setAbailableBalance(0)
+    setAvailableBalance(0)
     setDebt(0)
     cards.forEach((card) => {
-      setAbailableBalance(abailableBalance => abailableBalance + (Number(card.max_balance) - Number(card.used_balance)))
+      setAvailableBalance(availableBalance => availableBalance + (Number(card.max_balance) - Number(card.used_balance)))
       setDebt(debt => debt + (Number(card.used_balance)))
     })
   }, [cards])
@@ -98,21 +98,22 @@ const CreditCards = () => {
               <p>Para agregar una tarjeta, haz click en el boton de abajo</p>
             </div>
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-gradient-fuchsia hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               onClick={handleOnClick}>+ Agregar tarjeta <CreditCard/></button>
           </div>
         </div>) : (
           <div className="flex flex-col">
             <div className="flex flex-row justify-end">
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                className="bg-gradient-fuchsia hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 onClick={handleOnClick}>+ Agregar tarjeta <CreditCard/></button>
             </div>
             <div className="flex grid grid-cols-6 justify-center items-center mb-4">
-              <Incomes total={abailableBalance} icon={<Cash className="text-white" width="32" height="32"/>}
+              <Incomes total={availableBalance} icon={<Cash className="text-white" width="32" height="32"/>}
                        title={'Disponible'} subtitle={'Sobrante total'}/>
               <Incomes total={debt} icon={<CurrencyDollar className="text-white" width="32" height="32"/>}
                        title={'Deuda'} subtitle={'Dueda total'}/>
+
             </div>
             <div>
               <RenderCards cards={cards} setCards={setCards} setEditCard={setEditCard} setOpenEditModal={setOpenEditModal}/>

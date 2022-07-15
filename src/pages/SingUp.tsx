@@ -24,7 +24,7 @@ const SingUp = ()=>{
       if(emails.find(email => email.email === user.email)){
         navigate('/home')
       }else{
-        await setDoc(doc(db,'users',user.uid),{id: user.uid, email: user.email})
+        await setDoc(doc(db,'users',user.uid),{id: user.uid, email: user.email,global_debt:0, global_income: 0})
         navigate('/home')
       }
     }).catch(error => {
@@ -41,7 +41,7 @@ const SingUp = ()=>{
     event.preventDefault()
     createUserWithEmailAndPassword(auth,email,password).then(async (userCredential) => {
       const user = userCredential.user
-      await setDoc(doc(db,'users',user.uid),{id: user.uid, email: user.email})
+      await setDoc(doc(db,'users',user.uid),{id: user.uid, email: user.email,global_debt:0, global_income: 0})
       navigate('/home')
     }).catch((error)=>{
       setError(true)

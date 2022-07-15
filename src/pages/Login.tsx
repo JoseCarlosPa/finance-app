@@ -28,7 +28,7 @@ const Login = () => {
       if(emails.find(email => email.email === user.email)){
         navigate('/home')
       }else{
-        await setDoc(doc(db,'users',user.uid),{id: user.uid, email: user.email})
+        await setDoc(doc(db,'users',user.uid),{id: user.uid, email: user.email,global_debt:0, global_income: 0})
         navigate('/home')
       }
     }).catch(error => {

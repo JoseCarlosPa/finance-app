@@ -18,8 +18,8 @@ const RenderCards = ({cards, setCards, setEditCard, setOpenEditModal}: RenderCar
           <div className="col-span-2">
             <Card card={card} setCards={setCards} setEditCard={setEditCard} setOpenEditModal={setOpenEditModal}/>
           </div>
-          <div className="flex flex-col col-span-2 ">
-            <div className="flex flex-row w-full justify-center rounded-md" style={{border: '1px solid gray'}}>
+          <div className="flex flex-col col-span-2 ml-2 ">
+            <div className="flex flex-row w-full justify-center rounded-md glass" style={{border: '1px solid gray'}}>
               <div className="flex flex-col text-center">
                 <div className="flex flex-row">
                   <div className="flex flex-col text-center p-2 ">
@@ -34,12 +34,11 @@ const RenderCards = ({cards, setCards, setEditCard, setOpenEditModal}: RenderCar
                 <p>Sobrante:</p>
                 <p>$ {Number((Number(card.max_balance) - Number(card.used_balance)).toFixed(2)).toLocaleString()}</p>
               </div>
-
             </div>
-            <div className=" flex flex-col items-center justify-center items-center">
+            <div className="flex flex-col items-center justify-center items-center">
               <span
                 className="mr-2 font-semibold leading-tight text-size-xs">{((Number(card.used_balance) * 100) / Number(card.max_balance)).toFixed(2)}%</span>
-              <div className="w-full h-4 mb-4 bg-gray-200 rounded-full dark:bg-gray-700">
+              <div className="w-full h-4 bg-gray-200 rounded-full dark:bg-gray-700">
                 <div className="h-4 bg-blue-600 rounded-full bg-gradient-fuchsia"
                      style={{width: `${(Number(card.used_balance) * 100) / Number(card.max_balance)}%`}}></div>
               </div>

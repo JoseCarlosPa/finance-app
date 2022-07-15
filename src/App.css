@@ -1902,8 +1902,16 @@ h6 {
   background-image: linear-gradient(310deg,#2152ff,#21d4fd);
 }
 
+.bg-gradient-purple {
+  background-image: linear-gradient(310deg, #60c5ea, #b3eaea);
+}
+
 .bg-gradient-orange {
   background-image: linear-gradient(310deg,#f53939,#fbcf33);
+}
+
+.bg-gradient-bar {
+  background-image: linear-gradient(310deg,#f53939,#98ec2d);
 }
 
 .bg-gradient-red {

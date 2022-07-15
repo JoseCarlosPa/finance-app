@@ -26,9 +26,6 @@ const CreditCardEdit = ({open,setHidden,card}:CreditCardEditProps) =>{
   const [usedBalance,setUsedBalance] = useState(card.used_balance)
 
   useEffect(()=>{
-
-      console.log('CARD USEFE',card.name)
-
       setName(card.name)
       setBank(card.bank)
       setCardNumber(card.card_number)

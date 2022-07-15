@@ -6,6 +6,7 @@ import {db} from "../App";
 import {getAuth} from "firebase/auth";
 import Card from "../components/CreditCards/Card";
 import CreditCardEdit from "../components/Modals/CreditCardEdit";
+import Incomes from "../components/Cards/Incomes";
 
 export type singleCard = {
   id: string
@@ -22,7 +23,7 @@ const CreditCards = () => {
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [openEditModal, setOpenEditModal] = useState<boolean>(false)
   const [editCard, setEditCard] = useState<singleCard>({id:'',name:'',bank:'',card_number:'',max_balance:'',used_balance:''})
-  console.log('ACTUAL',editCard)
+  const [abailableBalance, setAbailableBalance] = useState<number>(0)
 
   const auth = getAuth()
 
@@ -51,8 +52,16 @@ const CreditCards = () => {
   useEffect(() => {
     return (() => {
       getCreditCards()
+
     })
   }, [getCreditCards])
+
+  useEffect(()=>{
+    setAbailableBalance(0)
+    cards.forEach((card) => {
+      setAbailableBalance(abailableBalance =>  abailableBalance + (Number(card.max_balance)-Number(card.used_balance)))
+    })
+  },[cards])
 
   const renderCards = useCallback(() => {
     return (
@@ -104,6 +113,14 @@ const CreditCards = () => {
         <a href="/home/dashboard"><Reply width="36" height="36"/></a>
         <h1 className="ml-12">Tarjetas</h1>
       </div>
+      <div className="flex flex-row justify-end">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          onClick={handleOnClick}>+ Agregar tarjeta <CreditCard/></button>
+      </div>
+      <div className="flex flex-row justify-center items-center w-96 mb-4">
+        <Incomes abailableBalance={abailableBalance}/>
+      </div>
       <CreditCardsModal open={openModal} setHidden={setOpenModal} setCards={setCards} />
       <CreditCardEdit open={openEditModal} setHidden={setOpenEditModal} card={editCard}  />
       {cards.length <= 0 ?
@@ -119,11 +136,7 @@ const CreditCards = () => {
           </div>
         </div>) : (
           <div className="flex flex-col">
-            <div className="flex flex-row justify-end">
-              <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                onClick={handleOnClick}>+ Agregar tarjeta <CreditCard/></button>
-            </div>
+
             <div>
               {renderCards()}
             </div>

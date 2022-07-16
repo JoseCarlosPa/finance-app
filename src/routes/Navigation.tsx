@@ -13,6 +13,7 @@ import PresentValue from "../components/Tools/PresentValue/PresentValue";
 import Bills from "../pages/Bills";
 import CreditCards from "../pages/CreditCards";
 import Dashboard from "../components/Dashboard/Dashboard";
+import ActivePasive from "../pages/ActivePasive";
 
 const Navigation = () => {
   return (
@@ -31,6 +32,7 @@ const Navigation = () => {
           <Route path="herramientas" element={<Tools/>}></Route>
           <Route path="gastos" element={<Bills/>}></Route>
           <Route path="tarjetas" element={<CreditCards/>}></Route>
+          <Route path="activos-pasivos" element={<ActivePasive/>}></Route>
         </Route>
         <Route path="*" element={<div>No existe esa pagina</div>}/>
       </Routes>

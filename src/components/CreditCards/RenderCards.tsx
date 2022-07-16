@@ -62,16 +62,7 @@ const RenderCards = ({cards, setCards, setEditCard, setOpenEditModal}: RenderCar
             <div className="flex flex-row rounded-md  w-full h-8 justify-center items-center" style={style}>
               <p className="mt-3"><CalendarOutline /> Monto a pagar en {getCutDate(card.cut_date)} </p>
             </div>
-            <div className="rounded-md flex flex-col p-4 mt-2 justify-center items-center text-center" style={style}>
-              <p>Total:</p>
-              <p>$1,3000</p>
-              <button type="button" className="bg-blue-400 text-white rounded-md w-full">Desglozar</button>
 
-            </div>
-            <div className="flex flex-row items-center justify-center items-center gap-2 mt-1">
-              <button className="bg-gradient-fuchsia rounded-md w-full h-8 text-white">Pagar tarjeta</button>
-              <button className="bg-orange-400 rounded-md w-full h-8 text-white">Agregar gasto</button>
-            </div>
           </div>
         </div>)
         })

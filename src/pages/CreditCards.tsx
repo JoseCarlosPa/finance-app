@@ -104,8 +104,6 @@ const CreditCards = () => {
         <h1 className="ml-12">Tarjetas</h1>
       </div>
 
-      <CreditCardsModal open={openModal} setHidden={setOpenModal} setCards={setCards}/>
-      <CreditCardEdit open={openEditModal} setHidden={setOpenEditModal} card={editCard}/>
       {cards.length <= 0 ?
         (<div className="flex justify-center items-center h-screen -my-40">
           <div className="flex flex-col">
@@ -141,6 +139,8 @@ const CreditCards = () => {
           </div>
         )
       }
+      <CreditCardsModal open={openModal} setHidden={setOpenModal} setCards={setCards}/>
+      <CreditCardEdit open={openEditModal} setHidden={setOpenEditModal} card={editCard}/>
     </>
   );
 }

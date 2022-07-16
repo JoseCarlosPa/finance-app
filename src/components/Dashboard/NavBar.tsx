@@ -57,7 +57,7 @@ const NavBar = () =>{
           <li className="mt-0.5 w-full hover:scale-105 duration-300">
             <a
               className="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
-              href="./pages/billing.html">
+              href="/home/activos-pasivos">
               <div
                 className="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center fill-current stroke-0 text-center xl:p-2.5">
                 <Cash />

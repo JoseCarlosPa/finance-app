@@ -4,9 +4,10 @@ interface IncomesProps {
   total: number
   title: string
   subtitle: string
-  icon: ReactElement<any, any>;
+  icon: ReactElement<any, any>
+  percentage?: boolean
 }
-const Incomes = ({total,title,subtitle,icon}:IncomesProps) => {
+const Incomes = ({total,title,subtitle,icon,percentage}:IncomesProps) => {
   return (
     <div className="w-full max-w-full px-3  md:flex-none">
       <div
@@ -21,7 +22,7 @@ const Incomes = ({total,title,subtitle,icon}:IncomesProps) => {
           <h6 className="mb-0 text-center">{title}</h6>
           <span className="leading-tight text-size-xs">{subtitle}</span>
           <hr className="h-px my-4 bg-transparent bg-gradient-horizontal-dark"/>
-          <h5 className="mb-0">$ {(total).toLocaleString()}</h5>
+          <h5 className="mb-0">{percentage ? '%' : '$'} {(total).toLocaleString()}</h5>
         </div>
       </div>
     </div>

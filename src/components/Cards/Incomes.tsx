@@ -1,7 +1,7 @@
 import React, {ReactElement} from 'react'
 
 interface IncomesProps {
-  total: number
+  total: number | string
   title: string
   subtitle: string
   icon: ReactElement<any, any>

@@ -24,7 +24,6 @@ const RenderCards = ({cards, setCards, setEditCard, setOpenEditModal}: RenderCar
 
   const style = {border: '1px solid gray'}
 
-
   return (
     <>
       {cards.map((card, index) => {
@@ -64,10 +63,10 @@ const RenderCards = ({cards, setCards, setEditCard, setOpenEditModal}: RenderCar
             </div>
             <div className="mt-8">
               <div className="flex flex-row rounded-md  w-full h-8 justify-center items-center">
-                <button className="bg-gradient-fuchsia rounded w-full text-white h-14 hover:text-gray-300">Pagar <CreditCard /></button>
+                <button className="bg-gradient-fuchsia rounded w-full text-white h-12 hover:text-gray-300">Pagar <CreditCard /></button>
               </div>
               <div className="flex flex-row rounded-md  w-full h-8 justify-center items-cente mt-6">
-                <button className="bg-gradient-fuchsia rounded w-full text-white h-14 hover:text-gray-300">Agregar Gasto <CurrencyDollar /></button>
+                <button className="bg-gradient-fuchsia rounded w-full text-white h-12 hover:text-gray-300">Agregar Gasto <CurrencyDollar /></button>
               </div>
             </div>
 

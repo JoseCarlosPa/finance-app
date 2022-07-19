@@ -97,6 +97,11 @@ const CreditCards = () => {
     setOpenModal(true)
   }, [cards])
 
+  const calculatePercentage = useCallback(() => {
+    const percentage = (debt * 100 /userData.global_debt )
+    return percentage.toFixed(2)
+  },[debt,userData])
+
   return (
     <>
       <div className="flex flex-row items-center">
@@ -129,7 +134,7 @@ const CreditCards = () => {
                        title={'Deuda'} subtitle={'Deuda total'}/>
               <Incomes total={userData.global_income} icon={<Cash className="text-white" width="32" height="32"/>}
                        title={'Ingresos'} subtitle={'Ingresos Globales'}/>
-              <Incomes total={100} icon={<Cash className="text-white" width="32" height="32"/>}
+              <Incomes total={calculatePercentage()} icon={<Cash className="text-white" width="32" height="32"/>}
                        title={'Porcentaje'} subtitle={'% con respecto a deuda global'} percentage/>
 
             </div>
@@ -140,7 +145,7 @@ const CreditCards = () => {
         )
       }
       <CreditCardsModal open={openModal} setHidden={setOpenModal} setCards={setCards}/>
-      <CreditCardEdit open={openEditModal} setHidden={setOpenEditModal} card={editCard}/>
+      <CreditCardEdit open={openEditModal} setHidden={setOpenEditModal} card={editCard} cards={cards} setCards={setCards}/>
     </>
   );
 }

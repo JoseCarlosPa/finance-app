@@ -92,7 +92,6 @@ const CreditCardEdit = ({open,setHidden,card,cards,setCards}:CreditCardEditProps
       await updateDoc(creditCardsRef,creditCards).then((doc:any)=>{
 
         const updateCards = cards.map((local:singleCard)=>{
-          console.log('ENTRA')
           if(local.id === card.id){
             return {...local, name: name, bank: bank, card_number: cardNumber, max_balance: maxBalance, used_balance: usedBalance, cut_date: cutDate}
           }

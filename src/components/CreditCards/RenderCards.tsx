@@ -8,9 +8,11 @@ interface RenderCardsProps {
   setCards: React.Dispatch<React.SetStateAction<singleCard[]>>
   setEditCard: React.Dispatch<React.SetStateAction<singleCard>>
   setOpenEditModal: React.Dispatch<React.SetStateAction<boolean>>
+  setPayCard: React.Dispatch<React.SetStateAction<singleCard>>
+  setOpenPayModal: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const RenderCards = ({cards, setCards, setEditCard, setOpenEditModal}: RenderCardsProps) => {
+const RenderCards = ({cards, setCards, setEditCard, setOpenEditModal,setPayCard,setOpenPayModal}: RenderCardsProps) => {
 
 
   const getCutDate = useCallback((cut_date:string)=>{
@@ -27,6 +29,11 @@ const RenderCards = ({cards, setCards, setEditCard, setOpenEditModal}: RenderCar
   return (
     <>
       {cards.map((card, index) => {
+        const payCard =()=>{
+          setOpenPayModal(true)
+          setPayCard(card)
+        }
+
         return (<div className="flex grid grid-cols-6 mb-4 gap-2 ml-4" key={index}>
           <div className="col-span-2">
             <Card card={card} setCards={setCards} setEditCard={setEditCard} setOpenEditModal={setOpenEditModal}/>
@@ -63,7 +70,7 @@ const RenderCards = ({cards, setCards, setEditCard, setOpenEditModal}: RenderCar
             </div>
             <div className="mt-8">
               <div className="flex flex-row rounded-md  w-full h-8 justify-center items-center">
-                <button className="bg-gradient-fuchsia rounded w-full text-white h-12 hover:text-gray-300">Pagar <CreditCard /></button>
+                <button className="bg-gradient-fuchsia rounded w-full text-white h-12 hover:text-gray-300" onClick={payCard}>Pagar <CreditCard /></button>
               </div>
               <div className="flex flex-row rounded-md  w-full h-8 justify-center items-cente mt-6">
                 <button className="bg-gradient-fuchsia rounded w-full text-white h-12 hover:text-gray-300">Agregar Gasto <CurrencyDollar /></button>

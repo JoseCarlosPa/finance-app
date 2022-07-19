@@ -7,6 +7,7 @@ import {getAuth} from "firebase/auth";
 import CreditCardEdit from "../components/Modals/CreditCardEdit";
 import Incomes from "../components/Cards/Incomes";
 import RenderCards from "../components/CreditCards/RenderCards";
+import PayCreditCard from "../components/Modals/PayCreditCard";
 
 export type singleCard = {
   id: string
@@ -20,11 +21,7 @@ export type singleCard = {
 
 const CreditCards = () => {
 
-  const [cards, setCards] = useState<singleCard[]>([])
-  const [openModal, setOpenModal] = useState<boolean>(false)
-  const [openEditModal, setOpenEditModal] = useState<boolean>(false)
-  const [userData, setUserData] = useState<any>({})
-  const [editCard, setEditCard] = useState<singleCard>({
+  const emptyCard = {
     id: '',
     name: '',
     bank: '',
@@ -32,7 +29,15 @@ const CreditCards = () => {
     max_balance: '',
     used_balance: '',
     cut_date: ''
-  })
+  }
+  const [cards, setCards] = useState<singleCard[]>([])
+  const [openModal, setOpenModal] = useState<boolean>(false)
+  const [openEditModal, setOpenEditModal] = useState<boolean>(false)
+  const [opePayModal, setOpenPayModal] = useState<boolean>(false)
+
+  const [userData, setUserData] = useState<any>({})
+  const [editCard, setEditCard] = useState<singleCard>(emptyCard)
+  const [payCard, setPayCard] = useState<singleCard>(emptyCard)
   const [availableBalance, setAvailableBalance] = useState<number>(0)
   const [debt, setDebt] = useState<number>(0)
 
@@ -139,13 +144,14 @@ const CreditCards = () => {
 
             </div>
             <div>
-              <RenderCards cards={cards} setCards={setCards} setEditCard={setEditCard} setOpenEditModal={setOpenEditModal}/>
+              <RenderCards cards={cards} setCards={setCards} setEditCard={setEditCard} setOpenEditModal={setOpenEditModal} setPayCard={setPayCard} setOpenPayModal={setOpenPayModal}/>
             </div>
           </div>
         )
       }
       <CreditCardsModal open={openModal} setHidden={setOpenModal} setCards={setCards}/>
       <CreditCardEdit open={openEditModal} setHidden={setOpenEditModal} card={editCard} cards={cards} setCards={setCards}/>
+      <PayCreditCard card={payCard} open={opePayModal} setHidden={setOpenPayModal} cards={cards} setCards={setCards}/>
     </>
   );
 }

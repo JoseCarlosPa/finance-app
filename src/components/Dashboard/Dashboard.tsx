@@ -5,7 +5,6 @@ const Dashboard = () => {
   return (
     <>
       <div className="flex flex-row items-center">
-        <Invoices />
       </div>
     </>
   )

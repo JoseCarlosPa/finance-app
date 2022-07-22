@@ -1,14 +1,18 @@
 import React from 'react'
 
-const Invoices = () => {
+interface InvoicesProps {
+  title: string;
+}
+
+const Invoices = ({title}:InvoicesProps) => {
   return (
-    <div className="w-full max-w-full px-3 lg:w-1/3 lg:flex-none">
+    <div className="w-full max-w-full px-3 lg:flex-none">
       <div
         className="relative flex flex-col h-full min-w-0 break-words bg-white border-0 border-transparent border-solid shadow-soft-xl rounded-2xl bg-clip-border">
         <div className="p-4 pb-0 mb-0 bg-white border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
           <div className="flex flex-wrap -mx-3">
             <div className="flex items-center flex-none w-1/2 max-w-full px-3">
-              <h6 className="mb-0">Gastos</h6>
+              <h6 className="mb-0">{title}</h6>
             </div>
             <div className="flex-none w-1/2 max-w-full px-3 text-right">
               <a href="/home/gastos">

@@ -71,7 +71,7 @@ const ActivePasive = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <Actives setOpenActive={setOpenActive} actives={actives} setActives={setActives}/>
         </Suspense>
-        <Pasives setOpenActive={setOpenPassive} pasives={passives} setActives={setPassives}/>
+        <Pasives setOpenActive={setOpenPassive} passives={passives} setPassives={setPassives}/>
       </div>
 
     </>

@@ -8,11 +8,11 @@ import Swal from "sweetalert2";
 
 interface ActivesProps {
   setOpenActive: React.Dispatch<React.SetStateAction<boolean>>
-  setActives: React.Dispatch<React.SetStateAction<ActiveType[]>>
-  pasives: ActiveType[]
+  setPassives: React.Dispatch<React.SetStateAction<ActiveType[]>>
+  passives: ActiveType[]
 }
 
-const Pasives = ({setOpenActive,setActives,pasives}:ActivesProps) => {
+const Pasives = ({setOpenActive,setPassives,passives}:ActivesProps) => {
   const auth = getAuth()
 
   const getPasivesData = useCallback(async () => {
@@ -20,21 +20,36 @@ const Pasives = ({setOpenActive,setActives,pasives}:ActivesProps) => {
     if (user === null) {
       return
     }
-    setActives([])
+    setPassives([])
     const activesArray = query(collection(db, "users", user.uid, "pasives"), orderBy('date', 'asc'))
     const querySnapshot = await getDocs(activesArray);
     querySnapshot.forEach((doc) => {
-      const isActive = {
+      const isPasive = {
         id: doc.id,
         categorie: doc.data().categorie,
         amount: doc.data().amount,
         description: doc.data().description,
         date: doc.data().date,
       }
-      setActives(actives => [...actives, isActive])
+      setPassives(pasives => [...pasives, isPasive])
     });
 
+    const creditCardsArray = query(collection(db, "users", user.uid, "credit_cards"), orderBy('name', 'asc'))
+    const queryCreditSnapshot = await getDocs(creditCardsArray);
+    queryCreditSnapshot.forEach((doc) => {
+      const isPasive = {
+        id: doc.id,
+        categorie: "Tarjeta de crédito",
+        amount: doc.data().used_balance,
+        description: doc.data().name,
+        date: doc.data().last_update,
+
+      }
+      setPassives(pasives => [...pasives, isPasive])
+    });
   },[auth.currentUser])
+
+
 
   useEffect(() => {
     return (() => {
@@ -65,7 +80,7 @@ const Pasives = ({setOpenActive,setActives,pasives}:ActivesProps) => {
         </div>
         <div className="flex-auto p-4 pb-0">
           <ul className="flex flex-col pl-0 mb-0 rounded-lg">
-            {pasives.map((pasive, index) => {
+            {passives.map((pasive, index) => {
 
               const handleDelete = ()=>{
                 const user = auth.currentUser
@@ -88,7 +103,7 @@ const Pasives = ({setOpenActive,setActives,pasives}:ActivesProps) => {
                     }
                     console.log('eliminando',pasive.id)
                     await deleteDoc(doc(db, "users",user.uid,"pasives",pasive.id)).then(()=>{
-                      setActives(current =>
+                      setPassives(current =>
                         current.filter(arr => {
                           return arr.id !==pasive.id ;
                         }))
@@ -113,12 +128,23 @@ const Pasives = ({setOpenActive,setActives,pasives}:ActivesProps) => {
                   key={index}
                   className="relative flex justify-between px-4 py-2 pl-0 mb-2 bg-white border-0 rounded-t-inherit text-size-inherit rounded-xl">
                   <div className="flex flex-col">
-                    <h6 className="mb-1 font-semibold leading-normal text-size-sm text-slate-700">{pasive.description}</h6>
+                    {pasive.categorie === "Tarjeta de crédito" ? (
+                      <a href="/home/tarjetas">
+                      <h6 className="mb-1 font-semibold leading-normal text-size-sm text-blue-700">{pasive.description}</h6>
+                      </a>
+                    ) : (
+                      <h6 className="mb-1 font-semibold leading-normal text-size-sm text-slate-700">{pasive.description}</h6>
+                    )}
                   </div>
                   <div className="flex flex-rowitems-center leading-normal text-size-sm">
                     $ {(Number(pasive.amount)).toLocaleString()}
-                    <Pencil className="ml-2 text-yellow-500 cursor-pointer" size={16}/>
-                    <Trash className="ml-2 text-red-500 cursor-pointer" size={16} onClick={handleDelete}/>
+                    {pasive.categorie !== "Tarjeta de crédito" && (
+                      <>
+                        <Pencil className="ml-2 text-yellow-500 cursor-pointer" size={16}/>
+                        <Trash className="ml-2 text-red-500 cursor-pointer" size={16} onClick={handleDelete}/>
+                      </>
+                      ) }
+
                   </div>
                 </li>
               )

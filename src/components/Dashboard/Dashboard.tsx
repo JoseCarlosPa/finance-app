@@ -1,5 +1,5 @@
 import React from 'react';
-import Invoices from "../Cards/Invoices";
+import Invoices from "../Cards/Pasives";
 const Dashboard = () => {
 
   return (

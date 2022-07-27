@@ -1,7 +1,10 @@
-import React, {useCallback, useState,Suspense} from 'react'
+import React, {useCallback, useState, Suspense, useEffect} from 'react'
 import {Cash, ChartSquareBar, Clipboard, Reply} from "heroicons-react";
 import SimpleCard from "../components/Cards/SimpleCard";
 import AddActive from "../components/Modals/AddActive";
+import {getAuth} from "firebase/auth";
+import {doc, getDoc, updateDoc} from "firebase/firestore";
+import {db} from "../App";
 
 const Actives = React.lazy(() => import('../components/Cards/Actives'));
 const Pasives = React.lazy(() => import('../components/Cards/Pasives'));
@@ -15,18 +18,36 @@ export type ActiveType = {
 }
 
 const ActivePasive = () => {
+  const auth = getAuth()
 
   const [openActive, setOpenActive] = useState(false);
   const [actives, setActives] = useState<ActiveType[]>([])
+  const [totalActive, setTotalActives] = useState<number>(0)
 
-  const calculateTotalActives = useCallback(() => {
+
+  const calculateTotalActives = useCallback( () => {
     let total: number = 0
     actives.forEach((active) => {
-        total += Number(active.amount)
+      total += Number(active.amount)
       }
     )
-    return total
+    setTotalActives(total)
+
   }, [actives])
+
+  const overWriteGlobalIncome = useCallback(async () => {
+    const user = auth.currentUser
+    if(user !== null) {
+      const userDataRef = doc(db, 'users', user.uid)
+      await updateDoc(userDataRef, {global_income:totalActive}).then((doc: any) => {
+      })
+    }
+  },[totalActive,actives])
+
+  useEffect(() => {
+    overWriteGlobalIncome().then()
+    calculateTotalActives()
+  },[totalActive,actives])
 
   return (
     <>
@@ -36,7 +57,7 @@ const ActivePasive = () => {
         <h1 className="ml-12">Activos / Pasivos</h1>
       </div>
       <div className="flex grid grid-cols-3 mt-4 gap-4 ">
-        <SimpleCard title="Activos" icon={<Cash className="text-white"/>} value={calculateTotalActives()}/>
+        <SimpleCard title="Activos" icon={<Cash className="text-white"/>} value={totalActive}/>
         <SimpleCard title="Pasivos" icon={<ChartSquareBar className="text-white"/>} value={1200}/>
         <SimpleCard title="Extras" icon={<Clipboard className="text-white"/>} value={0}/>
       </div>

@@ -66,7 +66,7 @@ const CreditCards = () => {
     });
   }, [auth.currentUser])
 
-  const getUserData = useCallback(async () => {
+    const getUserData = useCallback(async () => {
     const user = auth.currentUser
     if (user === null) {
       return

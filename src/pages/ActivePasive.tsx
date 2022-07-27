@@ -5,6 +5,7 @@ import AddActive from "../components/Modals/AddActive";
 import {getAuth} from "firebase/auth";
 import {doc, getDoc, updateDoc} from "firebase/firestore";
 import {db} from "../App";
+import AddPasive from "../components/Modals/AddPasive";
 
 const Actives = React.lazy(() => import('../components/Cards/Actives'));
 const Pasives = React.lazy(() => import('../components/Cards/Pasives'));
@@ -21,7 +22,11 @@ const ActivePasive = () => {
   const auth = getAuth()
 
   const [openActive, setOpenActive] = useState(false);
+  const [openPassive, setOpenPassive] = useState(false);
+
   const [actives, setActives] = useState<ActiveType[]>([])
+  const [passives, setPassives] = useState<ActiveType[]>([])
+
   const [totalActive, setTotalActives] = useState<number>(0)
 
 
@@ -52,20 +57,21 @@ const ActivePasive = () => {
   return (
     <>
       <AddActive open={openActive} setHidden={setOpenActive} actives={actives} setActive={setActives}/>
+      <AddPasive open={openPassive} setHidden={setOpenPassive} pasives={passives} setPassive={setPassives}/>
       <div className="flex flex-row items-center">
         <a href="/home/dashboard"><Reply width="36" height="36"/></a>
         <h1 className="ml-12">Activos / Pasivos</h1>
       </div>
       <div className="flex grid grid-cols-3 mt-4 gap-4 ">
         <SimpleCard title="Activos" icon={<Cash className="text-white"/>} value={totalActive}/>
-        <SimpleCard title="Pasivos" icon={<ChartSquareBar className="text-white"/>} value={1200}/>
+        <SimpleCard title="Pasivos" color={'bg-red-500'} icon={<ChartSquareBar className="text-white"/>} value={1200}/>
         <SimpleCard title="Extras" icon={<Clipboard className="text-white"/>} value={0}/>
       </div>
       <div className="flex grid grid-cols-2 gap-4 mt-8 ">
         <Suspense fallback={<div>Loading...</div>}>
           <Actives setOpenActive={setOpenActive} actives={actives} setActives={setActives}/>
         </Suspense>
-        <Pasives/>
+        <Pasives setOpenActive={setOpenPassive} pasives={passives} setActives={setPassives}/>
       </div>
 
     </>

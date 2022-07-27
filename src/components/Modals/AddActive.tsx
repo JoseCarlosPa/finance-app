@@ -58,6 +58,10 @@ const AddActive = ({open,setHidden,actives,setActive}:AddActiveProps) => {
           setActive((actives) =>[...actives,localActive])
           handleClose()
         MySwal.fire('Exito!', 'Tu activo fue agregado con exito!', 'success')
+        event.target.categorie.value = ''
+        event.target.amount.value = ''
+        event.target.description.value = ''
+
       })
 
     } catch (error) {
@@ -127,7 +131,7 @@ const AddActive = ({open,setHidden,actives,setActive}:AddActiveProps) => {
               className="bg-gradient-fuchsia text-white  font-bold uppercase px-6 py-3 text-sm shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 rounded"
               type="submit"
             >
-              Pagar
+              Agregar
             </button>
           </div>
         </form>

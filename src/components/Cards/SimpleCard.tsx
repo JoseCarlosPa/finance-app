@@ -4,9 +4,10 @@ interface SimpleCardProps {
   title: string
   icon: ReactElement<any, any>;
   value: number
+  color?: string
 }
 
-const SimpleCard = ({title,icon,value}:SimpleCardProps) => {
+const SimpleCard = ({title,icon,value,color}:SimpleCardProps) => {
   return (
     <div className="w-full  px-3 mb-6  sm:flex-none xl:mb-0 ">
       <div className="relative flex flex-col min-w-0 break-words bg-white shadow-soft-xl rounded-2xl bg-clip-border">
@@ -21,7 +22,7 @@ const SimpleCard = ({title,icon,value}:SimpleCardProps) => {
               </div>
             </div>
             <div className="px-3 text-right basis-1/3">
-              <div className="inline-block w-12 h-12 text-center rounded-lg bg-gradient-fuchsia flex h-full items-center justify-center">
+              <div className={`inline-block w-12 h-12 text-center rounded-lg ${color ? color : 'bg-gradient-fuchsia'}  flex h-full items-center justify-center`} >
                 {icon}
               </div>
             </div>

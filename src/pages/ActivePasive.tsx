@@ -31,7 +31,7 @@ const ActivePasive = () => {
   const [passives, setPassives] = useState<ActiveType[]>([])
 
   const [totalActive, setTotalActives] = useState<number>(0)
-
+  const [totalDebt, setTotalDebt] = useState<number>(0)
 
   const calculateTotalActives = useCallback( () => {
     let total: number = 0
@@ -43,6 +43,8 @@ const ActivePasive = () => {
 
   }, [actives])
 
+
+
   const overWriteGlobalIncome = useCallback(async () => {
     const user = auth.currentUser
     if(user !== null) {
@@ -52,9 +54,31 @@ const ActivePasive = () => {
     }
   },[totalActive,actives])
 
+  const overWriteGlobalDebt = useCallback(async () => {
+    const user = auth.currentUser
+    if(user !== null) {
+      const userDataRef = doc(db, 'users', user.uid)
+      await updateDoc(userDataRef, {global_debt:totalDebt}).then((doc: any) => {
+      })
+    }
+  },[totalDebt,passives])
+
+  const calculateTotalPassives = useCallback( () => {
+    let total: number = 0
+    passives.forEach((passive) => {
+        total += Number(passive.amount)
+      }
+    )
+
+    setTotalDebt(total)
+
+  }, [passives])
+
   useEffect(() => {
     overWriteGlobalIncome().then()
     calculateTotalActives()
+    overWriteGlobalDebt().then()
+    calculateTotalPassives()
   },[totalActive,actives])
 
   return (
@@ -67,7 +91,7 @@ const ActivePasive = () => {
       </div>
       <div className="flex grid grid-cols-3 mt-4 gap-4 ">
         <SimpleCard title="Activos" icon={<Cash className="text-white"/>} value={totalActive}/>
-        <SimpleCard title="Pasivos" color={'bg-red-500'} icon={<ChartSquareBar className="text-white"/>} value={1200}/>
+        <SimpleCard title="Pasivos" color={'bg-red-500'} icon={<ChartSquareBar className="text-white"/>} value={totalDebt}/>
         <SimpleCard title="Extras" icon={<Clipboard className="text-white"/>} value={0}/>
       </div>
       <div className="flex grid grid-cols-2 gap-4 mt-8 ">

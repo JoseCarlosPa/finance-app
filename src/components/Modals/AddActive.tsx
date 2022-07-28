@@ -38,8 +38,6 @@ const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
       if (user === null) {
         return
       }
-      console.log('EL VALOR',event.target.fixed_assets)
-
       const newActive: ActiveType = {
         date: new Date().toISOString(),
         categorie: event.target.categorie.value,

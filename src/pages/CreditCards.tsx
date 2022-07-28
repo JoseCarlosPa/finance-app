@@ -138,7 +138,7 @@ const CreditCards = () => {
               <Incomes total={debt} icon={<CurrencyDollar className="text-white" width="32" height="32"/>}
                        title={'Deuda'} subtitle={'Deuda total'}/>
               <Incomes total={userData.global_income} icon={<Cash className="text-white" width="32" height="32"/>}
-                       title={'Ingresos'} subtitle={'Ingresos Globales'}/>
+                       title={'Activos'} subtitle={'Activos Globales'}/>
               <Incomes total={calculatePercentage()} icon={<Cash className="text-white" width="32" height="32"/>}
                        title={'Porcentaje'} subtitle={'% con respecto a deuda global'} percentage/>
 

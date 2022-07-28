@@ -50,7 +50,7 @@ const Actives = ({setOpenActive,setActives,actives}:ActivesProps) => {
     setOpenActive(true)
   },[setOpenActive])
   return (
-    <div className="w-full max-w-full px-3 lg:flex-none h-96">
+    <div className="w-full max-w-full px-3 lg:flex-none min:h-96">
       <div
         className="relative flex flex-col h-full min-w-0 break-words bg-white border-0 border-transparent border-solid shadow-soft-xl rounded-2xl bg-clip-border">
         <div className="p-4 pb-0 mb-0 bg-white border-b-0 border-b-solid rounded-t-2xl border-b-transparent">

@@ -30,10 +30,50 @@ const AddPasive = ({open,setHidden,pasives,setPassive}:AddActiveProps) => {
     setHidden(false)
   }
 
+  const handleSubmit = useCallback(async(event:any)=>{
+    event.preventDefault()
+    const user = auth.currentUser
+
+    try {
+      if (user === null) {
+        return
+      }
+
+      const newActive : ActiveType = {
+        date: new Date().toISOString(),
+        categorie: event.target.categorie.value,
+        amount: event.target.amount.value,
+        description: event.target.description.value,
+      }
+      const pasives = collection(db,'users',user.uid,'pasives')
+      await addDoc(pasives,newActive).then((doc:any)=>{
+
+        const localActive: ActiveType = {
+          id: doc.id,
+          date: new Date().toISOString(),
+          categorie: event.target.categorie.value,
+          amount: event.target.amount.value,
+          description: event.target.description.value,
+        }
+        setPassive((pasives) =>[...pasives,localActive])
+        handleClose()
+        MySwal.fire('Exito!', 'Tu pasivo fue agregado con exito!', 'success')
+        event.target.categorie.value = ''
+        event.target.amount.value = ''
+        event.target.description.value = ''
+
+      })
+
+    } catch (error) {
+      console.log(error)
+    }
+
+  },[])
+
   return(
     <div className={`transition justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ml-64  ${show()}`}>
       <div className="relative w-4/12 my-6 mx-auto max-w-3xl">
-        <form onSubmit={()=>{}}
+        <form onSubmit={handleSubmit}
               className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
           <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
             <h4>Agregar Pasivo</h4>

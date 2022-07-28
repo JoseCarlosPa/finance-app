@@ -26,10 +26,13 @@ const Actives = ({setOpenActive,setActives,actives}:ActivesProps) => {
     querySnapshot.forEach((doc) => {
       const isActive = {
         id: doc.id,
+        name: doc.data().name,
         categorie: doc.data().categorie,
         amount: doc.data().amount,
         description: doc.data().description,
         date: doc.data().date,
+        quantity: doc.data().quantity,
+        fixed_assets: doc.data().fixed_assets,
       }
       setActives(actives => [...actives, isActive])
     });
@@ -111,12 +114,13 @@ const Actives = ({setOpenActive,setActives,actives}:ActivesProps) => {
               return(
                 <li
                   key={index}
-                  className="relative flex justify-between px-4 py-2 pl-0 mb-2 bg-white border-0 rounded-t-inherit text-size-inherit rounded-xl">
-                  <div className="flex flex-col">
-                    <h6 className="mb-1 font-semibold leading-normal text-size-sm text-slate-700">{active.description}</h6>
+                  className="relative flex justify-between items-center px-4 py-2 pl-0 mb-2 bg-white border-0 rounded-t-inherit text-size-inherit rounded-xl">
+                  <div className="flex flex-col ">
+                    <h6 className="mb-1 font-semibold leading-normal text-size-sm text-slate-700">{active.name} {active.quantity && active.quantity > 1 ? '('+active.quantity+')' : ''}</h6>
+                    <span className="text-xs text-gray-600 text-ellipsis overflow-hidden mr-2">{active.description}</span>
                   </div>
                   <div className="flex flex-rowitems-center leading-normal text-size-sm">
-                    $ {(Number(active.amount)).toLocaleString()}
+                    $ {active.quantity && active.quantity > 1 ? (Number(active.amount*active.quantity)).toLocaleString() :(Number(active.amount)).toLocaleString()}
                     <Pencil className="ml-2 text-yellow-500 cursor-pointer" size={16}/>
                     <Trash className="ml-2 text-red-500 cursor-pointer" size={16} onClick={handleDelete}/>
                   </div>

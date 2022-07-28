@@ -30,6 +30,9 @@ const Pasives = ({setOpenActive,setPassives,passives}:ActivesProps) => {
         amount: doc.data().amount,
         description: doc.data().description,
         date: doc.data().date,
+        quantity: doc.data().quantity,
+        fixed_assets: doc.data().fixed_assets,
+        name: doc.data().name,
       }
       setPassives(pasives => [...pasives, isPasive])
     });

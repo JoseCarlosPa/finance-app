@@ -12,6 +12,9 @@ const Pasives = React.lazy(() => import('../components/Cards/Pasives'));
 
 export type ActiveType = {
   id?: string
+  name?: string
+  quantity?: number
+  fixed_assets?: boolean
   categorie: string
   amount: number
   description: string

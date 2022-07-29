@@ -104,7 +104,6 @@ const Pasives = ({setOpenActive,setPassives,passives}:ActivesProps) => {
                     if(pasive.id === undefined){
                       return
                     }
-                    console.log('eliminando',pasive.id)
                     await deleteDoc(doc(db, "users",user.uid,"pasives",pasive.id)).then(()=>{
                       setPassives(current =>
                         current.filter(arr => {

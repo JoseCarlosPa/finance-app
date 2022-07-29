@@ -1,7 +1,21 @@
-import React, {useCallback} from 'react';
-import {ArrowDown, ArrowUp, Reply} from "heroicons-react";
+import React, {useCallback, useState} from 'react';
+import {ArrowDown, ArrowUp, Cash, Clipboard, Reply} from "heroicons-react";
+import Incomes from "../components/Cards/Incomes";
+import AddIncome from "../components/Modals/AddIncome";
+
+export type IncomeType = {
+  id?: string
+  date: string
+  name: string
+  categorie: string
+  amount: string
+  description: string
+}
 
 const Bills = () => {
+
+  const [incomeOpen, setIncomeOpen] = useState(false);
+  const [incomes, setIncomes] = useState<IncomeType[]>([]);
 
   const getCutDate = useCallback(()=>{
     const month = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
@@ -12,11 +26,25 @@ const Bills = () => {
 
   },[])
 
+
+  const handleOpenIncome = useCallback(()=>{
+    setIncomeOpen(true)
+  },[incomeOpen])
+
   return (
     <>
       <div className="flex flex-row items-center">
         <a href="/home/dashboard"><Reply width="36" height="36"/></a>
-        <h1 className="ml-12">Gastos</h1>
+        <h1 className="ml-12">Ingresos/Egresos {getCutDate()} 2022</h1>
+      </div>
+
+      <AddIncome open={incomeOpen} incomes={incomes} setHidden={setIncomeOpen} setIncome={setIncomes}/>
+
+      <div className="flex grid grid-cols-4 gap-2 w-full justify-center mt-4">
+        <Incomes total={944} icon={<Cash className="text-white" />} title={"Ingresos"} subtitle={"Ingresos de este mes"} />
+        <Incomes total={944} icon={<Clipboard className="text-white" />} title={"Egresos de este mes"} subtitle={"Egresos de este mes"} />
+        <button className="w-full p-3 bg-gradient-fuchsia text-white rounded-md shadow" onClick={handleOpenIncome}>+ Agregar Ingresos</button>
+        <button className="w-full p-3 bg-gradient-fuchsia text-white rounded-md shadow">+ Agregar Egresos</button>
       </div>
       <div className="flex flex-col">
         <div className="w-full max-w-full px-3 mt-6  md:flex-none">

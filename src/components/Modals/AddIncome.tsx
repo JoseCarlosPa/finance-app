@@ -1,20 +1,20 @@
 import React, {useCallback} from 'react'
 import {X} from "heroicons-react";
+import {addDoc, collection} from "firebase/firestore";
+import {db} from "../../App";
 import {getAuth} from "firebase/auth";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import {addDoc, collection} from "firebase/firestore";
-import {db} from "../../App";
-import {ActiveType} from "../../pages/ActivePasive";
+import {IncomeType} from "../../pages/Bills";
 
-interface AddActiveProps {
+interface AddIncomeProps {
   open: boolean
   setHidden: (isOpen: boolean) => void
-  actives: ActiveType[]
-  setActive: React.Dispatch<React.SetStateAction<ActiveType[]>>
+  incomes: any
+  setIncome: React.Dispatch<React.SetStateAction<IncomeType[]>>
 }
 
-const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
+const AddIncome = ({open, setHidden, incomes, setIncome}: AddIncomeProps) => {
   const auth = getAuth()
   const MySwal = withReactContent(Swal)
 
@@ -30,6 +30,7 @@ const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
     setHidden(false)
   }
 
+
   const handleSubmit = useCallback(async (event: any) => {
     event.preventDefault()
     const user = auth.currentUser
@@ -38,37 +39,31 @@ const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
       if (user === null) {
         return
       }
-      const newActive: ActiveType = {
+      const newActive: IncomeType = {
         date: new Date().toISOString(),
         categorie: event.target.categorie.value,
         amount: event.target.amount.value,
         description: event.target.description.value,
-        fixed_assets: false,
         name: event.target.name.value,
-        quantity: event.target.quantity.value,
       }
-      const actives = collection(db, 'users', user.uid, 'actives')
+      const actives = collection(db, 'users', user.uid, 'incomes')
       await addDoc(actives, newActive).then((doc: any) => {
 
-        const localActive: ActiveType = {
+        const localActive: IncomeType = {
           id: doc.id,
           date: new Date().toISOString(),
           categorie: event.target.categorie.value,
           amount: event.target.amount.value,
           description: event.target.description.value,
-          fixed_assets: false,
           name: event.target.name.value,
-          quantity: event.target.quantity.value,
         }
-        setActive((actives) => [...actives, localActive])
+        setIncome((incomes) => [...incomes, localActive])
         handleClose()
         MySwal.fire('Exito!', 'Tu activo fue agregado con exito!', 'success')
         event.target.categorie.value = ''
         event.target.amount.value = ''
         event.target.description.value = ''
         event.target.name.value = ''
-        event.target.quantity.value = ''
-
       })
 
     } catch (error) {
@@ -77,15 +72,14 @@ const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
     }
 
   }, [])
-
   return (
     <div
       className={`transition justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ml-64  ${show()}`}>
-      <div className="relative w-6/12 my-6 mx-auto max-w-3xl">
+      <div className="relative w-4/12 my-6 mx-auto max-w-3xl">
         <form onSubmit={handleSubmit}
               className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
           <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-            <h4>Agregar Activo</h4>
+            <h4>Agregar Ingreso</h4>
 
             <button
               className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
@@ -103,35 +97,23 @@ const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
                 </label>
                 <input
                   className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="name" type="text" step="0.01" placeholder="Ejemplo: Casa" name="name" required/>
-              </div>
-              <div className="flex flex-row gap-2">
-                <div>
-                  <label className="text-gray-700 text-sm font-bold mb-2">
-                    Cantidad
-                  </label>
-                  <input
-                    className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="quantity" type="number" step="1" placeholder="Ejemplo: 12" name="quantity" required/>
-                </div>
-                <div>
-                  <label className="text-gray-700 text-sm font-bold mb-2">
-                    Categoria
-                  </label>
-                  <select
-                    className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="categorie" name="categorie" required>
-                    <option value="Salario">Salario</option>
-                    <option value="Inversion">Inversion</option>
-                    <option value="Inversion">Equipo</option>
-                    <option value="Inversion">Moneda</option>
-                    <option value="Extra">Otro</option>
-                  </select>
-                </div>
+                  id="name" type="text" step="0.01" placeholder="Ejemplo: LeadSales" name="name" required/>
               </div>
               <div>
                 <label className="text-gray-700 text-sm font-bold mb-2">
-                  Valor
+                  Categoria
+                </label>
+                <select
+                  className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="categorie" name="categorie" required>
+                  <option value="Salario">Salario</option>
+                  <option value="Inversion">Inversion</option>
+                  <option value="Otro">Otro</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-gray-700 text-sm font-bold mb-2">
+                  $ Monto
                 </label>
                 <input
                   className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -143,7 +125,8 @@ const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
                 </label>
                 <input
                   className="shadow  border rounded w-full h-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="description" type="text" max="30" placeholder="Ejemplo: pago de telefono " name="description" required/>
+                  id="description" type="text" max="30" placeholder="Ejemplo: pago de telefono " name="description"
+                  required/>
               </div>
 
             </div>
@@ -169,4 +152,4 @@ const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
     </div>
   );
 }
-export default React.memo(AddActive)
+export default React.memo(AddIncome)

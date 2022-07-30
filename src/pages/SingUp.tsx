@@ -22,10 +22,10 @@ const SingUp = ()=>{
       const data = await getDocs(userCollectionsRef)
       const emails = data.docs.map((doc)=>({...doc.data()}))
       if(emails.find(email => email.email === user.email)){
-        navigate('/home')
+        navigate('/home/dashboard')
       }else{
         await setDoc(doc(db,'users',user.uid),{id: user.uid, email: user.email,global_debt:0, global_income: 0})
-        navigate('/home')
+        navigate('/home/dashboard')
       }
     }).catch(error => {
       console.error(error)
@@ -42,7 +42,7 @@ const SingUp = ()=>{
     createUserWithEmailAndPassword(auth,email,password).then(async (userCredential) => {
       const user = userCredential.user
       await setDoc(doc(db,'users',user.uid),{id: user.uid, email: user.email,global_debt:0, global_income: 0})
-      navigate('/home')
+      navigate('/home/dashboard')
     }).catch((error)=>{
       setError(true)
       setErrorMssg(error.message)

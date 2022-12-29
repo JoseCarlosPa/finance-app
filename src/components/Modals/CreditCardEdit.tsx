@@ -18,6 +18,7 @@ type CreditCardEditProps = {
 
 const CreditCardEdit = ({open,setHidden,card,cards,setCards}:CreditCardEditProps) =>{
   const auth = getAuth()
+  const user = auth.currentUser
   const MySwal = withReactContent(Swal)
 
 
@@ -73,7 +74,6 @@ const CreditCardEdit = ({open,setHidden,card,cards,setCards}:CreditCardEditProps
 
   const handleSubmit = useCallback(async (event:any) => {
     event.preventDefault()
-    const user = auth.currentUser
     try{
       if(user === null){
         return

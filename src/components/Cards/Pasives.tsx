@@ -5,6 +5,8 @@ import {getAuth} from "firebase/auth";
 import {ActiveType} from "../../pages/ActivePasive";
 import {Pencil, Trash} from "heroicons-react";
 import Swal from "sweetalert2";
+import {useSetRecoilState} from "recoil";
+import {openEditPassive, selectedPassive} from "../../store/recoil/Pasive";
 
 interface ActivesProps {
   setOpenActive: React.Dispatch<React.SetStateAction<boolean>>
@@ -14,15 +16,18 @@ interface ActivesProps {
 
 const Pasives = ({setOpenActive,setPassives,passives}:ActivesProps) => {
   const auth = getAuth()
+  const user = auth.currentUser
+  const setEditPasive = useSetRecoilState(openEditPassive)
+  const setSelectedPassive = useSetRecoilState(selectedPassive)
 
   const getPasivesData = useCallback(async () => {
-    const user = auth.currentUser
     if (user === null) {
       return
     }
     setPassives([])
     const activesArray = query(collection(db, "users", user.uid, "pasives"), orderBy('date', 'asc'))
     const querySnapshot = await getDocs(activesArray);
+
     querySnapshot.forEach((doc) => {
       const isPasive = {
         id: doc.id,
@@ -50,9 +55,7 @@ const Pasives = ({setOpenActive,setPassives,passives}:ActivesProps) => {
       }
       setPassives(pasives => [...pasives, isPasive])
     });
-  },[auth.currentUser])
-
-
+  },[auth.currentUser,user])
 
   useEffect(() => {
     return (() => {
@@ -64,6 +67,8 @@ const Pasives = ({setOpenActive,setPassives,passives}:ActivesProps) => {
   const handleOpenActive = useCallback(()=>{
     setOpenActive(true)
   },[setOpenActive])
+
+
   return (
     <div className="w-full max-w-full px-3 lg:flex-none h-96">
       <div
@@ -85,8 +90,12 @@ const Pasives = ({setOpenActive,setPassives,passives}:ActivesProps) => {
           <ul className="flex flex-col pl-0 mb-0 rounded-lg">
             {passives.map((pasive, index) => {
 
+              const handleEdit = () => {
+                setSelectedPassive(pasive)
+                setEditPasive(true)
+              }
+
               const handleDelete = ()=>{
-                const user = auth.currentUser
                 if (user === null) {
                   return
                 }
@@ -100,7 +109,6 @@ const Pasives = ({setOpenActive,setPassives,passives}:ActivesProps) => {
                   confirmButtonText: 'Si, eliminalo!'
                 }).then(async (result) => {
                   if (result.isConfirmed) {
-
                     if(pasive.id === undefined){
                       return
                     }
@@ -142,7 +150,7 @@ const Pasives = ({setOpenActive,setPassives,passives}:ActivesProps) => {
                     $ {(Number(pasive.amount)).toLocaleString()}
                     {pasive.categorie !== "Tarjeta de crédito" && (
                       <>
-                        <Pencil className="ml-2 text-yellow-500 cursor-pointer" size={16}/>
+                        <Pencil className="ml-2 text-yellow-500 cursor-pointer" size={16} onClick={handleEdit}/>
                         <Trash className="ml-2 text-red-500 cursor-pointer" size={16} onClick={handleDelete}/>
                       </>
                       ) }

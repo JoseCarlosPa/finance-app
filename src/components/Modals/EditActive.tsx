@@ -1,23 +1,43 @@
-import React, {useCallback} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
+import {ActiveType} from "../../pages/ActivePasive";
 import {X} from "heroicons-react";
+import {useRecoilState, useRecoilValue} from "recoil";
+import {openEditActive, selectedActive} from "../../store/recoil/Active";
+import {addDoc, collection, doc, updateDoc} from "firebase/firestore";
+import {db} from "../../App";
 import {getAuth} from "firebase/auth";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import {addDoc, collection} from "firebase/firestore";
-import {db} from "../../App";
-import {ActiveType} from "../../pages/ActivePasive";
 
-interface AddActiveProps {
-  open: boolean
-  setHidden: (isOpen: boolean) => void
-  actives: ActiveType[]
-  setActive: React.Dispatch<React.SetStateAction<ActiveType[]>>
+type EditActiveProps ={
+  globalActives: ActiveType[]
+  setGlobalActive: React.Dispatch<React.SetStateAction<ActiveType[]>>
 }
 
-const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
+const EditActive = ({globalActives,setGlobalActive}:EditActiveProps) => {
+
+  const active = useRecoilValue(selectedActive)
+  const [open, setOpenEditActive] = useRecoilState(openEditActive)
+  const [name, setName] = useState(active?.name)
+  const [quantity, setQuantity] = useState(active?.quantity)
+  const [amount, setAmount] = useState(active?.amount)
+  const [description, setDescription] = useState(active?.description)
+  const [category, setCategory] = useState(active?.categorie)
   const auth = getAuth()
-  const MySwal = withReactContent(Swal)
   const user = auth.currentUser
+  const MySwal = withReactContent(Swal)
+
+  useEffect(() => {
+    setName(active?.name)
+    setQuantity(active?.quantity)
+    setAmount(active?.amount)
+    setDescription(active?.description)
+    setCategory(active?.categorie)
+  }, [active])
+
+  const handleClose = useCallback(() => {
+    setOpenEditActive(false)
+  }, [])
 
   const show = () => {
     if (open) {
@@ -27,56 +47,65 @@ const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
     return 'hidden'
   }
 
-  const handleClose = () => {
-    setHidden(false)
-  }
+  const onChangeName = useCallback((event: any) => {
+    setName(event.target.value)
+  }, [name])
 
+  const onChangeQuantity = useCallback((event: any) => {
+    setQuantity(event.target.value)
+  }, [quantity])
+
+  const onChangeAmount = useCallback((event: any) => {
+    setAmount(event.target.value)
+  }, [amount])
+
+  const onChangeDescription = useCallback((event: any) => {
+    setDescription(event.target.value)
+  }, [description])
+
+  const onChangeCategory = useCallback((event: any) => {
+    setCategory(event.target.value)
+  }, [category])
+
+  // Update the active
   const handleSubmit = useCallback(async (event: any) => {
     event.preventDefault()
-
     try {
-      if (user === null) {
+      if (user === null || active === undefined || active.id === undefined ) {
         return
       }
-      const newActive: ActiveType = {
-        date: new Date().toISOString(),
-        categorie: event.target.categorie.value,
-        amount: event.target.amount.value,
-        description: event.target.description.value,
-        fixed_assets: false,
-        name: event.target.name.value,
-        quantity: event.target.quantity.value,
+
+      const activeEdited = {
+        id: active.id,
+        name: name,
+        quantity: quantity,
+        amount: amount,
+        description: description,
+        categorie: category,
+        date: active.date
       }
-      const actives = collection(db, 'users', user.uid, 'actives')
-      await addDoc(actives, newActive).then((doc: any) => {
 
-        const localActive: ActiveType = {
-          id: doc.id,
-          date: new Date().toISOString(),
-          categorie: event.target.categorie.value,
-          amount: event.target.amount.value,
-          description: event.target.description.value,
-          fixed_assets: false,
-          name: event.target.name.value,
-          quantity: event.target.quantity.value,
-        }
-        setActive((actives) => [...actives, localActive])
+      const activesRef = doc(db, 'users', user.uid, 'actives',active.id)
+      await updateDoc(activesRef,activeEdited).then((doc:any)=> {
+
+        const updateActives = globalActives.map((local:ActiveType) =>{
+          if(local.id === active.id ){
+            return {...local,id:active.id, name: name, quantity: quantity, amount: amount, description: description, categorie: category,date:active.date}
+          }
+          return local
+        })
         handleClose()
-        MySwal.fire('Exito!', 'Tu activo fue agregado con exito!', 'success')
-        event.target.categorie.value = ''
-        event.target.amount.value = ''
-        event.target.description.value = ''
-        event.target.name.value = ''
-        event.target.quantity.value = ''
-
+        setGlobalActive(updateActives)
+        MySwal.fire('Exito!', 'Tu activo fue editad con exito!', 'success')
       })
 
-    } catch (error) {
-      MySwal.fire('Error!', 'Algo salio mal, intenta de nuevo! ' + error, 'error')
-      console.log(error)
-    }
+    } catch (e) {
+      console.error(e)
+      MySwal.fire('Error!', 'error')
 
-  }, [])
+    }
+  }, [name,quantity,amount,description,category])
+
 
   return (
     <div
@@ -85,7 +114,7 @@ const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
         <form onSubmit={handleSubmit}
               className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
           <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-            <h4>Agregar Activo</h4>
+            <h4>Editar Activo {active?.name} </h4>
 
             <button
               className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
@@ -103,7 +132,7 @@ const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
                 </label>
                 <input
                   className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="name" type="text" step="0.01" placeholder="Ejemplo: Casa" name="name" required/>
+                  id="name" type="text" step="0.01" placeholder="Ejemplo: Casa" name="name" value={name} onChange={onChangeName} required/>
               </div>
               <div className="flex flex-row gap-2">
                 <div>
@@ -112,7 +141,7 @@ const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
                   </label>
                   <input
                     className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="quantity" type="number" step="1" placeholder="Ejemplo: 12" name="quantity" required/>
+                    id="quantity" type="number" step="1" placeholder="Ejemplo: 12" name="quantity" value={quantity} onChange={onChangeQuantity} required/>
                 </div>
                 <div>
                   <label className="text-gray-700 text-sm font-bold mb-2">
@@ -120,7 +149,7 @@ const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
                   </label>
                   <select
                     className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="categorie" name="categorie" required>
+                    id="categorie" name="categorie" value={category} onChange={onChangeCategory} required>
                     <option value="Salario">Salario</option>
                     <option value="Inversion">Inversion</option>
                     <option value="Inversion">Equipo</option>
@@ -135,7 +164,7 @@ const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
                 </label>
                 <input
                   className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="amount" type="number" step="0.01" placeholder="Ejemplo: 350.50" name="amount" required/>
+                  id="amount" type="number" step="0.01" placeholder="Ejemplo: 350.50" name="amount" value={amount} onChange={onChangeAmount} required/>
               </div>
               <div>
                 <label className="text-gray-700 text-sm font-bold mb-2">
@@ -143,7 +172,7 @@ const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
                 </label>
                 <input
                   className="shadow  border rounded w-full h-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="description" type="text" max="30" placeholder="Ejemplo: pago de telefono " name="description" required/>
+                  id="description" type="text" max="30" placeholder="Ejemplo: pago de telefono " name="description" value={description} onChange={onChangeDescription} required/>
               </div>
 
             </div>
@@ -161,7 +190,7 @@ const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
               className="bg-gradient-fuchsia text-white  font-bold uppercase px-6 py-3 text-sm shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 rounded"
               type="submit"
             >
-              Agregar
+              Editar
             </button>
           </div>
         </form>
@@ -169,4 +198,5 @@ const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
     </div>
   );
 }
-export default React.memo(AddActive)
+
+export default React.memo(EditActive)

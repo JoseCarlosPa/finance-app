@@ -5,6 +5,8 @@ import {getAuth} from "firebase/auth";
 import {ActiveType} from "../../pages/ActivePasive";
 import {Pencil, Trash} from "heroicons-react";
 import Swal from "sweetalert2";
+import {useSetRecoilState} from "recoil";
+import {openEditActive, selectedActive} from "../../store/recoil/Active";
 
 interface ActivesProps {
   setOpenActive: React.Dispatch<React.SetStateAction<boolean>>
@@ -14,6 +16,8 @@ interface ActivesProps {
 
 const Actives = ({setOpenActive,setActives,actives}:ActivesProps) => {
   const auth = getAuth()
+  const setEditActiveOpen = useSetRecoilState(openEditActive)
+  const setSelectedActive = useSetRecoilState(selectedActive)
 
   const getActivesData = useCallback(async () => {
     const user = auth.currentUser
@@ -70,6 +74,11 @@ const Actives = ({setOpenActive,setActives,actives}:ActivesProps) => {
           <ul className="flex flex-col pl-0 mb-0 rounded-lg">
             {actives.map((active, index) => {
 
+              const handleEdit = () => {
+                setSelectedActive(active)
+                setEditActiveOpen(true)
+              }
+
               const handleDelete = ()=>{
                 const user = auth.currentUser
                 if (user === null) {
@@ -120,8 +129,8 @@ const Actives = ({setOpenActive,setActives,actives}:ActivesProps) => {
                     <span className="text-xs text-gray-600 text-ellipsis overflow-hidden mr-2">{active.description}</span>
                   </div>
                   <div className="flex flex-rowitems-center leading-normal text-size-sm">
-                    $ {active.quantity && active.quantity > 1 ? (Number(active.amount*active.quantity)).toLocaleString() :(Number(active.amount)).toLocaleString()}
-                    <Pencil className="ml-2 text-yellow-500 cursor-pointer" size={16}/>
+                    $ {active.quantity && active.quantity  > 1 ? (Number(active.amount!*active.quantity)).toLocaleString() :(Number(active.amount)).toLocaleString()}
+                    <Pencil className="ml-2 text-yellow-500 cursor-pointer" size={16}  onClick={handleEdit}/>
                     <Trash className="ml-2 text-red-500 cursor-pointer" size={16} onClick={handleDelete}/>
                   </div>
                 </li>

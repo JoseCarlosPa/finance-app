@@ -40,14 +40,15 @@ const AddIncome = ({open, setHidden, incomes, setIncome}: AddIncomeProps) => {
       if (user === null) {
         return
       }
+
       const newActive: IncomeType = {
         date: new Date().toISOString(),
         categorie: event.target.categorie.value,
         amount: event.target.amount.value,
         description: event.target.description.value,
         name: event.target.name.value,
-        period: event.target.period.value,
-        startDate: event.target.startDate.value
+        period: event.target.period ? event.target.period.value : "N/A",
+        startDate: event.target.startDate ? event.target.startDate.value : "N/A"
       }
       const actives = collection(db, 'users', user.uid, 'incomes')
       await addDoc(actives, newActive).then((doc: any) => {
@@ -59,8 +60,8 @@ const AddIncome = ({open, setHidden, incomes, setIncome}: AddIncomeProps) => {
           amount: event.target.amount.value,
           description: event.target.description.value,
           name: event.target.name.value,
-          period: event.target.period.value,
-          startDate: event.target.startDate.value,
+          period: event.target.period ? event.target.period.value : "N/A",
+          startDate: event.target.startDate ? event.target.startDate.value : "N/A",
         }
         setIncome((incomes) => [...incomes, localActive])
         handleClose()
@@ -69,8 +70,12 @@ const AddIncome = ({open, setHidden, incomes, setIncome}: AddIncomeProps) => {
         event.target.amount.value = ''
         event.target.description.value = ''
         event.target.name.value = ''
-        event.target.period.value = ''
-        event.target.startDate.value = ''
+        if(event.target.period){
+          event.target.period.value = ''
+        }
+        if(event.target.startDate){
+          event.target.startDate.value = ''
+        }
       })
 
     } catch (error) {

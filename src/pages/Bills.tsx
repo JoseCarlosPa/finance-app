@@ -1,9 +1,9 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {ArrowDown, ArrowUp, Cash, Clipboard, Reply} from "heroicons-react";
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {ArrowUp, Cash, Clipboard, Reply} from "heroicons-react";
 import Incomes from "../components/Cards/Incomes";
 import AddIncome from "../components/Modals/AddIncome";
 import {getAuth} from "firebase/auth";
-import {collection, doc, getDoc, getDocs, orderBy, query} from "firebase/firestore";
+import {collection, getDocs, orderBy, query} from "firebase/firestore";
 import {db} from "../App";
 
 export type IncomeType = {
@@ -55,9 +55,22 @@ const Bills = () => {
     })
   }, [])
 
+  const filterIncomesMonth = useMemo(() => {
+
+    const today = new Date();
+    const month = today.getMonth() + 1;
+
+    return incomes.filter(income => {
+      const incomeDate = new Date(income.date)
+      const incomeMonth = incomeDate.getMonth() + 1
+      return incomeMonth === month
+    })
+
+  },[incomes])
+
   const calculateTotal = useCallback(() => {
     let total = 0;
-    incomes.forEach(income => {
+    filterIncomesMonth.forEach(income => {
       total += parseInt(income.amount)
     })
     return total
@@ -72,6 +85,7 @@ const Bills = () => {
       getIncomes()
     })
   }, [getIncomes])
+
 
   return (
     <>
@@ -102,14 +116,14 @@ const Bills = () => {
                 </div>
                 <div className="flex items-center justify-end max-w-full px-3 md:w-1/2 md:flex-none">
                   <i className="mr-2 far fa-calendar-alt"></i>
-                  <small>01 - 30 {getCutDate()} 2022</small>
+                  <small>{getCutDate()} {new Date().getFullYear()}</small>
                 </div>
               </div>
             </div>
             <div className="flex-auto p-4 pt-6">
-              <h6 className="mb-4 font-bold leading-tight uppercase text-size-xs text-slate-500">Newest</h6>
+              <h6 className="mb-4 font-bold leading-tight uppercase text-size-xs text-slate-500">Este mes</h6>
               <ul className="flex flex-col pl-0 mb-0 rounded-lg">
-                {incomes.map((income, index) => {
+                {filterIncomesMonth.map((income, index) => {
                   return (
                     <li
                       key={index}

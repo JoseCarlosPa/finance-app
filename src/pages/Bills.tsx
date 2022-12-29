@@ -13,8 +13,8 @@ export type IncomeType = {
   categorie: string
   amount: string
   description: string
-  period?: number
-  startDate?: string
+  period: number
+  startDate: string
 }
 
 const Bills = () => {

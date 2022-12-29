@@ -39,10 +39,10 @@ const ActivePasive = () => {
 
   const user = auth.currentUser
 
-  const calculateTotalActives = useCallback( () => {
+  const calculateTotalActives = useCallback(() => {
     let total: number = 0
     actives.forEach((active) => {
-      total += Number(active.amount)
+        total += Number(active.amount)
       }
     )
     setTotalActives(total)
@@ -50,30 +50,29 @@ const ActivePasive = () => {
   }, [actives])
 
 
-
   const overWriteGlobalIncome = useCallback(async () => {
-    if(user !== null) {
+    if (user !== null) {
       const userDataRef = doc(db, 'users', user.uid)
-      await updateDoc(userDataRef, {global_income:totalActive}).then((doc: any) => {
+      await updateDoc(userDataRef, {global_income: totalActive}).then((doc: any) => {
       })
     }
-  },[totalActive,actives,user])
+  }, [totalActive, actives, user])
 
   const overWriteGlobalDebt = useCallback(async () => {
-    if(user !== null) {
+    if (user !== null) {
       const userDataRef = doc(db, 'users', user.uid)
       const docSnap = await getDoc(userDataRef);
       if (docSnap.exists()) {
-        if(docSnap.data()?.global_debt === totalDebt) {
+        if (docSnap.data()?.global_debt === totalDebt) {
           return
         }
       }
-      await updateDoc(userDataRef, {global_debt:totalDebt}).then((doc: any) => {
+      await updateDoc(userDataRef, {global_debt: totalDebt}).then((doc: any) => {
       })
     }
-  },[totalDebt,passives,user])
+  }, [totalDebt, passives, user])
 
-  const calculateTotalPassives = useCallback( () => {
+  const calculateTotalPassives = useCallback(() => {
     let total: number = 0
     passives.forEach((passive) => {
         total += Number(passive.amount)
@@ -81,7 +80,7 @@ const ActivePasive = () => {
     )
     setTotalDebt(total)
 
-  }, [passives,user,totalDebt])
+  }, [passives, user, totalDebt])
 
   useEffect(() => {
     overWriteGlobalIncome().then()
@@ -89,7 +88,7 @@ const ActivePasive = () => {
     overWriteGlobalDebt().then()
     calculateTotalPassives()
 
-  },[totalDebt,passives,actives,user])
+  }, [totalDebt, passives, actives, user])
 
 
   return (
@@ -105,14 +104,17 @@ const ActivePasive = () => {
       </div>
       <div className="flex grid grid-cols-3 mt-4 gap-4 ">
         <SimpleCard title="Activos" icon={<Cash className="text-white"/>} value={totalActive}/>
-        <SimpleCard title="Pasivos" color={'bg-red-500'} icon={<ChartSquareBar className="text-white"/>} value={totalDebt}/>
+        <SimpleCard title="Pasivos" color={'bg-red-500'} icon={<ChartSquareBar className="text-white"/>}
+                    value={totalDebt}/>
         <SimpleCard title="Extras" icon={<Clipboard className="text-white"/>} value={0}/>
       </div>
       <div className="flex grid grid-cols-2 gap-4 mt-8 ">
         <Suspense fallback={<div>Loading...</div>}>
           <Actives setOpenActive={setOpenActive} actives={actives} setActives={setActives}/>
         </Suspense>
-        <Passives setOpenActive={setOpenPassive} passives={passives} setPassives={setPassives}/>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Passives setOpenActive={setOpenPassive} passives={passives} setPassives={setPassives}/>
+        </Suspense>
       </div>
 
     </>

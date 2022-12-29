@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react'
+import React, {useCallback, useState} from 'react'
 import {X} from "heroicons-react";
 import {addDoc, collection} from "firebase/firestore";
 import {db} from "../../App";
@@ -17,6 +17,7 @@ interface AddIncomeProps {
 const AddIncome = ({open, setHidden, incomes, setIncome}: AddIncomeProps) => {
   const auth = getAuth()
   const MySwal = withReactContent(Swal)
+  const [showSelect, setShowSelect] = useState(false)
 
   const show = () => {
     if (open) {
@@ -45,6 +46,8 @@ const AddIncome = ({open, setHidden, incomes, setIncome}: AddIncomeProps) => {
         amount: event.target.amount.value,
         description: event.target.description.value,
         name: event.target.name.value,
+        period: event.target.period.value,
+        startDate: event.target.startDate.value
       }
       const actives = collection(db, 'users', user.uid, 'incomes')
       await addDoc(actives, newActive).then((doc: any) => {
@@ -56,6 +59,8 @@ const AddIncome = ({open, setHidden, incomes, setIncome}: AddIncomeProps) => {
           amount: event.target.amount.value,
           description: event.target.description.value,
           name: event.target.name.value,
+          period: event.target.period.value,
+          startDate: event.target.startDate.value,
         }
         setIncome((incomes) => [...incomes, localActive])
         handleClose()
@@ -64,6 +69,8 @@ const AddIncome = ({open, setHidden, incomes, setIncome}: AddIncomeProps) => {
         event.target.amount.value = ''
         event.target.description.value = ''
         event.target.name.value = ''
+        event.target.period.value = ''
+        event.target.startDate.value = ''
       })
 
     } catch (error) {
@@ -72,6 +79,10 @@ const AddIncome = ({open, setHidden, incomes, setIncome}: AddIncomeProps) => {
     }
 
   }, [])
+
+  const handleShowSelect = useCallback(() => {
+    setShowSelect(!showSelect)
+  }, [showSelect])
   return (
     <div
       className={`transition justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ml-64  ${show()}`}>
@@ -111,6 +122,44 @@ const AddIncome = ({open, setHidden, incomes, setIncome}: AddIncomeProps) => {
                   <option value="Otro">Otro</option>
                 </select>
               </div>
+              <div className="mt-4">
+                <div className="flex items-center mb-4">
+
+                  <label htmlFor="default-checkbox"
+                         className="ml-2 text-sm font-medium text-gray-900">¿Es recurrente?</label>
+                  <input id="default-checkbox" type="checkbox" value="1"
+                         className="ml-4 w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                         onClick={handleShowSelect}/>
+                </div>
+              </div>
+              {showSelect && (
+                <div>
+                  <div>
+                    <label className="text-gray-700 text-sm font-bold mb-2">
+                      Periodo
+                    </label>
+                    <select
+                      className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      id="period" name="period" required>
+                      <option value="7">Cada 7 días</option>
+                      <option value="15">Cada 15 días</option>
+                      <option value="30">Cada 30 días</option>
+                      <option value="60">Cada 60 días</option>
+                      <option value="90">Cada 90 días</option>
+                      <option value="180">Cada 180 días</option>
+                      <option value="180">Cada 365 días</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-gray-700 text-sm font-bold mb-2">
+                      Fecha de inicio
+                    </label>
+                    <input
+                      className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      id="startDate" type="number" step="1" min="1" max="31" placeholder="Ejemplo: Empieza a contar desde el 1ro de Cada Mes" name="startDate" required/>
+                  </div>
+                </div>
+              )}
               <div>
                 <label className="text-gray-700 text-sm font-bold mb-2">
                   $ Monto
@@ -128,7 +177,6 @@ const AddIncome = ({open, setHidden, incomes, setIncome}: AddIncomeProps) => {
                   id="description" type="text" max="30" placeholder="Ejemplo: pago de telefono " name="description"
                   required/>
               </div>
-
             </div>
           </div>
 

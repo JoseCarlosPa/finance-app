@@ -13,6 +13,8 @@ export type IncomeType = {
   categorie: string
   amount: string
   description: string
+  period?: number
+  startDate?: string
 }
 
 const Bills = () => {
@@ -45,7 +47,9 @@ const Bills = () => {
         name: doc.data().name,
         categorie: doc.data().categorie,
         amount: doc.data().amount,
-        description: doc.data().description
+        description: doc.data().description,
+        period: doc.data().period,
+        startDate: doc.data().startDate
       }
       setIncomes(prevState => [...prevState, isIncome])
     })

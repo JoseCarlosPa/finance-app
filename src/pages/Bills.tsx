@@ -94,19 +94,15 @@ const Bills = () => {
 
   const filterIncomesMonth = useMemo(() => {
 
-    // get current month
     const today = new Date();
     const month = today.getMonth() + monthNumber;
-
-    // Filter incomes by month
-    return incomes.filter(income => {
-      const incomeDate = new Date(income.date)
-      const incomeMonth = incomeDate.getMonth() + monthNumber
-      console.log(incomeMonth)
+    return incomes.filter(outCome => {
+      const incomesDate = new Date(outCome.date)
+      const incomeMonth = incomesDate.getMonth() + monthNumber
       return incomeMonth === month
     })
 
-    },[monthNumber])
+  }, [incomes, monthNumber])
 
   const filterOutComesMonth = useMemo(() => {
 

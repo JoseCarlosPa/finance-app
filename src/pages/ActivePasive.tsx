@@ -42,7 +42,13 @@ const ActivePasive = () => {
   const calculateTotalActives = useCallback(() => {
     let total: number = 0
     actives.forEach((active) => {
-        total += Number(active.amount)
+
+        if(active.quantity !== undefined && active.amount !== undefined && active.quantity > 1){
+          const multiply = active.amount * active.quantity
+          total += Number(multiply)
+        }else{
+          total += Number(active.amount)
+        }
       }
     )
     setTotalActives(total)

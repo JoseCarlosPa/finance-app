@@ -22,7 +22,7 @@ const Incomes = ({total,title,subtitle,icon,percentage}:IncomesProps) => {
           <h6 className="mb-0 text-center">{title}</h6>
           <span className="leading-tight text-size-xs">{subtitle}</span>
           <hr className="h-px my-4 bg-transparent bg-gradient-horizontal-dark"/>
-          <h5 className="mb-0">{percentage ? '%' : '$'} {(total).toLocaleString()}</h5>
+          <h5 className="mb-0">{percentage ? '%' : '$'} {(total).toLocaleString("es-MX")}</h5>
         </div>
       </div>
     </div>

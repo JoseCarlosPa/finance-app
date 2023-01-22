@@ -12,7 +12,7 @@ const NavBar = () =>{
   },[auth])
 
   return(
-    <aside className="max-w-62.5 ease-nav-brand z-990 fixed inset-y-0 my-4 ml-4 block w-full -translate-x-full flex-wrap items-center justify-between overflow-y-auto rounded-2xl border-0 bg-white p-0 antialiased shadow-lg transition-transform duration-200 xl:left-0 xl:translate-x-0 xl:bg-transparent">
+    <aside className="max-w-62.5 ease-nav-brand z-990 fixed inset-y-0 my-4 ml-4 block w-full -translate-x-full flex-wrap items-center justify-between overflow-y-auto rounded-2xl border-0 bg-white p-0 antialiased shadow-lg transition-transform duration-200 xl:left-0 xl:translate-x-0 xl:bg-transparent ">
       <div className="h-19.5">
         <i className="absolute top-0 right-0 hidden p-4 opacity-50 cursor-pointer fas fa-times text-slate-400 xl:hidden"></i>
         <a className="block px-8 py-6 m-0 text-size-sm whitespace-nowrap text-slate-700" href="#"
@@ -30,7 +30,7 @@ const NavBar = () =>{
 
       <div className="items-center block w-auto max-h-screen overflow-auto h-sidenav grow basis-full">
         <ul className="flex flex-col pl-0 mb-0">
-          <li className="mt-0.5 w-full hover:scale-105 duration-300">
+          <li className="mt-0.5 w-full hover:scale-y-110 duration-300">
             <a
               className="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap rounded-lg  px-4 font-semibold text-slate-700 transition-colors"
               href="/home/dashboard">
@@ -42,7 +42,7 @@ const NavBar = () =>{
             </a>
           </li>
 
-          <li className="mt-0.5 w-full hover:scale-105 duration-300">
+          <li className="mt-0.5 w-full hover:scale-y-110 duration-300">
             <a
               className="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
               href="/home/tarjetas">
@@ -54,7 +54,7 @@ const NavBar = () =>{
             </a>
           </li>
 
-          <li className="mt-0.5 w-full hover:scale-105 duration-300">
+          <li className="mt-0.5 w-full hover:scale-y-110 duration-300">
             <a
               className="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
               href="/home/activos-pasivos">
@@ -66,7 +66,7 @@ const NavBar = () =>{
             </a>
           </li>
 
-          <li className="mt-0.5 w-full hover:scale-105 duration-300">
+          <li className="mt-0.5 w-full hover:scale-y-110 duration-300">
             <a
               className="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
               href="/home/gastos">
@@ -78,7 +78,7 @@ const NavBar = () =>{
             </a>
           </li>
 
-          <li className="mt-0.5 w-full hover:scale-105 duration-300">
+          <li className="mt-0.5 w-full hover:scale-y-110 duration-300">
             <a
               className="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
               href="/home/herramientas">
@@ -110,7 +110,7 @@ const NavBar = () =>{
             <h6 className="pl-6 ml-2 font-bold leading-tight uppercase text-size-xs opacity-60">Paginas de tu Cuenta</h6>
           </li>
 
-          <li className="mt-0.5 w-full hover:scale-105 duration-300">
+          <li className="mt-0.5 w-full hover:scale-y-110 duration-300">
             <a
               className="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors"
               href="./pages/profile.html">
@@ -121,7 +121,7 @@ const NavBar = () =>{
               <span className="ml-1 duration-300 opacity-100 pointer-events-none ease-soft">Perfil</span>
             </a>
           </li>
-          <li className="mt-0.5 w-full hover:scale-105 duration-300">
+          <li className="mt-0.5 w-full hover:scale-y-110 duration-300">
             <div className="py-2.7 text-size-sm ease-nav-brand my-0 mx-4 flex items-center whitespace-nowrap px-4 transition-colors cursor-pointer" onClick={handleOnClick}>
               <div
                 className="shadow-soft-2xl mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-white bg-center stroke-0 text-center xl:p-2.5">

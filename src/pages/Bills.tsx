@@ -174,7 +174,7 @@ const Bills = () => {
                  subtitle={"Egresos de este mes"}/>
         <Incomes total={calculateTotal() - calculateTotalOutcomes()} icon={<CreditCard className="text-white"/>} title={"Sobran"} subtitle={"Sobran para gastar"}/>
       </div>
-      <div className="flex flex-row justify-center mt-4 gap-6">
+      <div className="flex flex-row justify-center mt-4 gap-6 mx-4">
         <button className="w-full p-3 bg-gradient-fuchsia text-white rounded-md shadow" onClick={handleOpenIncome}>+
           Agregar Ingresos
         </button>
@@ -223,7 +223,7 @@ const Bills = () => {
                           <div className="flex flex-col items-center justify-center">
                             <p
                               className="relative z-10 inline-block m-0 font-semibold leading-normal text-transparent bg-green-600 text-size-sm bg-clip-text">
-                              $ {Number(income.amount).toLocaleString()}</p>
+                              $ {Number(income.amount).toLocaleString("es-MX")}</p>
                           </div>
                         </li>)
                     })}
@@ -250,7 +250,7 @@ const Bills = () => {
                           <div className="flex flex-col items-center justify-center">
                             <p
                               className="relative z-10 inline-block m-0 font-semibold leading-normal text-transparent bg-red-600 text-size-sm bg-clip-text">
-                              $ {Number(income.amount).toLocaleString()}</p>
+                              $ {Number(income.amount).toLocaleString("es-MX")}</p>
                           </div>
                         </li>)
                     })}

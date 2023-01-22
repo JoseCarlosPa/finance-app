@@ -124,7 +124,8 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
                   id="categorie" name="categorie" required>
                   <option value="Servicios">Servicios</option>
                   <option value="tarjetas">Pago de tarjeta de credito</option>
-
+                  <option value="Entretenimiento">Entretenimiento</option>
+                  <option value="Otro">Otro</option>
                 </select>
               </div>
               <div className="mt-4">

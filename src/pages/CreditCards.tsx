@@ -82,11 +82,8 @@ const CreditCards = () => {
 
 
   useEffect(() => {
-    return (() => {
       getUserData().then()
       getCreditCards().then()
-
-    })
   }, [getCreditCards])
 
   useEffect(() => {

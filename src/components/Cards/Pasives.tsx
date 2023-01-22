@@ -58,9 +58,7 @@ const Pasives = ({setOpenActive,setPassives,passives}:ActivesProps) => {
   },[auth.currentUser,user])
 
   useEffect(() => {
-    return (() => {
       getPasivesData().then()
-    })
   }, [getPasivesData])
 
 

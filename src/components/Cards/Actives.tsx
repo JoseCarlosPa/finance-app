@@ -44,9 +44,7 @@ const Actives = ({setOpenActive,setActives,actives}:ActivesProps) => {
   },[auth.currentUser])
 
   useEffect(() => {
-    return (() => {
       getActivesData().then()
-    })
   }, [getActivesData])
 
 

@@ -35,12 +35,12 @@ const Bills = () => {
   const [incomes, setIncomes] = useState<IncomeType[]>([]);
   const [outcomes, setOutcomes] = useState<IncomeType[]>([]);
 
-  const [monthNumber, setMonthNumber] = useState<number>(0);
+  const [monthNumber, setMonthNumber] = useState<number>(1);
 
-  const getCutDate = useCallback(() => {
+   const getCutDate = useCallback(() => {
     const month = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
     const d = new Date();
-    let name = month[d.getMonth() + monthNumber];
+    let name = month[d.getMonth() + (monthNumber - 1)];
 
     return `${name}`
 
@@ -142,10 +142,8 @@ const Bills = () => {
   }, [outcomeOpen])
 
   useEffect(() => {
-    return (() => {
       getIncomes()
       getOutcomes()
-    })
   }, [getIncomes, getOutcomes])
 
   const handleArrowLeft = useCallback(() => {

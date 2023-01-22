@@ -1,10 +1,19 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {ArrowUp, Cash, Clipboard, Reply} from "heroicons-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  Cash,
+  ChevronLeft,
+  ChevronRight,
+  Clipboard, CreditCard,
+  Reply
+} from "heroicons-react";
 import Incomes from "../components/Cards/Incomes";
 import AddIncome from "../components/Modals/AddIncome";
 import {getAuth} from "firebase/auth";
 import {collection, getDocs, orderBy, query} from "firebase/firestore";
 import {db} from "../App";
+import AddOutcome from "../components/Modals/AddOutcome";
 
 export type IncomeType = {
   id?: string
@@ -21,16 +30,21 @@ const Bills = () => {
   const auth = getAuth()
 
   const [incomeOpen, setIncomeOpen] = useState(false);
+  const [outcomeOpen, setOutcomeOpen] = useState(false);
+
   const [incomes, setIncomes] = useState<IncomeType[]>([]);
+  const [outcomes, setOutcomes] = useState<IncomeType[]>([]);
+
+  const [monthNumber, setMonthNumber] = useState<number>(0);
 
   const getCutDate = useCallback(() => {
     const month = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
     const d = new Date();
-    let name = month[d.getMonth()];
+    let name = month[d.getMonth() + monthNumber];
 
     return `${name}`
 
-  }, [])
+  }, [monthNumber])
 
   const getIncomes = useCallback(async () => {
     const user = auth.currentUser
@@ -53,20 +67,59 @@ const Bills = () => {
       }
       setIncomes(prevState => [...prevState, isIncome])
     })
-  }, [])
+  }, [monthNumber])
+
+  const getOutcomes = useCallback(async () => {
+    const user = auth.currentUser
+    if (user === null) {
+      return
+    }
+    setOutcomes([])
+    const outcomesArray = query(collection(db, "users", user.uid, "outcomes"), orderBy('date', 'asc'))
+    const querySnapshot = await getDocs(outcomesArray);
+    querySnapshot.forEach((doc) => {
+      const isOutcome = {
+        id: doc.id,
+        date: doc.data().date,
+        name: doc.data().name,
+        categorie: doc.data().categorie,
+        amount: doc.data().amount,
+        description: doc.data().description,
+        period: doc.data().period,
+        startDate: doc.data().startDate
+      }
+      setOutcomes(prevState => [...prevState, isOutcome])
+    })
+  }, [monthNumber])
 
   const filterIncomesMonth = useMemo(() => {
 
+    // get current month
     const today = new Date();
-    const month = today.getMonth() + 1;
+    const month = today.getMonth() + monthNumber;
 
+    // Filter incomes by month
     return incomes.filter(income => {
       const incomeDate = new Date(income.date)
-      const incomeMonth = incomeDate.getMonth() + 1
+      const incomeMonth = incomeDate.getMonth() + monthNumber
+      console.log(incomeMonth)
       return incomeMonth === month
     })
 
-  },[incomes])
+    },[monthNumber])
+
+  const filterOutComesMonth = useMemo(() => {
+
+    const today = new Date();
+    const month = today.getMonth() + monthNumber;
+
+    return outcomes.filter(outCome => {
+      const outComeDate = new Date(outCome.date)
+      const outComeMonth = outComeDate.getMonth() + monthNumber
+      return outComeMonth === month
+    })
+
+  }, [outcomes, monthNumber])
 
   const calculateTotal = useCallback(() => {
     let total = 0;
@@ -74,18 +127,38 @@ const Bills = () => {
       total += parseInt(income.amount)
     })
     return total
-  },[incomes])
+  }, [incomes])
+
+  const calculateTotalOutcomes = useCallback(() => {
+    let total = 0;
+    filterOutComesMonth.forEach(outcome => {
+      total += parseInt(outcome.amount)
+    })
+    return total
+  }, [outcomes,monthNumber])
 
   const handleOpenIncome = useCallback(() => {
     setIncomeOpen(true)
   }, [incomeOpen])
 
+  const handleOpenOutCome = useCallback(() => {
+    setOutcomeOpen(true)
+  }, [outcomeOpen])
+
   useEffect(() => {
     return (() => {
       getIncomes()
+      getOutcomes()
     })
-  }, [getIncomes])
+  }, [getIncomes, getOutcomes])
 
+  const handleArrowLeft = useCallback(() => {
+    setMonthNumber(monthNumber - 1)
+  }, [monthNumber])
+
+  const handleArrowRight = useCallback(() => {
+    setMonthNumber(monthNumber + 1)
+  }, [monthNumber])
 
   return (
     <>
@@ -95,16 +168,23 @@ const Bills = () => {
       </div>
 
       <AddIncome open={incomeOpen} incomes={incomes} setHidden={setIncomeOpen} setIncome={setIncomes}/>
+      <AddOutcome open={outcomeOpen} outcomes={outcomes} setHidden={setOutcomeOpen} setOutcome={setOutcomes}/>
 
-      <div className="flex grid grid-cols-4 gap-2 w-full justify-center mt-4">
+
+      <div className="flex grid grid-cols-3 gap-2 w-full justify-center mt-4">
         <Incomes total={calculateTotal()} icon={<Cash className="text-white"/>} title={"Ingresos"}
                  subtitle={"Ingresos de este mes"}/>
-        <Incomes total={0} icon={<Clipboard className="text-white"/>} title={"Egresos de este mes"}
+        <Incomes total={calculateTotalOutcomes()} icon={<Clipboard className="text-white"/>} title={"Egresos de este mes"}
                  subtitle={"Egresos de este mes"}/>
+        <Incomes total={calculateTotal() - calculateTotalOutcomes()} icon={<CreditCard className="text-white"/>} title={"Sobran"} subtitle={"Sobran para gastar"}/>
+      </div>
+      <div className="flex flex-row justify-center mt-4 gap-6">
         <button className="w-full p-3 bg-gradient-fuchsia text-white rounded-md shadow" onClick={handleOpenIncome}>+
           Agregar Ingresos
         </button>
-        <button className="w-full p-3 bg-gradient-fuchsia text-white rounded-md shadow">+ Agregar Egresos</button>
+        <button className="w-full p-3 bg-gradient-fuchsia text-white rounded-md shadow" onClick={handleOpenOutCome}>+
+          Agregar Egresos
+        </button>
       </div>
       <div className="flex flex-col">
         <div className="w-full max-w-full px-3 mt-6  md:flex-none">
@@ -116,36 +196,74 @@ const Bills = () => {
                 </div>
                 <div className="flex items-center justify-end max-w-full px-3 md:w-1/2 md:flex-none">
                   <i className="mr-2 far fa-calendar-alt"></i>
-                  <small>{getCutDate()} {new Date().getFullYear()}</small>
+                  <div className="flex flex-row align-middle items-center">
+                    <button className="mr-2" onClick={handleArrowLeft}><ChevronLeft className="w-4"/></button>
+                    <small>{getCutDate()} {new Date().getFullYear()}</small>
+                    <button className="ml-2" onClick={handleArrowRight}><ChevronRight className="w-4"/></button>
+                  </div>
                 </div>
               </div>
             </div>
             <div className="flex-auto p-4 pt-6">
               <h6 className="mb-4 font-bold leading-tight uppercase text-size-xs text-slate-500">Este mes</h6>
-              <ul className="flex flex-col pl-0 mb-0 rounded-lg">
-                {filterIncomesMonth.map((income, index) => {
-                  return (
-                    <li
-                      key={index}
-                      className="relative flex justify-between px-4 py-2 pl-0 mb-2 bg-white border-0 rounded-t-inherit text-size-inherit rounded-xl">
-                      <div className="flex items-center">
-                        <button
-                          className="leading-pro ease-soft-in text-size-xs bg-150 w-6.35 h-6.35 p-1.2 rounded-3.5xl tracking-tight-soft bg-x-25 mr-4 mb-0 flex cursor-pointer items-center justify-center border border-solid border-green-600 border-transparent bg-transparent text-center align-middle font-bold uppercase text-red-600 transition-all hover:opacity-75">
-                          <ArrowUp className="text-green-600"/></button>
-                        <div className="flex flex-col">
-                          <h6 className="mb-1 leading-normal text-size-sm text-slate-700">{income.name}</h6>
-                          <span className="leading-tight text-size-xs">{income.date}</span>
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-center justify-center">
-                        <p
-                          className="relative z-10 inline-block m-0 font-semibold leading-normal text-transparent bg-green-600 text-size-sm bg-clip-text">
-                          $ {Number(income.amount).toLocaleString()}</p>
-                      </div>
-                    </li>)
-                })}
+              <div className="grid grid-cols-2">
+                <div className="">
+                  <ul className="flex flex-col pl-0 mb-0 rounded-lg">
+                    {filterIncomesMonth.map((income, index) => {
+                      return (
+                        <li
+                          key={index}
+                          className="relative flex justify-between px-4 py-2 pl-0 mb-2 bg-white border-0 rounded-t-inherit text-size-inherit rounded-xl">
+                          <div className="flex items-center">
+                            <button
+                              className="leading-pro ease-soft-in text-size-xs bg-150 w-6.35 h-6.35 p-1.2 rounded-3.5xl tracking-tight-soft bg-x-25 mr-4 mb-0 flex cursor-pointer items-center justify-center border border-solid border-green-600 border-transparent bg-transparent text-center align-middle font-bold uppercase text-red-600 transition-all hover:opacity-75">
+                              <ArrowUp className="text-green-600"/></button>
+                            <div className="flex flex-col">
+                              <h6 className="mb-1 leading-normal text-size-sm text-slate-700">{income.name}</h6>
+                              <span
+                                className="leading-tight text-size-xs">{new Date(income.date).toLocaleDateString("es-MX")}</span>
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-center justify-center">
+                            <p
+                              className="relative z-10 inline-block m-0 font-semibold leading-normal text-transparent bg-green-600 text-size-sm bg-clip-text">
+                              $ {Number(income.amount).toLocaleString()}</p>
+                          </div>
+                        </li>)
+                    })}
 
-              </ul>
+                  </ul>
+                </div>
+                <div className="border-l-gray-500 border-l-2">
+                  <ul className="flex flex-col pl-0 mb-0 rounded-lg ">
+                    {filterOutComesMonth.map((income, index) => {
+                      return (
+                        <li
+                          key={index}
+                          className="relative flex justify-between px-4 py-2 pl-0 mb-2 bg-white border-0 rounded-t-inherit text-size-inherit rounded-xl">
+                          <div className="flex items-center">
+                            <button
+                              className="leading-pro ease-soft-in text-size-xs bg-150 w-6.35 h-6.35 p-1.2 rounded-3.5xl tracking-tight-soft bg-x-25 mr-4 mb-0 flex cursor-pointer items-center justify-center border border-solid border-green-600 border-transparent bg-transparent text-center align-middle font-bold uppercase text-red-600 transition-all hover:opacity-75">
+                              <ArrowDown className="text-red-600"/></button>
+                            <div className="flex flex-col">
+                              <h6 className="mb-1 leading-normal text-size-sm text-slate-700">{income.name}</h6>
+                              <span
+                                className="leading-tight text-size-xs">{new Date(income.date).toLocaleDateString("es-MX")}</span>
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-center justify-center">
+                            <p
+                              className="relative z-10 inline-block m-0 font-semibold leading-normal text-transparent bg-red-600 text-size-sm bg-clip-text">
+                              $ {Number(income.amount).toLocaleString()}</p>
+                          </div>
+                        </li>)
+                    })}
+
+                  </ul>
+                </div>
+
+              </div>
+
             </div>
           </div>
         </div>

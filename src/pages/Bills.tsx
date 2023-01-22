@@ -96,9 +96,9 @@ const Bills = () => {
 
     const today = new Date();
     const month = today.getMonth() + monthNumber;
-    return incomes.filter(outCome => {
-      const incomesDate = new Date(outCome.date)
-      const incomeMonth = incomesDate.getMonth() + monthNumber
+    return incomes.filter(income => {
+      const incomesDate = new Date(income.date)
+      const incomeMonth = incomesDate.getMonth() + 1
       return incomeMonth === month
     })
 
@@ -108,13 +108,11 @@ const Bills = () => {
 
     const today = new Date();
     const month = today.getMonth() + monthNumber;
-
     return outcomes.filter(outCome => {
-      const outComeDate = new Date(outCome.date)
-      const outComeMonth = outComeDate.getMonth() + monthNumber
-      return outComeMonth === month
+      const outcomesDate = new Date(outCome.date)
+      const outcomeMonth = outcomesDate.getMonth() + 1
+      return outcomeMonth === month
     })
-
   }, [outcomes, monthNumber])
 
   const calculateTotal = useCallback(() => {

@@ -6,6 +6,7 @@ import {getAuth} from "firebase/auth";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import {IncomeType} from "../../pages/Bills";
+import {debug} from "util";
 
 interface AddOutcomeProps {
   open: boolean
@@ -18,6 +19,7 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
   const auth = getAuth()
   const MySwal = withReactContent(Swal)
   const [showSelect, setShowSelect] = useState(false)
+  const [selectOther, setSelectOther] = useState<boolean>(false)
 
   const show = () => {
     if (open) {
@@ -42,8 +44,8 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
       }
 
       const newActive: IncomeType = {
-        date: new Date().toISOString(),
-        categorie: event.target.categorie.value,
+        date: event.target.date.value,
+        categorie: selectOther ? event.target.categorie_other.value : event.target.categorie.value,
         amount: event.target.amount.value,
         description: event.target.description.value,
         name: event.target.name.value,
@@ -55,8 +57,8 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
 
         const localActive: IncomeType = {
           id: doc.id,
-          date: new Date().toISOString(),
-          categorie: event.target.categorie.value,
+          date: event.target.date.value,
+          categorie: selectOther ? event.target.categorie_other.value : event.target.categorie.value,
           amount: event.target.amount.value,
           description: event.target.description.value,
           name: event.target.name.value,
@@ -70,10 +72,10 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
         event.target.amount.value = ''
         event.target.description.value = ''
         event.target.name.value = ''
-        if(event.target.period){
+        if (event.target.period) {
           event.target.period.value = ''
         }
-        if(event.target.startDate){
+        if (event.target.startDate) {
           event.target.startDate.value = ''
         }
       })
@@ -83,11 +85,21 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
       console.log(error)
     }
 
-  }, [])
+  }, [selectOther])
 
   const handleShowSelect = useCallback(() => {
     setShowSelect(!showSelect)
   }, [showSelect])
+
+  const handleSelectOther = useCallback((event: any) => {
+    if (event.target.value === "Otro") {
+      setSelectOther(true)
+    } else {
+      setSelectOther(false)
+    }
+
+  }, [])
+
   return (
     <div
       className={`transition justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ml-64  ${show()}`}>
@@ -115,19 +127,38 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
                   className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="name" type="text" step="0.01" placeholder="Ejemplo: LeadSales" name="name" required/>
               </div>
-              <div>
-                <label className="text-gray-700 text-sm font-bold mb-2">
-                  Categoria
-                </label>
-                <select
-                  className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="categorie" name="categorie" required>
-                  <option value="Servicios">Servicios</option>
-                  <option value="tarjetas">Pago de tarjeta de credito</option>
-                  <option value="Entretenimiento">Entretenimiento</option>
-                  <option value="Otro">Otro</option>
-                </select>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-gray-700 text-sm font-bold mb-2">
+                    Categoria
+                  </label>
+                  <select
+                    className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="categorie" name="categorie" onChange={handleSelectOther} required>
+                    <option value="Servicios">Servicios</option>
+                    <option value="tarjetas">Pago de tarjeta de credito</option>
+                    <option value="Entretenimiento">Entretenimiento</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+
+                  {selectOther && (
+                    <div>
+                      <label className="text-gray-700 text-sm font-bold mb-2">
+                        Categoria
+                      </label>
+                      <input name="categorie_other" id="categorie_other" type="text"
+                             className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <label className="text-gray-700 text-sm font-bold mb-2">
+                    Fecha
+                  </label>
+                  <input type="datetime-local" name="date" className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required/>
+                </div>
               </div>
+
               <div className="mt-4">
                 <div className="flex items-center mb-4">
 
@@ -162,7 +193,8 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
                     </label>
                     <input
                       className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      id="startDate" type="number" step="1" min="1" max="31" placeholder="Ejemplo: Empieza a contar desde el 1ro de Cada Mes" name="startDate" required/>
+                      id="startDate" type="number" step="1" min="1" max="31"
+                      placeholder="Ejemplo: Empieza a contar desde el 1ro de Cada Mes" name="startDate" required/>
                   </div>
                 </div>
               )}
@@ -180,8 +212,7 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
                 </label>
                 <input
                   className="shadow  border rounded w-full h-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="description" type="text" max="30" placeholder="Ejemplo: pago de telefono " name="description"
-                  required/>
+                  id="description" type="text" max="30" placeholder="Ejemplo: pago de telefono " name="description"/>
               </div>
             </div>
           </div>

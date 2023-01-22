@@ -110,8 +110,9 @@ const Dashboard = () => {
           <div className="flex flex-row">
             <div>
               <Pie data={data}/>
+              <p className="underline text-blue-500"><a href="/home/gastos">Ver mas</a></p>
             </div>
-            <p className="underline text-blue-500"><a href="/home/gastos">Ver mas</a></p>
+
           </div>
         </div>
       </main>

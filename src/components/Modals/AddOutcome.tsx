@@ -44,7 +44,7 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
       }
 
       const newActive: IncomeType = {
-        date: event.target.date.value,
+        date: new Date(event.target.date.value),
         categorie: selectOther ? event.target.categorie_other.value : event.target.categorie.value,
         amount: event.target.amount.value,
         description: event.target.description.value,
@@ -82,7 +82,7 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
 
     } catch (error) {
       MySwal.fire('Error!', 'Algo salio mal, intenta de nuevo! ' + error, 'error')
-      console.log(error)
+      console.error(error)
     }
 
   }, [selectOther])

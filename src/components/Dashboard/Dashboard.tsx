@@ -29,21 +29,21 @@ const Dashboard = () => {
     if (user === null) {
       return
     }
-
-    const outcomesArray = query(collection(db, "users", user.uid, "outcomes"))
+    const today = new Date()
+    const month = today.getMonth() + 1
+    const year = today.getFullYear()
+    const outcomesArray = query(collection(db, "users", user.uid, "outcomes"),where("date", ">", new Date(`${year}-${month}-01`)),where("date", "<", new Date(`${year}-${month}-31`)))
     const querySnapshot = await getDocs(outcomesArray);
     let labels: labelCounter[] = []
     querySnapshot.forEach((doc) => {
-
-      console.log('doc', doc.data())
       // add label to array
       const label = doc.data().categorie
       const index = labels.findIndex((item) => item.label === label)
 
       const randomColor = () =>{
         const r = Math.floor(Math.random() * 255);
-        const g = Math.floor(100);
-        const b = Math.floor(255);
+        const g = Math.floor(150);
+        const b = Math.floor(Math.random() * 255);
         return `rgb(${r}, ${g}, ${b})`;
       }
 

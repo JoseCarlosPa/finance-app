@@ -11,13 +11,13 @@ import {
 import Incomes from "../components/Cards/Incomes";
 import AddIncome from "../components/Modals/AddIncome";
 import {getAuth} from "firebase/auth";
-import {collection, getDocs, orderBy, query} from "firebase/firestore";
+import {collection, getDocs, orderBy, query, where} from "firebase/firestore";
 import {db} from "../App";
 import AddOutcome from "../components/Modals/AddOutcome";
 
 export type IncomeType = {
   id?: string
-  date: string
+  date: Date
   name: string
   categorie: string
   amount: string
@@ -38,7 +38,7 @@ const Bills = () => {
 
   const [monthNumber, setMonthNumber] = useState<number>(1);
 
-   const getCutDate = useCallback(() => {
+  const getCutDate = useCallback(() => {
     const month = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
     const d = new Date();
     let name = month[d.getMonth() + (monthNumber - 1)];
@@ -53,7 +53,10 @@ const Bills = () => {
       return
     }
     setIncomes([])
-    const incomesArray = query(collection(db, "users", user.uid, "incomes"), orderBy('date', 'asc'))
+    const today = new Date()
+    const month = today.getMonth() + monthNumber
+    const year = today.getFullYear()
+    const incomesArray = query(collection(db, "users", user.uid, "incomes"), where("date", ">", new Date(`${year}-${month}-01`)),where("date", "<", new Date(`${year}-${month}-31`)), orderBy('date', 'asc'))
     const querySnapshot = await getDocs(incomesArray);
     querySnapshot.forEach((doc) => {
       const isIncome = {
@@ -76,7 +79,10 @@ const Bills = () => {
       return
     }
     setOutcomes([])
-    const outcomesArray = query(collection(db, "users", user.uid, "outcomes"), orderBy('date', 'asc'))
+    const today = new Date()
+    const month = today.getMonth() + monthNumber
+    const year = today.getFullYear()
+    const outcomesArray = query(collection(db, "users", user.uid, "outcomes"), where("date", ">", new Date(`${year}-${month}-01`)), where("date", "<", new Date(`${year}-${month}-31`)), orderBy('date', 'asc'))
     const querySnapshot = await getDocs(outcomesArray);
     querySnapshot.forEach((doc) => {
       const isOutcome = {
@@ -93,32 +99,10 @@ const Bills = () => {
     })
   }, [monthNumber])
 
-  const filterIncomesMonth = useMemo(() => {
-
-    const today = new Date();
-    const month = today.getMonth() + monthNumber;
-    return incomes.filter(income => {
-      const incomesDate = new Date(income.date)
-      const incomeMonth = incomesDate.getMonth() + 1
-      return incomeMonth === month
-    })
-
-  }, [incomes, monthNumber])
-
-  const filterOutComesMonth = useMemo(() => {
-
-    const today = new Date();
-    const month = today.getMonth() + monthNumber;
-    return outcomes.filter(outCome => {
-      const outcomesDate = new Date(outCome.date)
-      const outcomeMonth = outcomesDate.getMonth() + 1
-      return outcomeMonth === month
-    })
-  }, [outcomes, monthNumber])
 
   const calculateTotal = useCallback(() => {
     let total = 0;
-    filterIncomesMonth.forEach(income => {
+    incomes.forEach(income => {
       total += parseInt(income.amount)
     })
     return total
@@ -126,11 +110,11 @@ const Bills = () => {
 
   const calculateTotalOutcomes = useCallback(() => {
     let total = 0;
-    filterOutComesMonth.forEach(outcome => {
+    outcomes.forEach(outcome => {
       total += parseInt(outcome.amount)
     })
     return total
-  }, [outcomes,monthNumber])
+  }, [outcomes, monthNumber])
 
   const handleOpenIncome = useCallback(() => {
     setIncomeOpen(true)
@@ -141,8 +125,8 @@ const Bills = () => {
   }, [outcomeOpen])
 
   useEffect(() => {
-      getIncomes()
-      getOutcomes()
+    getIncomes()
+    getOutcomes()
   }, [getIncomes, getOutcomes])
 
   const handleArrowLeft = useCallback(() => {
@@ -153,26 +137,25 @@ const Bills = () => {
     setMonthNumber(monthNumber + 1)
   }, [monthNumber])
 
-  const handleMore = useCallback (() => {
+  const handleMore = useCallback(() => {
 
-    if(start <= filterOutComesMonth.length -5){
+    if (start <= outcomes.length - 5) {
       setStart(start + 5)
       setEnd(end + 5)
-
     }
 
-  },[start, end, filterOutComesMonth.length])
+  }, [start, end, incomes.length])
 
-  const handleLess= useCallback (() => {
-    if(start === 0){
+  const handleLess = useCallback(() => {
+    if (start === 0) {
       return
     }
-    if((start -end) + 5 <= filterOutComesMonth.length ){
+    if ((start - end) + 5 <= outcomes.length) {
       setStart(start - 5)
       setEnd(end - 5)
     }
 
-  },[start, end, filterOutComesMonth.length])
+  }, [start, end, outcomes.length])
 
   return (
     <>
@@ -188,9 +171,11 @@ const Bills = () => {
       <div className="flex grid grid-cols-3 gap-2 w-full justify-center mt-4">
         <Incomes total={calculateTotal()} icon={<Cash className="text-white"/>} title={"Ingresos"}
                  subtitle={"Ingresos de este mes"}/>
-        <Incomes total={calculateTotalOutcomes()} icon={<Clipboard className="text-white"/>} title={"Egresos de este mes"}
+        <Incomes total={calculateTotalOutcomes()} icon={<Clipboard className="text-white"/>}
+                 title={"Egresos de este mes"}
                  subtitle={"Egresos de este mes"}/>
-        <Incomes total={calculateTotal() - calculateTotalOutcomes()} icon={<CreditCard className="text-white"/>} title={"Sobran"} subtitle={"Sobran para gastar"}/>
+        <Incomes total={calculateTotal() - calculateTotalOutcomes()} icon={<CreditCard className="text-white"/>}
+                 title={"Sobran"} subtitle={"Sobran para gastar"}/>
       </div>
       <div className="flex flex-row justify-center mt-4 gap-6 mx-4">
         <button className="w-full p-3 bg-gradient-fuchsia text-white rounded-md shadow" onClick={handleOpenIncome}>+
@@ -223,7 +208,8 @@ const Bills = () => {
               <div className="grid grid-cols-2">
                 <div className="">
                   <ul className="flex flex-col pl-0 mb-0 rounded-lg">
-                    {filterIncomesMonth.map((income, index) => {
+                    {incomes.map((income, index) => {
+                      const date = new Date(Number(income.date.toString().substring(18, 28)) * 1000)
                       return (
                         <li
                           key={index}
@@ -235,7 +221,7 @@ const Bills = () => {
                             <div className="flex flex-col">
                               <h6 className="mb-1 leading-normal text-size-sm text-slate-700">{income.name}</h6>
                               <span
-                                className="leading-tight text-size-xs">{new Date(income.date).toLocaleDateString("es-MX")}</span>
+                                className="leading-tight text-size-xs">{date.toLocaleDateString("es-MX")}</span>
                             </div>
                           </div>
                           <div className="flex flex-col items-center justify-center">
@@ -250,7 +236,8 @@ const Bills = () => {
                 </div>
                 <div className="border-l-gray-500 border-l-2">
                   <ul className="flex flex-col pl-0 mb-0 rounded-lg ">
-                    {filterOutComesMonth.slice(start,end).map((income, index) => {
+                    {outcomes.slice(start, end).map((income, index) => {
+                      const date = new Date(Number(income.date.toString().substring(18, 28)) * 1000)
                       return (
                         <li
                           key={index}
@@ -262,7 +249,7 @@ const Bills = () => {
                             <div className="flex flex-col">
                               <h6 className="mb-1 leading-normal text-size-sm text-slate-700">{income.name}</h6>
                               <span
-                                className="leading-tight text-size-xs">{new Date(income.date).toLocaleDateString("es-MX")}</span>
+                                className="leading-tight text-size-xs">{date.toLocaleDateString("es-MX")}</span>
                             </div>
                           </div>
                           <div className="flex flex-col items-center justify-center">
@@ -274,12 +261,12 @@ const Bills = () => {
                     })}
 
                   </ul>
-                  {filterOutComesMonth.length > 5 && <div className="flex flex-row justify-center gap-4">
-                    <ChevronLeft className="w-6 cursor-pointer" onClick={handleLess}/>
+                  {outcomes.length > 5 && <div className="flex flex-row justify-center gap-4">
+                      <ChevronLeft className="w-6 cursor-pointer" onClick={handleLess}/>
                       <p>{start}</p>
                       <p>-</p>
                       <p>{end}</p>
-                    <ChevronRight className="w-6 cursor-pointer" onClick={handleMore}/>
+                      <ChevronRight className="w-6 cursor-pointer" onClick={handleMore}/>
                   </div>}
                 </div>
 

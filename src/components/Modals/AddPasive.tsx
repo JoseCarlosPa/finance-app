@@ -65,7 +65,7 @@ const AddPasive = ({open,setHidden,pasives,setPassive}:AddActiveProps) => {
       })
 
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
 
   },[])

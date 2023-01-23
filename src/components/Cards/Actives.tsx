@@ -96,7 +96,6 @@ const Actives = ({setOpenActive,setActives,actives}:ActivesProps) => {
                     if(active.id === undefined){
                       return
                     }
-                    console.log('eliminando',active.id)
                     await deleteDoc(doc(db, "users",user.uid,"actives",active.id)).then(()=>{
                       setActives(current =>
                         current.filter(arr => {

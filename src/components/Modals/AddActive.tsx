@@ -73,7 +73,7 @@ const AddActive = ({open, setHidden, actives, setActive}: AddActiveProps) => {
 
     } catch (error) {
       MySwal.fire('Error!', 'Algo salio mal, intenta de nuevo! ' + error, 'error')
-      console.log(error)
+      console.error(error)
     }
 
   }, [])

@@ -6,14 +6,17 @@ import {
   ChevronLeft,
   ChevronRight,
   Clipboard, CreditCard,
-  Reply
+  Reply, TrashOutline
 } from "heroicons-react";
 import Incomes from "../components/Cards/Incomes";
 import AddIncome from "../components/Modals/AddIncome";
 import {getAuth} from "firebase/auth";
-import {collection, getDocs, orderBy, query, where} from "firebase/firestore";
+import {collection, deleteDoc, doc, getDocs, orderBy, query, where} from "firebase/firestore";
 import {db} from "../App";
 import AddOutcome from "../components/Modals/AddOutcome";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
 
 export type IncomeType = {
   id?: string
@@ -30,6 +33,7 @@ export type IncomeType = {
 const Bills = () => {
   const auth = getAuth()
   const user = auth.currentUser
+  const MySwal = withReactContent(Swal)
 
   const [incomeOpen, setIncomeOpen] = useState(false);
   const [outcomeOpen, setOutcomeOpen] = useState(false);
@@ -238,10 +242,34 @@ const Bills = () => {
                   <ul className="flex flex-col pl-0 mb-0 rounded-lg ">
                     {outcomes.slice(start, end).map((income, index) => {
                       const date = new Date(Number(income.date.toString().substring(18, 28)) * 1000)
+
+                      const deleteOutcome = async () => {
+
+                        MySwal.fire({
+                          title: `Deseas eliminar el egreso ${income.name}?`,
+                          showCancelButton: true,
+                          confirmButtonText: 'Si',
+                        }).then(async (result) => {
+                          /* Read more about isConfirmed, isDenied below */
+                          if (result.isConfirmed) {
+                            if (user === null || income.id === null || income.id === undefined){
+                              return
+                            }
+                            await deleteDoc(doc(db, "users", user.uid, "outcomes", income.id)).then(() => {
+                              const newOutcomes = outcomes.filter((outcome) => outcome.id !== income.id)
+                              setOutcomes(newOutcomes)
+                            })
+                            Swal.fire('Exito!', 'Tu egreso fue eliminado con exito', 'success')
+                          }
+                        })
+
+
+
+                      }
                       return (
                         <li
                           key={index}
-                          className="cursor-pointer hover:bg-gray-200 relative flex justify-between px-4 py-2 pl-0 mb-2 bg-white border-0 rounded-t-inherit text-size-inherit rounded-xl">
+                          className="hover:bg-gray-200 relative flex justify-between px-4 py-2 pl-0 mb-2 bg-white border-0 rounded-t-inherit text-size-inherit rounded-xl">
                           <div className="flex items-center">
                             {income.categorie ==="tarjetas" ? (
                               <button
@@ -260,10 +288,17 @@ const Bills = () => {
                             </div>
                           </div>
                           <div className="flex flex-col items-center justify-center">
-                            <p
-                              className="relative z-10 inline-block m-0 font-semibold leading-normal text-transparent bg-red-600 text-size-sm bg-clip-text">
-                              $ {Number(income.amount).toLocaleString("es-MX")}</p>
+                            <div className="flex flex-row">
+                              <p
+                                className="relative z-10 inline-block m-0 font-semibold leading-normal text-transparent bg-red-600 text-size-sm bg-clip-text">
+                                $ {Number(income.amount).toLocaleString("es-MX")}</p>
+                              <div>
+                                <TrashOutline className="w-4 cursor-pointer text-gray-500 ml-4 hover:text-red-600" onClick={deleteOutcome}/>
+                              </div>
+                            </div>
+
                           </div>
+
                         </li>)
                     })}
 

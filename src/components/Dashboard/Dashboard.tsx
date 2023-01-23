@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useMemo} from 'react';
 import {Doughnut, Pie} from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import {getAuth} from "firebase/auth";
-import {collection, getDocs, orderBy, query} from "firebase/firestore";
+import {collection, getDocs, orderBy, query,where} from "firebase/firestore";
 import {db} from "../../App";
 
 type labelCounter = {
@@ -24,17 +24,18 @@ const Dashboard = () => {
 
   }, [])
 
-
-
   const getLabels = useCallback(async () => {
     const user = auth.currentUser
     if (user === null) {
       return
     }
+
     const outcomesArray = query(collection(db, "users", user.uid, "outcomes"))
     const querySnapshot = await getDocs(outcomesArray);
     let labels: labelCounter[] = []
     querySnapshot.forEach((doc) => {
+
+      console.log('doc', doc.data())
       // add label to array
       const label = doc.data().categorie
       const index = labels.findIndex((item) => item.label === label)
@@ -49,11 +50,11 @@ const Dashboard = () => {
       if (index === -1) {
         labels.push({
           label: label,
-          count: 1,
+          count: Number(doc.data().amount),
           color: randomColor()
         })
       } else {
-        labels[index].count += 1
+        labels[index].count += Number(doc.data().amount)
       }
     })
     setLabels(labels)

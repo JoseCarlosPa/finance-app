@@ -243,9 +243,16 @@ const Bills = () => {
                           key={index}
                           className="cursor-pointer hover:bg-gray-200 relative flex justify-between px-4 py-2 pl-0 mb-2 bg-white border-0 rounded-t-inherit text-size-inherit rounded-xl">
                           <div className="flex items-center">
-                            <button
-                              className="leading-pro ease-soft-in text-size-xs bg-150 w-6.35 h-6.35 p-1.2 rounded-3.5xl tracking-tight-soft bg-x-25 mr-4 mb-0 flex cursor-pointer items-center justify-center border border-solid border-green-600 border-transparent bg-transparent text-center align-middle font-bold uppercase text-red-600 transition-all hover:opacity-75">
-                              <ArrowDown className="text-red-600"/></button>
+                            {income.categorie ==="tarjetas" ? (
+                              <button
+                                className="leading-pro ease-soft-in text-size-xs bg-150 w-6.35 h-6.35 p-1.2 rounded-3.5xl tracking-tight-soft bg-x-25 mr-4 mb-0 flex cursor-pointer items-center justify-center border border-solid border-green-600 border-transparent bg-transparent text-center align-middle font-bold uppercase text-red-600 transition-all hover:opacity-75">
+                                <CreditCard className="text-gray-500"/></button>
+                              ):(
+                              <button
+                                className="leading-pro ease-soft-in text-size-xs bg-150 w-6.35 h-6.35 p-1.2 rounded-3.5xl tracking-tight-soft bg-x-25 mr-4 mb-0 flex cursor-pointer items-center justify-center border border-solid border-green-600 border-transparent bg-transparent text-center align-middle font-bold uppercase text-red-600 transition-all hover:opacity-75">
+                                <ArrowDown className="text-red-600"/></button>
+                            )}
+
                             <div className="flex flex-col">
                               <h6 className="mb-1 leading-normal text-size-sm text-slate-700">{income.name}</h6>
                               <span

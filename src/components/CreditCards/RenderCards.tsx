@@ -1,7 +1,7 @@
 import React, {useCallback} from 'react'
 import Card from "./Card";
 import {singleCard} from "../../pages/CreditCards";
-import {CalendarOutline, CreditCard, CurrencyDollar} from "heroicons-react";
+import {CalendarOutline} from "heroicons-react";
 
 interface RenderCardsProps {
   cards: singleCard[]
@@ -68,16 +68,6 @@ const RenderCards = ({cards, setCards, setEditCard, setOpenEditModal,setPayCard,
             <div className="flex flex-row rounded-md  w-full h-8 justify-center items-center" style={style}>
               <p className="mt-3"><CalendarOutline /> Monto a pagar en {getCutDate(card.cut_date)} </p>
             </div>
-            <div className="mt-8">
-              <div className="flex flex-row rounded-md  w-full h-8 justify-center items-center">
-                <button className="bg-gradient-fuchsia rounded w-full text-white h-12 hover:text-gray-300" onClick={payCard}>Pagar <CreditCard /></button>
-              </div>
-              <div className="flex flex-row rounded-md  w-full h-8 justify-center items-cente mt-6">
-                <button className="bg-gradient-fuchsia rounded w-full text-white h-12 hover:text-gray-300">Agregar Gasto <CurrencyDollar /></button>
-              </div>
-            </div>
-
-
           </div>
         </div>)
         })

@@ -53,7 +53,7 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
         name: event.target.name.value,
         period: event.target.period ? event.target.period.value : "N/A",
         startDate: event.target.startDate ? event.target.startDate.value : "N/A",
-        creditCard: event.target.creditCard ? event.target.creditCard.value : "N/A"
+        creditCard: showCreditCards ? event.target.creditCard.value : "N/A"
       }
       const outcomes = collection(db, 'users', user.uid, 'outcomes')
       await addDoc(outcomes, newActive).then(async (out: any) => {
@@ -67,15 +67,27 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
           name: event.target.name.value,
           period: event.target.period ? event.target.period.value : "N/A",
           startDate: event.target.startDate ? event.target.startDate.value : "N/A",
-          creditCard: event.target.creditCard ? event.target.creditCard.value : "N/A"
+          creditCard: showCreditCards ? event.target.creditCard.value : "N/A"
         }
         setOutcome((outcomes) => [...outcomes, localActive])
 
-        const creditCardsRef = doc(db, 'users', user.uid, 'credit_cards', event.target.creditCard.value)
-        const docSnap = await getDoc(creditCardsRef);
-        await updateDoc(creditCardsRef,{used_balance: parseInt(docSnap.data()!.used_balance) + parseInt(event.target.amount.value)}).catch((error) => {
-          console.error(error)
-        })
+
+
+        if(showCreditCards){
+          const creditCardsRef = doc(db, 'users', user.uid, 'credit_cards', event.target.creditCard.value)
+          const docSnap = await getDoc(creditCardsRef);
+          if(event.target.categorie.value == "tarjetas"){
+            await updateDoc(creditCardsRef,{used_balance: parseInt(docSnap.data()!.used_balance) - parseInt(event.target.amount.value)}).catch((error) => {
+              console.error(error)
+            })
+          }else{
+            await updateDoc(creditCardsRef,{used_balance: parseInt(docSnap.data()!.used_balance) + parseInt(event.target.amount.value)}).catch((error) => {
+              console.error(error)
+            })
+          }
+
+        }
+
         handleClose()
         MySwal.fire('Exito!', 'Tu egreso fue agregado con exito!', 'success')
         event.target.categorie.value = ''
@@ -95,7 +107,7 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
       console.error(error)
     }
 
-  }, [selectOther,user])
+  }, [selectOther,user,showCreditCards])
 
   const handleShowSelect = useCallback(() => {
     setShowSelect(!showSelect)

@@ -73,8 +73,6 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
 
         const creditCardsRef = doc(db, 'users', user.uid, 'credit_cards', event.target.creditCard.value)
         const docSnap = await getDoc(creditCardsRef);
-        console.log('Card',docSnap.data()!.used_balance)
-        console.log('VALUE',parseInt(event.target.amount.value));
         await updateDoc(creditCardsRef,{used_balance: parseInt(docSnap.data()!.used_balance) + parseInt(event.target.amount.value)}).catch((error) => {
           console.error(error)
         })

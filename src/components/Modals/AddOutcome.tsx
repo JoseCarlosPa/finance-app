@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import {X} from "heroicons-react";
-import {addDoc, collection, getDocs, query} from "firebase/firestore";
+import {addDoc, collection, doc, getDoc, getDocs, query, updateDoc} from "firebase/firestore";
 import {db} from "../../App";
 import {getAuth} from "firebase/auth";
 import withReactContent from "sweetalert2-react-content";
@@ -56,10 +56,10 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
         creditCard: event.target.creditCard ? event.target.creditCard.value : "N/A"
       }
       const outcomes = collection(db, 'users', user.uid, 'outcomes')
-      await addDoc(outcomes, newActive).then((doc: any) => {
+      await addDoc(outcomes, newActive).then(async (out: any) => {
 
         const localActive: IncomeType = {
-          id: doc.id,
+          id: out.id,
           date: event.target.date.value,
           categorie: selectOther ? event.target.categorie_other.value : event.target.categorie.value,
           amount: event.target.amount.value,
@@ -70,6 +70,14 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
           creditCard: event.target.creditCard ? event.target.creditCard.value : "N/A"
         }
         setOutcome((outcomes) => [...outcomes, localActive])
+
+        const creditCardsRef = doc(db, 'users', user.uid, 'credit_cards', event.target.creditCard.value)
+        const docSnap = await getDoc(creditCardsRef);
+        console.log('Card',docSnap.data()!.used_balance)
+        console.log('VALUE',parseInt(event.target.amount.value));
+        await updateDoc(creditCardsRef,{used_balance: parseInt(docSnap.data()!.used_balance) + parseInt(event.target.amount.value)}).catch((error) => {
+          console.error(error)
+        })
         handleClose()
         MySwal.fire('Exito!', 'Tu egreso fue agregado con exito!', 'success')
         event.target.categorie.value = ''
@@ -114,7 +122,6 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
       return
     }
     const creditCards = collection(db, 'users', user.uid, 'credit_cards')
-    console.log('creditCards:',creditCards)
     const snap = query(creditCards)
     const querySnapshot = await getDocs(snap)
     return querySnapshot.docs.map((doc) => {
@@ -257,8 +264,8 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
                     Tarjeta
                   </label>
                   <select name="creditCard" id="creditCard" className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    {activeCards.map((card) => (
-                      <option value={card.id}>{card.name}</option>
+                    {activeCards.map((card,index) => (
+                      <option value={card.id} key={index}>{card.name}</option>
                     ))}
                   </select>
 

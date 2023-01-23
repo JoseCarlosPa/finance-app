@@ -1,12 +1,12 @@
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {X} from "heroicons-react";
-import {addDoc, collection} from "firebase/firestore";
+import {addDoc, collection, getDocs, query} from "firebase/firestore";
 import {db} from "../../App";
 import {getAuth} from "firebase/auth";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import {IncomeType} from "../../pages/Bills";
-import {debug} from "util";
+import {singleCard} from "../../pages/CreditCards";
 
 interface AddOutcomeProps {
   open: boolean
@@ -17,9 +17,12 @@ interface AddOutcomeProps {
 
 const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) => {
   const auth = getAuth()
+  const user = auth.currentUser
   const MySwal = withReactContent(Swal)
   const [showSelect, setShowSelect] = useState(false)
   const [selectOther, setSelectOther] = useState<boolean>(false)
+  const [showCreditCards, setShowCreditCards] = useState(false)
+  const [activeCards, setActiveCards] = useState<singleCard[]>([])
 
   const show = () => {
     if (open) {
@@ -36,7 +39,6 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
 
   const handleSubmit = useCallback(async (event: any) => {
     event.preventDefault()
-    const user = auth.currentUser
 
     try {
       if (user === null) {
@@ -50,7 +52,8 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
         description: event.target.description.value,
         name: event.target.name.value,
         period: event.target.period ? event.target.period.value : "N/A",
-        startDate: event.target.startDate ? event.target.startDate.value : "N/A"
+        startDate: event.target.startDate ? event.target.startDate.value : "N/A",
+        creditCard: event.target.creditCard ? event.target.creditCard.value : "N/A"
       }
       const outcomes = collection(db, 'users', user.uid, 'outcomes')
       await addDoc(outcomes, newActive).then((doc: any) => {
@@ -64,6 +67,7 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
           name: event.target.name.value,
           period: event.target.period ? event.target.period.value : "N/A",
           startDate: event.target.startDate ? event.target.startDate.value : "N/A",
+          creditCard: event.target.creditCard ? event.target.creditCard.value : "N/A"
         }
         setOutcome((outcomes) => [...outcomes, localActive])
         handleClose()
@@ -85,7 +89,7 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
       console.error(error)
     }
 
-  }, [selectOther])
+  }, [selectOther,user])
 
   const handleShowSelect = useCallback(() => {
     setShowSelect(!showSelect)
@@ -99,6 +103,38 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
     }
 
   }, [])
+
+  const handleShowCards = useCallback(() => {
+    setShowCreditCards(!showCreditCards)
+  },[showCreditCards])
+
+
+  const getCreditCards = useCallback(async () => {
+    if (user === null) {
+      return
+    }
+    const creditCards = collection(db, 'users', user.uid, 'credit_cards')
+    console.log('creditCards:',creditCards)
+    const snap = query(creditCards)
+    const querySnapshot = await getDocs(snap)
+    return querySnapshot.docs.map((doc) => {
+      const isCard = {
+        id: doc.id,
+        name: doc.data().name,
+        bank: doc.data().bank,
+        card_number: doc.data().card_number,
+        max_balance: doc.data().max_balance,
+        used_balance: doc.data().used_balance,
+        cut_date: doc.data().cut_date
+
+      }
+      setActiveCards((cards) => [...cards, isCard])
+    })
+  },[user])
+
+  useEffect(() => {
+    getCreditCards()
+  },[getCreditCards])
 
   return (
     <div
@@ -136,8 +172,10 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
                     className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     id="categorie" name="categorie" onChange={handleSelectOther} required>
                     <option value="Servicios">Servicios</option>
-                    <option value="tarjetas">Pago de tarjeta de credito</option>
+                    <option value="Suscripciones">Suscripciones</option>
                     <option value="Entretenimiento">Entretenimiento</option>
+                    <option value="Comida">Comida</option>
+                    <option value="tarjetas">Pago de tarjeta de credito</option>
                     <option value="Otro">Otro</option>
                   </select>
 
@@ -159,7 +197,7 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
                 </div>
               </div>
 
-              <div className="mt-4">
+              <div className="mt-4 hidden">
                 <div className="flex items-center mb-4">
 
                   <label htmlFor="default-checkbox"
@@ -206,6 +244,26 @@ const AddOutcome = ({open, setHidden, outcomes, setOutcome}: AddOutcomeProps) =>
                   className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="amount" type="number" step="0.01" placeholder="Ejemplo: 350.50" name="amount" required/>
               </div>
+              <div className="flex  mt-4 w-full h-full items-center align-middle">
+                <label htmlFor="default-checkbox"
+                       className="ml-2 text-sm font-medium text-gray-900">¿Asociar con tarjeta de credito?</label>
+                <input id="default-checkbox" type="checkbox" value="1"
+                       className="ml-4 w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                       onClick={handleShowCards}/>
+              </div>
+              {showCreditCards && (
+                <div>
+                  <label className="text-gray-700 text-sm font-bold mb-2">
+                    Tarjeta
+                  </label>
+                  <select name="creditCard" id="creditCard" className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    {activeCards.map((card) => (
+                      <option value={card.id}>{card.name}</option>
+                    ))}
+                  </select>
+
+                </div>
+              )}
               <div>
                 <label className="text-gray-700 text-sm font-bold mb-2">
                   Pequeña descripción

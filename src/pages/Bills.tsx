@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   ArrowDown,
   ArrowUp,
@@ -24,10 +24,12 @@ export type IncomeType = {
   description: string
   period: number
   startDate: string
+  creditCard?: string
 }
 
 const Bills = () => {
   const auth = getAuth()
+  const user = auth.currentUser
 
   const [incomeOpen, setIncomeOpen] = useState(false);
   const [outcomeOpen, setOutcomeOpen] = useState(false);
@@ -48,7 +50,6 @@ const Bills = () => {
   }, [monthNumber])
 
   const getIncomes = useCallback(async () => {
-    const user = auth.currentUser
     if (user === null) {
       return
     }
@@ -71,10 +72,9 @@ const Bills = () => {
       }
       setIncomes(prevState => [...prevState, isIncome])
     })
-  }, [monthNumber])
+  }, [monthNumber,user])
 
   const getOutcomes = useCallback(async () => {
-    const user = auth.currentUser
     if (user === null) {
       return
     }
@@ -97,7 +97,7 @@ const Bills = () => {
       }
       setOutcomes(prevState => [...prevState, isOutcome])
     })
-  }, [monthNumber])
+  }, [monthNumber,user])
 
 
   const calculateTotal = useCallback(() => {

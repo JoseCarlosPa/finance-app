@@ -31,7 +31,8 @@ const Bills = () => {
 
   const [incomeOpen, setIncomeOpen] = useState(false);
   const [outcomeOpen, setOutcomeOpen] = useState(false);
-
+  const [start, setStart] = useState<number>(0)
+  const [end, setEnd] = useState<number>(5)
   const [incomes, setIncomes] = useState<IncomeType[]>([]);
   const [outcomes, setOutcomes] = useState<IncomeType[]>([]);
 
@@ -152,6 +153,27 @@ const Bills = () => {
     setMonthNumber(monthNumber + 1)
   }, [monthNumber])
 
+  const handleMore = useCallback (() => {
+
+    if(start <= filterOutComesMonth.length -5){
+      setStart(start + 5)
+      setEnd(end + 5)
+
+    }
+
+  },[start, end, filterOutComesMonth.length])
+
+  const handleLess= useCallback (() => {
+    if(start === 0){
+      return
+    }
+    if((start -end) + 5 <= filterOutComesMonth.length ){
+      setStart(start - 5)
+      setEnd(end - 5)
+    }
+
+  },[start, end, filterOutComesMonth.length])
+
   return (
     <>
       <div className="flex flex-row items-center">
@@ -228,11 +250,11 @@ const Bills = () => {
                 </div>
                 <div className="border-l-gray-500 border-l-2">
                   <ul className="flex flex-col pl-0 mb-0 rounded-lg ">
-                    {filterOutComesMonth.map((income, index) => {
+                    {filterOutComesMonth.slice(start,end).map((income, index) => {
                       return (
                         <li
                           key={index}
-                          className="relative flex justify-between px-4 py-2 pl-0 mb-2 bg-white border-0 rounded-t-inherit text-size-inherit rounded-xl">
+                          className="cursor-pointer hover:bg-gray-200 relative flex justify-between px-4 py-2 pl-0 mb-2 bg-white border-0 rounded-t-inherit text-size-inherit rounded-xl">
                           <div className="flex items-center">
                             <button
                               className="leading-pro ease-soft-in text-size-xs bg-150 w-6.35 h-6.35 p-1.2 rounded-3.5xl tracking-tight-soft bg-x-25 mr-4 mb-0 flex cursor-pointer items-center justify-center border border-solid border-green-600 border-transparent bg-transparent text-center align-middle font-bold uppercase text-red-600 transition-all hover:opacity-75">
@@ -252,6 +274,13 @@ const Bills = () => {
                     })}
 
                   </ul>
+                  {filterOutComesMonth.length > 5 && <div className="flex flex-row justify-center gap-4">
+                    <ChevronLeft className="w-6 cursor-pointer" onClick={handleLess}/>
+                      <p>{start}</p>
+                      <p>-</p>
+                      <p>{end}</p>
+                    <ChevronRight className="w-6 cursor-pointer" onClick={handleMore}/>
+                  </div>}
                 </div>
 
               </div>

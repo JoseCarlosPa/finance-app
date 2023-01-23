@@ -42,7 +42,7 @@ const AddIncome = ({open, setHidden, incomes, setIncome}: AddIncomeProps) => {
       }
 
       const newActive: IncomeType = {
-        date: new Date().toISOString(),
+        date: event.target.date.value,
         categorie: event.target.categorie.value,
         amount: event.target.amount.value,
         description: event.target.description.value,
@@ -55,7 +55,7 @@ const AddIncome = ({open, setHidden, incomes, setIncome}: AddIncomeProps) => {
 
         const localActive: IncomeType = {
           id: doc.id,
-          date: new Date().toISOString(),
+          date: event.target.date.value,
           categorie: event.target.categorie.value,
           amount: event.target.amount.value,
           description: event.target.description.value,
@@ -70,10 +70,10 @@ const AddIncome = ({open, setHidden, incomes, setIncome}: AddIncomeProps) => {
         event.target.amount.value = ''
         event.target.description.value = ''
         event.target.name.value = ''
-        if(event.target.period){
+        if (event.target.period) {
           event.target.period.value = ''
         }
-        if(event.target.startDate){
+        if (event.target.startDate) {
           event.target.startDate.value = ''
         }
       })
@@ -115,17 +115,25 @@ const AddIncome = ({open, setHidden, incomes, setIncome}: AddIncomeProps) => {
                   className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="name" type="text" step="0.01" placeholder="Ejemplo: LeadSales" name="name" required/>
               </div>
-              <div>
-                <label className="text-gray-700 text-sm font-bold mb-2">
-                  Categoria
-                </label>
-                <select
-                  className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="categorie" name="categorie" required>
-                  <option value="Salario">Salario</option>
-                  <option value="Inversion">Inversion</option>
-                  <option value="Otro">Otro</option>
-                </select>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-gray-700 text-sm font-bold mb-2">
+                    Categoria
+                  </label>
+                  <select
+                    className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="categorie" name="categorie" required>
+                    <option value="Salario">Salario</option>
+                    <option value="Inversion">Inversion</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-gray-700 text-sm font-bold mb-2">
+                    Fecha
+                  </label>
+                  <input type="datetime-local" name="date" className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required/>
+                </div>
               </div>
               <div className="mt-4">
                 <div className="flex items-center mb-4">
@@ -161,7 +169,8 @@ const AddIncome = ({open, setHidden, incomes, setIncome}: AddIncomeProps) => {
                     </label>
                     <input
                       className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      id="startDate" type="number" step="1" min="1" max="31" placeholder="Ejemplo: Empieza a contar desde el 1ro de Cada Mes" name="startDate" required/>
+                      id="startDate" type="number" step="1" min="1" max="31"
+                      placeholder="Ejemplo: Empieza a contar desde el 1ro de Cada Mes" name="startDate" required/>
                   </div>
                 </div>
               )}

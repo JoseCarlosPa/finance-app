@@ -100,6 +100,7 @@ const Dashboard = () => {
     ],
   }
 
+
   ChartJS.register(ArcElement, Tooltip, Legend);
   return (
     <>

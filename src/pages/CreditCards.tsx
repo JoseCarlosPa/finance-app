@@ -7,7 +7,6 @@ import {getAuth} from "firebase/auth";
 import CreditCardEdit from "../components/Modals/CreditCardEdit";
 import Incomes from "../components/Cards/Incomes";
 import RenderCards from "../components/CreditCards/RenderCards";
-import PayCreditCard from "../components/Modals/PayCreditCard";
 
 export type singleCard = {
   id: string
@@ -37,7 +36,6 @@ const CreditCards = () => {
 
   const [userData, setUserData] = useState<any>({})
   const [editCard, setEditCard] = useState<singleCard>(emptyCard)
-  const [payCard, setPayCard] = useState<singleCard>(emptyCard)
   const [availableBalance, setAvailableBalance] = useState<number>(0)
   const [debt, setDebt] = useState<number>(0)
 
@@ -114,7 +112,7 @@ const CreditCards = () => {
       {cards.length <= 0 ?
         (<div className="flex justify-center items-center h-screen -my-40">
           <div className="flex flex-col">
-            <h3>¡Parece que aun no tienes niguna tarjeta registrada!</h3>
+            <h3>¡Parece que aun no tienes ninguna tarjeta registrada!</h3>
             <div className="flex flex-row justify-center">
               <p>Para agregar una tarjeta, haz click en el boton de abajo</p>
             </div>
@@ -141,14 +139,13 @@ const CreditCards = () => {
 
             </div>
             <div>
-              <RenderCards cards={cards} setCards={setCards} setEditCard={setEditCard} setOpenEditModal={setOpenEditModal} setPayCard={setPayCard} setOpenPayModal={setOpenPayModal}/>
+              <RenderCards cards={cards} setCards={setCards} setEditCard={setEditCard} setOpenEditModal={setOpenEditModal}/>
             </div>
           </div>
         )
       }
       <CreditCardsModal open={openModal} setHidden={setOpenModal} setCards={setCards}/>
       <CreditCardEdit open={openEditModal} setHidden={setOpenEditModal} card={editCard} cards={cards} setCards={setCards}/>
-      <PayCreditCard card={payCard} open={opePayModal} setHidden={setOpenPayModal} cards={cards} setCards={setCards}/>
     </>
   );
 }

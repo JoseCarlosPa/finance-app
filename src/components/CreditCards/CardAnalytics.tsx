@@ -1,7 +1,10 @@
-import React, {useCallback} from 'react'
+import React, {useCallback, useEffect} from 'react'
 import Card from "./Card";
 import {CalendarOutline} from "heroicons-react";
 import {singleCard} from "../../pages/CreditCards";
+import {getAuth} from "firebase/auth";
+import {collection, getDocs, orderBy, query, where} from "firebase/firestore";
+import {db} from "../../App";
 
 type CardAnalyticsProps = {
   card: singleCard
@@ -12,15 +15,45 @@ type CardAnalyticsProps = {
 
 const CardAnalytics = ({card,setCards,setEditCard,setOpenEditModal}:CardAnalyticsProps) => {
 
+  const auth = getAuth()
+  const user = auth.currentUser
   const style = {border: '1px solid gray'}
+  const [total, setTotal] = React.useState(0)
   const getCutDate = useCallback((cut_date: string) => {
     const month = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
     const d = new Date();
-    let name = month[d.getMonth()];
+    let name = month[d.getMonth() + 1];
 
     return `${name} ${cut_date} `
 
   }, [])
+
+  const calculateTotalForMonth = useCallback(async () => {
+    if (user === null) {
+      return
+    }
+
+    setTotal(0)
+    const today = new Date()
+    const month = today.getMonth() + 1
+    const year = today.getFullYear()
+    const outcomesArray = query(
+      collection(db, "users", user.uid, "outcomes"),
+      where("date", ">", new Date(`${year}-${month}-${card.cut_date}`)),
+      where("date", "<", new Date(`${year}-${month+1}-${card.cut_date}`)),
+      where("creditCard", "==", card.id))
+    const querySnapshot = await getDocs(outcomesArray);
+    querySnapshot.forEach((doc) => {
+      if(doc.data().categorie !== 'tarjetas'){
+        setTotal((prev) => prev + Number(doc.data().amount))
+      }
+    })
+
+  },[card.cut_date, user])
+
+  useEffect(() => {
+    calculateTotalForMonth()
+  }, [calculateTotalForMonth])
 
   return (
     <div className="flex grid grid-cols-6 mb-4 gap-2 ml-4">
@@ -58,7 +91,7 @@ const CardAnalytics = ({card,setCards,setEditCard,setOpenEditModal}:CardAnalytic
           <p className="mt-3"><CalendarOutline/> Monto a pagar en {getCutDate(card.cut_date)} </p>
         </div>
         <div className="flex w-full justify-center align-middle items-center">
-          $
+          $ {total}
         </div>
       </div>
     </div>

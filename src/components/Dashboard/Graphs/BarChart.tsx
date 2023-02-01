@@ -56,12 +56,12 @@ const BarChart = () => {
       })
     })
 
-    for (let i = 0; i <= days; i++) {
+    for (let k = 0; k <= days; k++) {
       localValues.push(0)
     }
 
-    for (let i = 1; i <= days; i++) {
-      labels.push(`${getMonthDate()} ${i.toString()}`)
+    for (let i = 0; i <= days; i++) {
+      labels.push(`${getMonthDate()} ${i}`)
       for(let j = 0; j < docValues.length; j++){
         if(docValues[j].date === i){
           localValues[i] = localValues[i] + (docValues[j].amount)
@@ -69,7 +69,6 @@ const BarChart = () => {
       }
     }
 
-    console.log(localValues)
     setValues(localValues)
     setLabels(labels)
 

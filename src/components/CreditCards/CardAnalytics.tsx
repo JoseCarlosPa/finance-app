@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import Card from "./Card";
 import {CalendarOutline} from "heroicons-react";
 import {singleCard} from "../../pages/CreditCards";
@@ -19,6 +19,7 @@ const CardAnalytics = ({card,setCards,setEditCard,setOpenEditModal}:CardAnalytic
   const user = auth.currentUser
   const style = {border: '1px solid gray'}
   const [total, setTotal] = React.useState(0)
+  const [paid, setPaid] = useState(0)
   const getCutDate = useCallback((cut_date: string) => {
     const month = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
     const d = new Date();
@@ -28,6 +29,51 @@ const CardAnalytics = ({card,setCards,setEditCard,setOpenEditModal}:CardAnalytic
 
   }, [])
 
+  const caluclateMaxPayTime = useCallback(()=>{
+    const today = new Date()
+    const month = today.getMonth()
+    const year = today.getFullYear()
+    const day = today.getDate()
+    let payDay
+    if(day > Number(card.cut_date)){
+       payDay = new Date(`${year}-${month+1}-${card.cut_date}`)
+    }else{
+       payDay = new Date(`${year}-${month}-${card.cut_date}`)
+    }
+    const date = new Date(payDay.setDate(payDay.getDate() + 20))
+
+    return date.toLocaleDateString('es-MX',{year: 'numeric', month: 'short', day: 'numeric'});
+  },[])
+
+  const calculatePaidOutcomes = useCallback(async()=>{
+    if (user === null) {
+      return
+    }
+
+    const day = caluclateMaxPayTime()
+    const today = new Date()
+    const month = today.getMonth()
+    const year = today.getFullYear()
+    const outcomesArray = query(
+      collection(db, "users", user.uid, "outcomes"),
+      where("date", ">=", new Date(`${year}-${month}-${card.cut_date}`)),
+      where("date", "<=", new Date(day)),
+      where("creditCard", "==", card.id))
+
+
+    const querySnapshot = await getDocs(outcomesArray);
+    let total = 0
+    querySnapshot.forEach((doc) => {
+      if(card.id === '0QbqaaEdR11kqQRL09wA'){
+        console.log('Pantufla',doc.data().amount,doc.data().categorie)
+      }
+      if(doc.data().categorie === 'tarjetas'){
+        total += Number(doc.data().amount)
+      }
+    })
+    setPaid(total)
+  },[])
+
   const calculateTotalForMonth = useCallback(async () => {
     if (user === null) {
       return
@@ -35,24 +81,28 @@ const CardAnalytics = ({card,setCards,setEditCard,setOpenEditModal}:CardAnalytic
 
     setTotal(0)
     const today = new Date()
-    const month = today.getMonth() + 1
+    const month = today.getMonth()
     const year = today.getFullYear()
     const outcomesArray = query(
       collection(db, "users", user.uid, "outcomes"),
-      where("date", ">", new Date(`${year}-${month}-${card.cut_date}`)),
-      where("date", "<", new Date(`${year}-${month+1}-${card.cut_date}`)),
+      where("date", ">=", new Date(`${year}-${month}-${card.cut_date}`)),
+      where("date", "<=", new Date(`${year}-${month+1}-${card.cut_date}`)),
       where("creditCard", "==", card.id))
     const querySnapshot = await getDocs(outcomesArray);
     querySnapshot.forEach((doc) => {
       if(doc.data().categorie !== 'tarjetas'){
         setTotal((prev) => prev + Number(doc.data().amount))
       }
-    })
 
-  },[card.cut_date, user])
+    })
+    console.log('Pantufla Minus',paid)
+    setTotal((prev) => prev - Number(paid))
+
+  },[card.cut_date, user,paid])
 
   useEffect(() => {
     calculateTotalForMonth()
+    calculatePaidOutcomes()
   }, [calculateTotalForMonth])
 
   return (
@@ -88,7 +138,7 @@ const CardAnalytics = ({card,setCards,setEditCard,setOpenEditModal}:CardAnalytic
       </div>
       <div className="col-span-2 flex flex-col">
         <div className="flex flex-row rounded-md  w-full h-8 justify-center items-center" style={style}>
-          <p className="mt-3"><CalendarOutline/> Monto a pagar en {getCutDate(card.cut_date)} </p>
+          <p className="mt-3"><CalendarOutline/> Monto a pagar antes del: {caluclateMaxPayTime()} </p>
         </div>
         <div className="flex w-full justify-center align-middle items-center">
           $ {total}

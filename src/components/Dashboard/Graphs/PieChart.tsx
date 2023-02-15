@@ -27,7 +27,7 @@ const PieChart = () => {
     const year = today.getFullYear()
     const days = new Date(year, month, 0).getDate()
 
-    const outcomesArray = query(collection(db, "users", user.uid, "outcomes"),where("date", ">=", new Date(`${year}-${month}-01`)),where("date", "<=", new Date(`${year}-${month}-${days}`)))
+    const outcomesArray = query(collection(db, "users", user.uid, "outcomes"),where("date", ">=", new Date(`${year}-${month}-01`)),where("date", "<=", new Date(`${year}-${month}-${days} 23:59:59`)))
     const querySnapshot = await getDocs(outcomesArray);
     let labels: labelCounter[] = []
     querySnapshot.forEach((doc) => {

@@ -47,7 +47,7 @@ const BarChart = () => {
     const docValues: any = []
     const localValues: number[] = []
 
-    const outcomesArray = query(collection(db, "users", user.uid, "outcomes"), where("date", ">=", new Date(`${year}-${month}-01`)), where("date", "<=", new Date(`${year}-${month}-${days}`)))
+    const outcomesArray = query(collection(db, "users", user.uid, "outcomes"), where("date", ">=", new Date(`${year}-${month}-01`)), where("date", "<=", new Date(`${year}-${month}-${days} 23:59:59`)))
     const querySnapshot = await getDocs(outcomesArray);
     querySnapshot.forEach((doc) => {
       docValues.push({

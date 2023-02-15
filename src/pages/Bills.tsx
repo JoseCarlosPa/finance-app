@@ -61,7 +61,8 @@ const Bills = () => {
     const today = new Date()
     const month = today.getMonth() + monthNumber
     const year = today.getFullYear()
-    const incomesArray = query(collection(db, "users", user.uid, "incomes"), where("date", ">", new Date(`${year}-${month}-01`)),where("date", "<", new Date(`${year}-${month}-31`)), orderBy('date', 'asc'))
+    const days = new Date(year, month, 0).getDate()
+    const incomesArray = query(collection(db, "users", user.uid, "incomes"), where("date", ">=", new Date(`${year}-${month}-01`)),where("date", "<=", new Date(`${year}-${month}-${days} 23:59:59`)), orderBy('date', 'asc'))
     const querySnapshot = await getDocs(incomesArray);
     querySnapshot.forEach((doc) => {
       const isIncome = {
@@ -86,7 +87,14 @@ const Bills = () => {
     const today = new Date()
     const month = today.getMonth() + monthNumber
     const year = today.getFullYear()
-    const outcomesArray = query(collection(db, "users", user.uid, "outcomes"), where("date", ">", new Date(`${year}-${month}-01`)), where("date", "<", new Date(`${year}-${month}-31`)), orderBy('date', 'asc'))
+    const days = new Date(year, month, 0).getDate()
+    const outcomesArray =
+      query(
+        collection(
+          db, "users", user.uid, "outcomes"),
+        where("date", ">=", new Date(`${year}-${month}-01`)),
+        where("date", "<=", new Date(`${year}-${month}-${days} 23:59:59`)),
+        orderBy('date', 'asc'))
     const querySnapshot = await getDocs(outcomesArray);
     querySnapshot.forEach((doc) => {
       const isOutcome = {
@@ -97,6 +105,7 @@ const Bills = () => {
         amount: doc.data().amount,
         description: doc.data().description,
         period: doc.data().period,
+        creditCard: doc.data().creditCard,
         startDate: doc.data().startDate
       }
       setOutcomes(prevState => [...prevState, isOutcome])
@@ -161,6 +170,17 @@ const Bills = () => {
 
   }, [start, end, outcomes.length])
 
+  const calculateCreditPayments = useCallback(() => {
+    let total = 0;
+    outcomes.forEach(outcome => {
+      if(outcome.creditCard !== 'N/A' && outcome.categorie !== 'tarjetas' ){
+        console.log(`OutComes ${outcome.name} - ${outcome.amount}`)
+        total += parseInt(outcome.amount)
+      }
+    })
+    return total
+  }, [outcomes, monthNumber])
+
   return (
     <>
       <div className="flex flex-row items-center">
@@ -205,6 +225,11 @@ const Bills = () => {
                     <button className="ml-2" onClick={handleArrowRight}><ChevronRight className="w-4"/></button>
                   </div>
                 </div>
+                <div className="flex flex-row w-full">
+                  <div className="ml-4">
+                    Tarjetas de crédito: $ {calculateCreditPayments().toLocaleString('es-MX')}
+                  </div>
+                </div>
               </div>
             </div>
             <div className="flex-auto p-4 pt-6">
@@ -239,6 +264,7 @@ const Bills = () => {
                   </ul>
                 </div>
                 <div className="border-l-gray-500 border-l-2">
+
                   <ul className="flex flex-col pl-0 mb-0 rounded-lg ">
                     {outcomes.slice(start, end).map((income, index) => {
                       const date = new Date(Number(income.date.toString().substring(18, 28)) * 1000)
@@ -262,10 +288,8 @@ const Bills = () => {
                             Swal.fire('Exito!', 'Tu egreso fue eliminado con exito', 'success')
                           }
                         })
-
-
-
                       }
+
                       return (
                         <li
                           key={index}
@@ -274,12 +298,17 @@ const Bills = () => {
                             {income.categorie ==="tarjetas" ? (
                               <button
                                 className="leading-pro ease-soft-in text-size-xs bg-150 w-6.35 h-6.35 p-1.2 rounded-3.5xl tracking-tight-soft bg-x-25 mr-4 mb-0 flex cursor-pointer items-center justify-center border border-solid border-green-600 border-transparent bg-transparent text-center align-middle font-bold uppercase text-red-600 transition-all hover:opacity-75">
-                                <CreditCard className="text-gray-500"/></button>
-                              ):(
+                                <CreditCard className="text-green-500"/></button>
+                              ):income.creditCard === 'N/A' ? (
                               <button
                                 className="leading-pro ease-soft-in text-size-xs bg-150 w-6.35 h-6.35 p-1.2 rounded-3.5xl tracking-tight-soft bg-x-25 mr-4 mb-0 flex cursor-pointer items-center justify-center border border-solid border-green-600 border-transparent bg-transparent text-center align-middle font-bold uppercase text-red-600 transition-all hover:opacity-75">
                                 <ArrowDown className="text-red-600"/></button>
-                            )}
+                            ):
+                              (
+                                <button
+                                  className="leading-pro ease-soft-in text-size-xs bg-150 w-6.35 h-6.35 p-1.2 rounded-3.5xl tracking-tight-soft bg-x-25 mr-4 mb-0 flex cursor-pointer items-center justify-center border border-solid border-green-600 border-transparent bg-transparent text-center align-middle font-bold uppercase text-red-600 transition-all hover:opacity-75">
+                                  <CreditCard className="text-red-500"/></button>
+                              )}
 
                             <div className="flex flex-col">
                               <h6 className="mb-1 leading-normal text-size-sm text-slate-700">{income.name}</h6>

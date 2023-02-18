@@ -183,16 +183,16 @@ const Bills = () => {
 
   return (
     <>
-      <div className="flex flex-row items-center">
+      <div className="flex flex-col lg:flex-row items-center">
         <a href="/home/dashboard"><Reply width="36" height="36"/></a>
-        <h1 className="ml-12">Ingresos/Egresos {getCutDate()} 2022</h1>
+        <p className="lg:ml-12 text-md lg:text-3xl font-bold">Ingresos/Egresos {getCutDate()} 2022</p>
       </div>
 
       <AddIncome open={incomeOpen} incomes={incomes} setHidden={setIncomeOpen} setIncome={setIncomes}/>
       <AddOutcome open={outcomeOpen} outcomes={outcomes} setHidden={setOutcomeOpen} setOutcome={setOutcomes}/>
 
 
-      <div className="flex grid grid-cols-3 gap-2 w-full justify-center mt-4">
+      <div className="flex grid grid lg:grid-cols-3 gap-6 lg:gap-2 w-full justify-center mt-4">
         <Incomes total={calculateTotal()} icon={<Cash className="text-white"/>} title={"Ingresos"}
                  subtitle={"Ingresos de este mes"}/>
         <Incomes total={calculateTotalOutcomes()} icon={<Clipboard className="text-white"/>}
@@ -234,7 +234,7 @@ const Bills = () => {
             </div>
             <div className="flex-auto p-4 pt-6">
               <h6 className="mb-4 font-bold leading-tight uppercase text-size-xs text-slate-500">Este mes</h6>
-              <div className="grid grid-cols-2">
+              <div className="grid lg:grid-cols-2">
                 <div className="">
                   <ul className="flex flex-col pl-0 mb-0 rounded-lg">
                     {incomes.map((income, index) => {
@@ -264,7 +264,6 @@ const Bills = () => {
                   </ul>
                 </div>
                 <div className="border-l-gray-500 border-l-2">
-
                   <ul className="flex flex-col pl-0 mb-0 rounded-lg ">
                     {outcomes.slice(start, end).map((income, index) => {
                       const date = new Date(Number(income.date.toString().substring(18, 28)) * 1000)

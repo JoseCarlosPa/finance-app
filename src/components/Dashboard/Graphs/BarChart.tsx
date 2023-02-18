@@ -100,7 +100,7 @@ const BarChart = () => {
   );
 
   return (
-    <div className="w-2/5">
+    <div className="sm:w-full lg:w-2/5 ">
       <Bar options={options} data={data}/>
     </div>);
 

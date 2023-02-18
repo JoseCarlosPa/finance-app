@@ -24,7 +24,7 @@ const Dashboard = () => {
           <div className="flex flex-row">
             <h2>Control de gastos del mes:  {getMonthDate()}</h2>
           </div>
-          <div className="flex flex-row gap-4">
+          <div className="flex flex-col lg:flex-row gap-4">
             <PieChart/>
             <BarChart />
           </div>

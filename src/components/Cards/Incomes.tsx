@@ -9,7 +9,7 @@ interface IncomesProps {
 }
 const Incomes = ({total,title,subtitle,icon,percentage}:IncomesProps) => {
   return (
-    <div className="w-full max-w-full px-3  md:flex-none">
+    <div className="w-full max-w-full px-3 md:flex-none">
       <div
         className="relative flex flex-col min-w-0 break-words bg-white border-0 border-transparent border-solid shadow-soft-xl rounded-2xl bg-clip-border">
         <div

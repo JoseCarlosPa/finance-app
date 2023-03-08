@@ -141,7 +141,18 @@ const CardAnalytics = ({card,setCards,setEditCard,setOpenEditModal}:CardAnalytic
           <p className="mt-3"><CalendarOutline/> Monto a pagar antes del: {caluclateMaxPayTime()} </p>
         </div>
         <div className="flex w-full justify-center align-middle items-center">
-          $ {total}
+
+            <div className="flex flex-col mt-4">
+              <div className="flex flex-row">
+                <strong>MSI:</strong> $ 0
+              </div>
+              <div className="flex flex-row">
+                <strong>Credito:</strong> $ {total > 0 ?  total: 0}
+              </div>
+              <div className="flex flex-row border-black border-t-2">
+                <strong>Total:</strong> $ {total > 0 ?  total: 0}
+              </div>
+            </div>
         </div>
       </div>
     </div>

@@ -90,8 +90,8 @@ const AddIncome = ({open, setHidden, incomes, setIncome}: AddIncomeProps) => {
   }, [showSelect])
   return (
     <div
-      className={`transition justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ml-64  ${show()}`}>
-      <div className="relative w-4/12 my-6 mx-auto max-w-3xl">
+      className={`transition justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none md:ml-64  ${show()}`}>
+      <div className="relative md:w-4/12 my-6 mx-auto md:max-w-3xl">
         <form onSubmit={handleSubmit}
               className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
           <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">

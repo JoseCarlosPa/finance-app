@@ -14,6 +14,7 @@ import Bills from "../pages/Bills";
 import CreditCards from "../pages/CreditCards";
 import Dashboard from "../components/Dashboard/Dashboard";
 import ActivePasive from "../pages/ActivePasive";
+import Investments from "../pages/Investments";
 
 const Navigation = () => {
   return (
@@ -33,6 +34,8 @@ const Navigation = () => {
           <Route path="gastos" element={<Bills/>}></Route>
           <Route path="tarjetas" element={<CreditCards/>}></Route>
           <Route path="activos-pasivos" element={<ActivePasive/>}></Route>
+          <Route path="investments" element={<Investments/>}></Route>
+
         </Route>
         <Route path="*" element={<div>No existe esa pagina</div>}/>
       </Routes>

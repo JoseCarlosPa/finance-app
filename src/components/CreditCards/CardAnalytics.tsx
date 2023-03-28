@@ -42,7 +42,7 @@ const CardAnalytics = ({card,setCards,setEditCard,setOpenEditModal}:CardAnalytic
     }
     const date = new Date(payDay.setDate(payDay.getDate() + 20))
 
-    return date.toLocaleDateString('es-MX',{year: 'numeric', month: 'short', day: 'numeric'});
+    return date;
   },[])
 
   const calculatePaidOutcomes = useCallback(async()=>{
@@ -60,13 +60,9 @@ const CardAnalytics = ({card,setCards,setEditCard,setOpenEditModal}:CardAnalytic
       where("date", "<=", new Date(day)),
       where("creditCard", "==", card.id))
 
-
     const querySnapshot = await getDocs(outcomesArray);
     let total = 0
     querySnapshot.forEach((doc) => {
-      if(card.id === '0QbqaaEdR11kqQRL09wA'){
-        console.log('Pantufla',doc.data().amount,doc.data().categorie)
-      }
       if(doc.data().categorie === 'tarjetas'){
         total += Number(doc.data().amount)
       }
@@ -95,7 +91,7 @@ const CardAnalytics = ({card,setCards,setEditCard,setOpenEditModal}:CardAnalytic
       }
 
     })
-    console.log('Pantufla Minus',paid)
+
     setTotal((prev) => prev - Number(paid))
 
   },[card.cut_date, user,paid])
@@ -138,7 +134,7 @@ const CardAnalytics = ({card,setCards,setEditCard,setOpenEditModal}:CardAnalytic
       </div>
       <div className="col-span-2 flex flex-col">
         <div className="flex flex-row rounded-md  w-full h-8 justify-center items-center" style={style}>
-          <p className="mt-3"><CalendarOutline/> Monto a pagar antes del: {caluclateMaxPayTime()} </p>
+          <p className="mt-3"><CalendarOutline/> Monto a pagar antes del: {caluclateMaxPayTime().toLocaleDateString('es-MX',{year: 'numeric', month: 'short', day: 'numeric'})} </p>
         </div>
         <div className="flex w-full justify-center align-middle items-center">
 

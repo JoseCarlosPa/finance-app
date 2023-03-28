@@ -17,7 +17,7 @@ const SimpleCard = ({title,icon,value,color}:SimpleCardProps) => {
               <div>
                 <p className="mb-0 font-sans font-semibold leading-normal text-size-sm">{title}</p>
                 <h5 className="mb-0 font-bold">
-                  $ {value.toLocaleString()}
+                  $ {value.toLocaleString('es-MX')}
                 </h5>
               </div>
             </div>

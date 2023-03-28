@@ -16,6 +16,8 @@ import {db} from "../App";
 import AddOutcome from "../components/Modals/AddOutcome";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import {singleCard} from "./CreditCards";
+import BillCard from "../components/Bills/BillCard";
 
 
 export type IncomeType = {
@@ -41,6 +43,7 @@ const Bills = () => {
   const [end, setEnd] = useState<number>(5)
   const [incomes, setIncomes] = useState<IncomeType[]>([]);
   const [outcomes, setOutcomes] = useState<IncomeType[]>([]);
+  const [cards,setCards] = useState<singleCard[]>([])
 
   const [monthNumber, setMonthNumber] = useState<number>(1);
 
@@ -137,9 +140,33 @@ const Bills = () => {
     setOutcomeOpen(true)
   }, [outcomeOpen])
 
+  const getCreditCards = useCallback(async () => {
+    const user = auth.currentUser
+    if (user === null) {
+      return
+    }
+    setCards([])
+    const creditCardsArray = query(collection(db, "users", user.uid, "credit_cards"), orderBy('name', 'asc'))
+    const querySnapshot = await getDocs(creditCardsArray);
+    querySnapshot.forEach((doc) => {
+      const isCard = {
+        id: doc.id,
+        name: doc.data().name,
+        bank: doc.data().bank,
+        card_number: doc.data().card_number,
+        max_balance: doc.data().max_balance,
+        used_balance: doc.data().used_balance,
+        cut_date: doc.data().cut_date
+
+      }
+      setCards(cards => [...cards, isCard])
+    });
+  }, [auth.currentUser])
+
   useEffect(() => {
     getIncomes()
     getOutcomes()
+    getCreditCards()
   }, [getIncomes, getOutcomes])
 
   const handleArrowLeft = useCallback(() => {
@@ -174,7 +201,6 @@ const Bills = () => {
     let total = 0;
     outcomes.forEach(outcome => {
       if(outcome.creditCard !== 'N/A' && outcome.categorie !== 'tarjetas' ){
-        console.log(`OutComes ${outcome.name} - ${outcome.amount}`)
         total += parseInt(outcome.amount)
       }
     })
@@ -226,8 +252,12 @@ const Bills = () => {
                   </div>
                 </div>
                 <div className="flex flex-row w-full">
-                  <div className="ml-4">
-                    Tarjetas de crédito: $ {calculateCreditPayments().toLocaleString('es-MX')}
+                  <div className="ml-4 flex flex-row justify-between w-full ">
+                    <>
+                    {cards.map((card, index) => {
+                      return(<BillCard key={index} card={card}/>)
+                    })}
+                    </>
                   </div>
                 </div>
               </div>

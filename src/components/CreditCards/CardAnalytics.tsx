@@ -34,6 +34,8 @@ const CardAnalytics = ({card,setCards,setEditCard,setOpenEditModal}:CardAnalytic
     const month = today.getMonth()
     const year = today.getFullYear()
     const day = today.getDate()
+
+
     let payDay
     if(day > Number(card.cut_date)){
        payDay = new Date(`${year}-${month+1}-${card.cut_date}`)
@@ -43,7 +45,7 @@ const CardAnalytics = ({card,setCards,setEditCard,setOpenEditModal}:CardAnalytic
     const date = new Date(payDay.setDate(payDay.getDate() + 20))
 
     return date;
-  },[])
+  },[card])
 
   const calculatePaidOutcomes = useCallback(async()=>{
     if (user === null) {
@@ -86,6 +88,7 @@ const CardAnalytics = ({card,setCards,setEditCard,setOpenEditModal}:CardAnalytic
       where("creditCard", "==", card.id))
     const querySnapshot = await getDocs(outcomesArray);
     querySnapshot.forEach((doc) => {
+
       if(doc.data().categorie !== 'tarjetas'){
         setTotal((prev) => prev + Number(doc.data().amount))
       }
@@ -140,7 +143,7 @@ const CardAnalytics = ({card,setCards,setEditCard,setOpenEditModal}:CardAnalytic
 
             <div className="flex flex-col mt-4">
               <div className="flex flex-row">
-                <strong>MSI:</strong> $ 0
+                <button className="rounded px-1 bg-blue-300 text-white hover:bg-blue-400 mr-6">MSI:</button> $ 0
               </div>
               <div className="flex flex-row">
                 <strong>Credito:</strong> $ {total > 0 ?  total: 0}

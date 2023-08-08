@@ -184,7 +184,7 @@ const Bills = () => {
       setEnd(end + 5)
     }
 
-  }, [start, end, incomes.length])
+  }, [start, end, outcomes.length])
 
   const handleLess = useCallback(() => {
     if (start === 0) {
@@ -218,7 +218,7 @@ const Bills = () => {
       <AddOutcome open={outcomeOpen} outcomes={outcomes} setHidden={setOutcomeOpen} setOutcome={setOutcomes}/>
 
 
-      <div className="flex grid grid lg:grid-cols-3 gap-6 lg:gap-2 w-full justify-center mt-4">
+      <div className="flex  grid lg:grid-cols-3 gap-6 lg:gap-2 w-full justify-center mt-4">
         <Incomes total={calculateTotal()} icon={<Cash className="text-white"/>} title={"Ingresos"}
                  subtitle={"Ingresos de este mes"}/>
         <Incomes total={calculateTotalOutcomes()} icon={<Clipboard className="text-white"/>}
